@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FoodApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FoodApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
