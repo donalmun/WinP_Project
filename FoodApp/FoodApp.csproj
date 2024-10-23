@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\LockScreenLogo.scale-200.png" />
-    <Content Remove="Assets\SplashScreen.scale-200.png" />
+    <Content Remove="Assets\SplashScreen.png" />
     <Content Remove="Assets\Square150x150Logo.scale-200.png" />
     <Content Remove="Assets\Square44x44Logo.scale-200.png" />
     <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
@@ -45,7 +45,7 @@
     <None Update="Assets\LockScreenLogo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\SplashScreen.scale-200.png">
+    <None Update="Assets\SplashScreen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Square150x150Logo.scale-200.png">
