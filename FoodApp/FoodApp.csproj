@@ -14,17 +14,16 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Assets\LockScreenLogo.scale-200.png" />
-    <Content Remove="Assets\SplashScreen.scale-200.png" />
-    <Content Remove="Assets\Square150x150Logo.scale-200.png" />
-    <Content Remove="Assets\Square44x44Logo.scale-200.png" />
-    <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Remove="Assets\StoreLogo.png" />
-    <Content Remove="Assets\Wide310x150Logo.scale-200.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Remove="Assets\LockScreenLogo.scale-200.png" />
+    <None Remove="Assets\SplashScreen.png" />
+    <None Remove="Assets\Square150x150Logo.scale-200.png" />
+    <None Remove="Assets\Square44x44Logo.scale-200.png" />
+    <None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <None Remove="Assets\StoreLogo.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-200.png" />
     <None Remove="HeaderControl.xaml" />
     <None Remove="LoginPage.xaml" />
+    <None Remove="MainPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,27 +41,27 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Assets\LockScreenLogo.scale-200.png">
+    <Content Update="Assets\LockScreenLogo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\SplashScreen.scale-200.png">
+    </Content>
+    <Content Update="Assets\SplashScreen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\Square150x150Logo.scale-200.png">
+    </Content>
+    <Content Update="Assets\Square150x150Logo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\Square44x44Logo.scale-200.png">
+    </Content>
+    <Content Update="Assets\Square44x44Logo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    </Content>
+    <Content Update="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\StoreLogo.png">
+    </Content>
+    <Content Update="Assets\StoreLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\Wide310x150Logo.scale-200.png">
+    </Content>
+    <Content Update="Assets\Wide310x150Logo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Page Update="HeaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -71,8 +70,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModel\" />
-    <Folder Include="View\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

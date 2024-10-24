@@ -6,16 +6,7 @@
     xmlns:local="using:FoodApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!-- Include HeaderControl at the top -->
-        <local:HeaderControl Grid.Row="0" />
-
-        
-    </Grid>
+    mc:Ignorable="d" Activated="Window_Activated">
+    
+    <Frame Name="content"/>
 </Window>
