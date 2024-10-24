@@ -14,6 +14,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <None Remove="Assets\LockScreenLogo.scale-200.png" />
     <None Remove="Assets\SplashScreen.png" />
     <None Remove="Assets\Square150x150Logo.scale-200.png" />
@@ -21,6 +22,17 @@
     <None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <None Remove="Assets\StoreLogo.png" />
     <None Remove="Assets\Wide310x150Logo.scale-200.png" />
+=======
+    <Content Remove="Assets\LockScreenLogo.scale-200.png" />
+    <Content Remove="Assets\SplashScreen.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-200.png" />
+    <Content Remove="Assets\Square44x44Logo.scale-200.png" />
+    <Content Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Remove="Assets\StoreLogo.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+  <ItemGroup>
+>>>>>>> 3d6b08556f214471f4a9a30ca5b01c30e48557b9
     <None Remove="HeaderControl.xaml" />
     <None Remove="LoginPage.xaml" />
     <None Remove="MainPage.xaml" />
@@ -43,8 +55,13 @@
   <ItemGroup>
     <Content Update="Assets\LockScreenLogo.scale-200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+<<<<<<< HEAD
     </Content>
     <Content Update="Assets\SplashScreen.png">
+=======
+    </None>
+    <None Update="Assets\SplashScreen.png">
+>>>>>>> 3d6b08556f214471f4a9a30ca5b01c30e48557b9
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="Assets\Square150x150Logo.scale-200.png">
