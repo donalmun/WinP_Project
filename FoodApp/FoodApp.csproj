@@ -14,6 +14,12 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Assets\sinhto.jpg" />
+    <Content Include="Assets\Trachanh.jpg" />
+    <Content Include="Assets\trasua.jpg" />
+    <Content Remove="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+  <ItemGroup>
 
     <None Remove="Assets\LockScreenLogo.scale-200.png" />
     <None Remove="Assets\SplashScreen.png" />
@@ -21,7 +27,6 @@
     <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <None Remove="Assets\StoreLogo.png" />
-    <None Remove="Assets\Wide310x150Logo.scale-200.png" />
 
     <None Remove="HeaderControl.xaml" />
     <None Remove="LoginPage.xaml" />
@@ -63,9 +68,18 @@
     <Content Update="Assets\StoreLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="Assets\Wide310x150Logo.scale-200.png">
+    <None Update="Assets\sinhto.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
+    <None Update="Assets\Trachanh.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\trasua.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Wide310x150Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Page Update="HeaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -74,13 +88,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
 
   <!--
