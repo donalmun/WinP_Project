@@ -1,4 +1,5 @@
-﻿<Page
+
+<Page
     x:Class="FoodApp.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -18,6 +19,7 @@
         <helper:CurrencyConverter x:Key="CurrencyConverter" />
     </Page.Resources>
 
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,8 +27,45 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- HeaderControl ở đầu trang -->
-        <local:HeaderControl Grid.Row="0" />
+		<!-- Header -->
+		<Grid Grid.Row="0" Background="Orange" Height="80" VerticalAlignment="Top">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<!-- Left Side Elements -->
+			<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0">
+				<!-- Logo -->
+				<Image Source="Assets/ShopeeFoodLogo.png" Width="120" Height="40" Margin="0,0,20,0"/>
+
+				<!-- Location Dropdown -->
+				<ComboBox Width="150" Height="30" Margin="10,0,10,0" VerticalAlignment="Center">
+					<ComboBoxItem Content="TP. HCM"/>
+					<ComboBoxItem Content="Hà Nội"/>
+					<ComboBoxItem Content="Đà Nẵng"/>
+				</ComboBox>
+
+				<!-- Menu Links -->
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+					<Button Content="Đồ ăn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+					<Button Content="Thực phẩm" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+					<Button Content="Rượu bia" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+					<Button Content="Thú cưng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+				</StackPanel>
+			</StackPanel>
+
+			<!-- Right Side Elements -->
+			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
+				<!-- Search Bar -->
+				<TextBox Width="250" Height="35" PlaceholderText="Tìm địa điểm, món ăn, địa chỉ..." Margin="0,0,10,0" />
+				<Button Content="Đăng nhập" Click="GoToLoginPage_Click" Width="100" Height="35" Background="#FFDD4B39" Foreground="Black" BorderBrush="Transparent" Margin="10,0,0,0"/>
+				<Button Content="Tiếng Việt" Width="100" Height="35" Background="Transparent" BorderBrush="Transparent" Margin="10,0,0,0"/>
+			</StackPanel>
+		</Grid>
+
+		
 
         <!-- Khu vực hiển thị sản phẩm và hóa đơn -->
         <Grid Grid.Row="1">
@@ -160,3 +199,9 @@
         </Grid>
     </Grid>
 </Page>
+
+  
+
+
+
+
