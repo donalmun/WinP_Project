@@ -3,6 +3,7 @@ using FoodApp.Service.DataAccess;
 using FoodApp.Helper;
 using System.Linq;
 using System.Collections.Specialized;
+using FoodApp.Models;
 
 namespace FoodApp.ViewModels
 {
