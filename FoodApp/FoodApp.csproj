@@ -29,6 +29,7 @@
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
 		<None Remove="LoginPage.xaml" />
 		<None Remove="MainPage.xaml" />
+		<None Remove="OrderPage.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
@@ -70,12 +71,12 @@
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<Page Update="OrderPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</Page>
 		<Page Update="LoginPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Views\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="MainPage.xaml">
