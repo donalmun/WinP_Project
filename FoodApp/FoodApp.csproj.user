@@ -5,7 +5,11 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
+<<<<<<< HEAD
     <Page Update="OrderPage.xaml">
+=======
+    <Page Update="Views\OrderPage.xaml">
+>>>>>>> fc5478e (adjust Order Detail, Create File Invoice PDF)
       <SubType>Designer</SubType>
     </Page>
     <Page Update="LoginPage.xaml">
