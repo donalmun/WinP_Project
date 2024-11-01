@@ -3,6 +3,8 @@ using FoodApp.Service.DataAccess;
 using FoodApp.Helper;
 using System.Linq;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace FoodApp.ViewModels
 {
@@ -12,10 +14,18 @@ namespace FoodApp.ViewModels
         private ObservableCollection<Product> _products;
         private ObservableCollection<InvoiceItem> _invoiceItems;
 
+        private InvoiceItem _selectedInvoiceItem;
+
+        public InvoiceItem SelectedInvoiceItem
+        {
+            get => _selectedInvoiceItem;
+            set => SetProperty(ref _selectedInvoiceItem, value);
+        }
         public ObservableCollection<Product> Products
         {
             get => _products;
             set => SetProperty(ref _products, value);
+
         }
 
         public ObservableCollection<InvoiceItem> InvoiceItems
@@ -27,6 +37,7 @@ namespace FoodApp.ViewModels
                 {
                     OnPropertyChanged(nameof(TotalAmount));
                     UpdateInvoiceItemIndexes();
+                    SubscribeToInvoiceItemChanges();
                 }
             }
         }
@@ -40,6 +51,12 @@ namespace FoodApp.ViewModels
             InvoiceItems = new ObservableCollection<InvoiceItem>();
             InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
             LoadProducts();
+
+            SelectedInvoiceItem = new InvoiceItem
+            {
+                SurchargeType = "%", 
+                DiscountType = "%"   
+            };
         }
 
         private async void LoadProducts()
@@ -60,7 +77,9 @@ namespace FoodApp.ViewModels
             }
             else
             {
-                InvoiceItems.Add(new InvoiceItem { Product = product, Quantity = 1 });
+                var newItem = new InvoiceItem { Product = product, Quantity = 1 };
+                newItem.PropertyChanged += InvoiceItem_PropertyChanged;
+                InvoiceItems.Add(newItem);
             }
             OnPropertyChanged(nameof(TotalAmount));
             UpdateInvoiceItemIndexes();
@@ -70,13 +89,31 @@ namespace FoodApp.ViewModels
         {
             OnPropertyChanged(nameof(TotalAmount));
             UpdateInvoiceItemIndexes();
+            SubscribeToInvoiceItemChanges();
         }
 
         private void UpdateInvoiceItemIndexes()
         {
             for (int i = 0; i < InvoiceItems.Count; i++)
             {
-                InvoiceItems[i].Index = i + 1; // Assuming you want 1-based index
+                InvoiceItems[i].Index = i + 1;
+            }
+        }
+
+        private void SubscribeToInvoiceItemChanges()
+        {
+            foreach (var item in InvoiceItems)
+            {
+                item.PropertyChanged -= InvoiceItem_PropertyChanged;
+                item.PropertyChanged += InvoiceItem_PropertyChanged;
+            }
+        }
+
+        private void InvoiceItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(InvoiceItem.TotalPrice))
+            {
+                OnPropertyChanged(nameof(TotalAmount));
             }
         }
     }
