@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using FoodApp.Models;
+using FoodApp.Views;
 
 
 namespace FoodApp
@@ -50,6 +51,10 @@ namespace FoodApp
         private void GoToLoginPage_Click(object sender, RoutedEventArgs e)
         {
             
+        }
+        private void GoToRevenueView_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(RevenueView));
         }
     }
    

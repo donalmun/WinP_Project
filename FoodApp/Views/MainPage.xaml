@@ -53,7 +53,9 @@
 					<Button Content="Thực phẩm" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
 					<Button Content="Rượu bia" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
 					<Button Content="Thú cưng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
-				</StackPanel>
+                    <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                        Click="GoToRevenueView_Click"/>
+                </StackPanel>
 			</StackPanel>
 
 			<!-- Right Side Elements -->

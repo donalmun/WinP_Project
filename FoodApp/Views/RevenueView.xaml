@@ -1,0 +1,83 @@
+﻿<Page
+    x:Class="FoodApp.Views.RevenueView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FoodApp.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:FoodApp.ViewModel"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.DataContext>
+		<viewModels:RevenueViewModel />
+	</Page.DataContext>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<Grid Grid.Row="0" Margin="20">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="BackButton_Click">
+				<Button.Content>
+					<SymbolIcon Symbol="Back" />
+				</Button.Content>
+			</Button>
+			<TextBlock Grid.Column="1" Text="Revenue Analysis" FontSize="30" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" />
+		</Grid>
+
+		<!-- Content -->
+		<Grid Grid.Row="1" Margin="20">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<!-- Filters -->
+			<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
+				<TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,10,0" />
+				<DatePicker x:Name="FromDatePicker" Width="200" Margin="0,0,20,0" />
+				<TextBlock Text="To:" VerticalAlignment="Center" Margin="0,0,10,0" />
+				<DatePicker x:Name="ToDatePicker" Width="200" />
+				<Button Content="Filter" Click="FilterButton_Click" Margin="20,0,0,0" />
+			</StackPanel>
+
+			<!-- Table Header -->
+			<Grid Grid.Row="1" Margin="0,0,0,30">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Column="0" Text="Product ID" FontSize="18" FontWeight="Bold" />
+				<TextBlock Grid.Column="1" Text="Revenue(VND)" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" />
+				<TextBlock Grid.Column="2" Text="Quantities" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" />
+			</Grid>
+
+			<!-- Revenue Data -->
+			<ListView Grid.Row="1" ItemsSource="{Binding RevenueData}" Margin="0,40,0,0">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="local:Detail">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*" />
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="1*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="{x:Bind Product_Id}" FontSize="18" />
+							<TextBlock Grid.Column="1" Text="{x:Bind Cost}" FontSize="18" HorizontalAlignment="Right" />
+							<TextBlock Grid.Column="2" Text="{x:Bind Quantity}" FontSize="18" HorizontalAlignment="Right" />
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+	</Grid>
+</Page>
