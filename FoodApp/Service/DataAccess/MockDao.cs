@@ -20,13 +20,6 @@ namespace FoodApp.Service.DataAccess
                     (T)(object)new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Detail_Id = 101, Category_Id = 201,Created_At  = DateTime.Now },
                     (T)(object)new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Detail_Id = 102, Category_Id = 202,Created_At  = DateTime.Now },
                     (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Detail_Id = 101, Category_Id = 201,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Detail_Id = 102, Category_Id = 202,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
                 });
             }
             else if (typeof(T) == typeof(Users))
@@ -47,11 +40,18 @@ namespace FoodApp.Service.DataAccess
             }
             else if (typeof(T) == typeof(Detail))
             {
+                var products = new List<Product>
+            {
+                new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Detail_Id = 101, Category_Id = 201, Created_At = DateTime.Now },
+                new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Detail_Id = 102, Category_Id = 202, Created_At = DateTime.Now },
+                new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203, Created_At = DateTime.Now }
+            };
+
                 _data.AddRange(new List<T>
-                {
-                    (T)(object)new Detail { Id = 1, Quantity = 2, Cost = 20.0f, Order_Id = 1, Product_Id = 1,Created_At = DateTime.Now },
-                    (T)(object)new Detail { Id = 2, Quantity = 1, Cost = 10.0f, Order_Id = 2, Product_Id = 2, Created_At = DateTime.Now }
-                });
+            {
+                (T)(object)new Detail { Id = 1, Quantity = 2, Cost = 20.0f, Order_Id = 1, Product_Id = 1, Created_At = DateTime.Now, Product = products[0] },
+                (T)(object)new Detail { Id = 2, Quantity = 1, Cost = 10.0f, Order_Id = 2, Product_Id = 2, Created_At = DateTime.Now, Product = products[1] }
+            });
             }
             else if (typeof(T) == typeof(Category))
             {

@@ -17,6 +17,8 @@ namespace FoodApp.Models
         public DateTime Created_At { get; set; }
         public ICollection<Detail> Details { get; set; }
 
+        public Product Product { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

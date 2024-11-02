@@ -39,6 +39,12 @@ namespace FoodApp.Data
                 .HasMany(c => c.Products)
                 .WithOne()
                 .HasForeignKey(p => p.Category_Id);
+
+            modelBuilder.Entity<Detail>()
+                .HasOne(d => d.Product)
+                .WithMany(p => p.Details)
+                .HasForeignKey(d => d.Product_Id);
+
         }
     }
 }
