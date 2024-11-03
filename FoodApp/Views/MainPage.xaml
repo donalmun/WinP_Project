@@ -10,11 +10,6 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-
-
-
-
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -48,6 +43,8 @@
                     <Button Content="Thực phẩm" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
                     <Button Content="Rượu bia" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
                     <Button Content="Món Ăn" Click="GoToOrderPage_Click" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+                    <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                        Click="GoToRevenueView_Click"/>
                 </StackPanel>
             </StackPanel>
 

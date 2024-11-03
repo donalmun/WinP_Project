@@ -37,7 +37,7 @@ namespace FoodApp.Helper
                 if (_product != value)
                 {
                     _product = value;
-                    UnitPrice = _product?.Cost ?? 0; 
+                    UnitPrice = _product?.Cost ?? 0;
                     CalculateTotalPrice();
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(UnitPrice));

@@ -54,8 +54,8 @@ namespace FoodApp.ViewModels
 
             SelectedInvoiceItem = new InvoiceItem
             {
-                SurchargeType = "%", 
-                DiscountType = "%"   
+                SurchargeType = "%",
+                DiscountType = "%"
             };
         }
 

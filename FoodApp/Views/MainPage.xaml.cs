@@ -27,6 +27,8 @@ namespace FoodApp
             // Navigate to LoginPage
             this.ContentFrame.Navigate(typeof(LoginPage));
         }
+
+       
     }
 
 }

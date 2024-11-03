@@ -20,4 +20,3 @@ public class Product : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 }
-

@@ -5,9 +5,7 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-
     <Page Update="Views\OrderPage.xaml">
-
       <SubType>Designer</SubType>
     </Page>
     <Page Update="LoginPage.xaml">
