@@ -31,8 +31,7 @@
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
 		<None Remove="LoginPage.xaml" />
 		<None Remove="MainPage.xaml" />
-		<None Remove="Views\OrderPage.xaml" />
-
+		<None Remove="OrderPage.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="itext7" Version="8.0.5" />

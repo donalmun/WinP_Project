@@ -17,6 +17,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+
+
         <!-- Header -->
         <Grid Grid.Row="0" Background="Orange" Height="80" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
@@ -56,13 +58,9 @@
                 <Button Content="Tiếng Việt" Width="100" Height="35" Background="Transparent" BorderBrush="Transparent" Margin="10,0,0,0"/>
             </StackPanel>
         </Grid>
-
-
-
+		
         <!-- Khu vực nội dung thay đổi -->
         <Frame x:Name="ContentFrame" Grid.Row="1"  />
-
-
     </Grid>
 </Page>
 
