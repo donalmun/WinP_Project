@@ -1,5 +1,5 @@
 
-﻿using FoodApp.ViewModels;
+using FoodApp.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
@@ -13,10 +13,9 @@ namespace FoodApp
         public MainPage()
         {
             this.InitializeComponent();
-            
+
         }
 
-        
         private void GoToOrderPage_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to OrderPage
@@ -28,15 +27,6 @@ namespace FoodApp
             // Navigate to LoginPage
             this.ContentFrame.Navigate(typeof(LoginPage));
         }
-
     }
-   
+
 }
-
-        
-       
-
-        
-    
-
-
