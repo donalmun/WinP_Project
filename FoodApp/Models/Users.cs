@@ -1,12 +1,7 @@
-﻿using System;
+﻿using FoodApp;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Graphics.Printing;
-
-namespace FoodApp;
+using System;
 
 public class Users : INotifyPropertyChanged
 {
@@ -17,6 +12,9 @@ public class Users : INotifyPropertyChanged
     public string Address { get; set; }
     public string Phone { get; set; }
     public DateTime Created_At { get; set; }
+
+    // Add this property
+    public ICollection<Order> Orders { get; set; }
 
     public event PropertyChangedEventHandler PropertyChanged;
 }

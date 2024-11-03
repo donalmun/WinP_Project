@@ -12,5 +12,7 @@ public class Category : INotifyPropertyChanged
     public string Name { get; set; }
     public DateTime Created_At { get; set; }
 
+    public ICollection<Product> Products { get; set; }
+
     public event PropertyChangedEventHandler PropertyChanged;
 }

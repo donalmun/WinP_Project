@@ -16,5 +16,7 @@ public class Order : INotifyPropertyChanged
     public int User_Id { get; set; }
     public DateTime Created_At { get; set; }
 
+    public ICollection<Detail> Details { get; set; }
+
     public event PropertyChangedEventHandler PropertyChanged;
 }

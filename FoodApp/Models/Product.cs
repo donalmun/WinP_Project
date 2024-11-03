@@ -18,5 +18,8 @@ public class Product : INotifyPropertyChanged
     public string Image { get; set; }
     public DateTime Created_At { get; set; }
 
+    // Add this property
+    public ICollection<Detail> Details { get; set; }
+
     public event PropertyChangedEventHandler PropertyChanged;
 }
