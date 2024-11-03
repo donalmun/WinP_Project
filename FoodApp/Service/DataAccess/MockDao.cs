@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FoodApp.Models;
 using Windows.System;
 
 namespace FoodApp.Service.DataAccess
@@ -102,4 +101,3 @@ namespace FoodApp.Service.DataAccess
         }
     }
 }
-

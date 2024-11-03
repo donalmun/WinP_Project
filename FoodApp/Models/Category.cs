@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodApp.Models
+namespace FoodApp;
+public class Category : INotifyPropertyChanged
 {
-    public class Category : INotifyPropertyChanged
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime Created_At { get; set; }
-        public ICollection<Product> Products { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
-}
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public DateTime Created_At { get; set; }
 
+    public ICollection<Product> Products { get; set; }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+}

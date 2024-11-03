@@ -1,69 +1,34 @@
-
-﻿using FoodApp.ViewModels;
+using FoodApp.ViewModels;
+using FoodApp.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
-using FoodApp.Models;
-using FoodApp.Views;
-
 
 namespace FoodApp
 {
     public sealed partial class MainPage : Page
     {
-
-        public MainViewModel ViewModel { get; }
-
-
         public MainPage()
         {
             this.InitializeComponent();
-            ViewModel = new MainViewModel();
-            this.DataContext = ViewModel;
         }
 
-        private void GridView_ItemClick(object sender, ItemClickEventArgs e)
+        private void GoToOrderPage_Click(object sender, RoutedEventArgs e)
         {
-            if (e.ClickedItem is Product product)
-            {
-                ViewModel.AddToInvoice(product);
-            }
+            // Navigate to OrderPage
+            this.ContentFrame.Navigate(typeof(OrderPage));
         }
 
-        private void CheckoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Handle checkout button click event here
-            DisplayCheckoutMessage();
-        }
-
-        private void DisplayCheckoutMessage()
-        {
-            var dialog = new ContentDialog
-            {
-                Title = "Thanh toán",
-                Content = "Bạn đã nhấn nút thanh toán.",
-                CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot // Set the XamlRoot property
-            };
-
-            _ = dialog.ShowAsync();
-        }
         private void GoToLoginPage_Click(object sender, RoutedEventArgs e)
         {
-            
+            // Navigate to LoginPage
+            this.ContentFrame.Navigate(typeof(LoginPage));
         }
+
         private void GoToRevenueView_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(RevenueView));
+            // Navigate to RevenueView
+            this.ContentFrame.Navigate(typeof(RevenueView));
         }
     }
-   
 }
-
-        
-       
-
-        
-    
-
-

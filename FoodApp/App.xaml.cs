@@ -15,9 +15,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using WinRT.Interop; // Thêm directive này
 
 namespace FoodApp
 {
@@ -26,8 +24,10 @@ namespace FoodApp
     /// </summary>
     public partial class App : Application
     {
+        private Window m_window;
+
         /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
+        /// Initializes the singleton application object. This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
@@ -45,6 +45,12 @@ namespace FoodApp
             m_window.Activate();
         }
 
-        private Window m_window;
+        // Thêm phương thức này để lấy handle của cửa sổ
+        public IntPtr GetWindowHandle()
+        {
+            return WindowNative.GetWindowHandle(m_window); // Sử dụng m_window
+        }
+
+
     }
 }

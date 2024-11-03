@@ -26,6 +26,7 @@ namespace FoodApp
         public LoginPage()
         {
             this.InitializeComponent();
+
         }
     }
 }

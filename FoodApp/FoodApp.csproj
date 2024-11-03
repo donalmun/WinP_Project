@@ -18,6 +18,7 @@
 		<Content Include="Assets\sinhto.jpg" />
 		<Content Include="Assets\Trachanh.jpg" />
 		<Content Include="Assets\trasua.jpg" />
+		<Content Remove="Assets\arial.ttf" />
 		<Content Remove="Assets\Wide310x150Logo.scale-200.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -30,10 +31,11 @@
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
 		<None Remove="LoginPage.xaml" />
 		<None Remove="MainPage.xaml" />
-		<None Remove="Views\RevenueView.xaml" />
+		<None Remove="OrderPage.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Remove="Views\RevenueView.xaml" />
+		<PackageReference Include="itext7" Version="8.0.5" />
+		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
@@ -68,6 +70,9 @@
 		<Content Update="Assets\StoreLogo.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<None Update="Assets\arial.ttf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="Assets\sinhto.jpg">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -80,18 +85,19 @@
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Views\RevenueView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</None>
+
+
+		<Page Update="Views\OrderPage.xaml">
+
+		  <Generator>MSBuild:Compile</Generator>
+		</Page>
+
 		<Page Update="LoginPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="MainPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Include="Views\RevenueView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
