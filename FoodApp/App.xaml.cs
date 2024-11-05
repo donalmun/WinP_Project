@@ -1,21 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using WinRT.Interop; // Thêm directive này
+using WinRT.Interop;
 
 namespace FoodApp
 {
@@ -41,16 +28,18 @@ namespace FoodApp
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
+            m_window = new Window();
+            Frame rootFrame = new Frame();
+            m_window.Content = rootFrame;
+
+            rootFrame.Navigate(typeof(FoodApp.Views.LoginPage), args.Arguments);
             m_window.Activate();
         }
 
-        // Thêm phương thức này để lấy handle của cửa sổ
+        // Method to get the window handle
         public IntPtr GetWindowHandle()
         {
-            return WindowNative.GetWindowHandle(m_window); // Sử dụng m_window
+            return WindowNative.GetWindowHandle(m_window);
         }
-
-
     }
 }
