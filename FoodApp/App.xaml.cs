@@ -1,7 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Windowing;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using Windows.UI.ViewManagement;
 using WinRT.Interop;
 
 namespace FoodApp
@@ -34,6 +37,10 @@ namespace FoodApp
 
             rootFrame.Navigate(typeof(FoodApp.Views.LoginPage), args.Arguments);
             m_window.Activate();
+
+            // Set the window to maximized mode
+            var hwnd = WindowNative.GetWindowHandle(m_window);
+            ShowWindow(hwnd, SW_MAXIMIZE);
         }
 
         // Method to get the window handle
@@ -41,5 +48,11 @@ namespace FoodApp
         {
             return WindowNative.GetWindowHandle(m_window);
         }
+
+        // P/Invoke declaration for ShowWindow
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_MAXIMIZE = 3;
     }
 }

@@ -240,5 +240,14 @@ namespace FoodApp
             }
         }
 
+        //private void RemoveItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (sender is Button button && button.Tag is InvoiceItem item)
+        //    {
+        //        ViewModel.RemoveFromInvoice(item.Product);
+        //    }
+        //}
+
+
     }
 }

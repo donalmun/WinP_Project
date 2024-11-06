@@ -19,12 +19,6 @@ namespace FoodApp
             this.ContentFrame.Navigate(typeof(OrderPage));
         }
 
-        private void GoToLoginPage_Click(object sender, RoutedEventArgs e)
-        {
-            // Navigate to LoginPage
-            this.ContentFrame.Navigate(typeof(LoginPage));
-        }
-
         private void GoToRevenueView_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to RevenueView

@@ -16,8 +16,20 @@ namespace FoodApp.Helper
         private double _surcharge;
         private string _discountType;
         private string _surchargeType;
+        private int _index;
 
-        public int Index { get; set; }
+        public int Index
+        {
+            get => _index;
+            set
+            {
+                if (_index != value)
+                {
+                    _index = value;
+                    OnPropertyChanged(nameof(Index));
+                }
+            }
+        }
 
         public string Note
         {

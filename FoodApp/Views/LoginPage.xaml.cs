@@ -1,6 +1,9 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using Windows.Storage;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FoodApp.Views
 {
@@ -9,6 +12,7 @@ namespace FoodApp.Views
         public LoginPage()
         {
             this.InitializeComponent();
+            LoadCredentials(); // Call LoadCredentials in the constructor
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -19,8 +23,16 @@ namespace FoodApp.Views
             try
             {
                 // Add your login logic here
-                if (username == "admin" && password == "password")
+                if (username == "admin" && password == "1234")
                 {
+                    if (RememberMeCheckBox.IsChecked == true)
+                    {
+                        SaveCredentials(username, password);
+                    }
+                    else
+                    {
+                        ClearCredentials();
+                    }
                     // Navigate to the main page
                     this.Frame.Navigate(typeof(MainPage));
                 }
@@ -48,6 +60,65 @@ namespace FoodApp.Views
                     XamlRoot = this.Content.XamlRoot // Ensure the dialog is associated with the current XAML root
                 };
                 await errorDialog.ShowAsync();
+            }
+        }
+
+        private void SaveCredentials(string username, string password)
+        {
+            var passwordInBytes = Encoding.UTF8.GetBytes(password);
+            var entropyInBytes = new byte[20];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(entropyInBytes);
+            }
+            var encryptedPassword = ProtectedData.Protect(
+                passwordInBytes,
+                entropyInBytes,
+                DataProtectionScope.CurrentUser);
+            var encryptedPasswordInBase64 = Convert.ToBase64String(encryptedPassword);
+            var entropyInBase64 = Convert.ToBase64String(entropyInBytes);
+
+            var localSettings = ApplicationData.Current.LocalSettings;
+            localSettings.Values["Username"] = username;
+            localSettings.Values["Password"] = encryptedPasswordInBase64;
+            localSettings.Values["Entropy"] = entropyInBase64;
+            localSettings.Values["RememberMe"] = true;
+        }
+
+        private void ClearCredentials()
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            localSettings.Values.Remove("Username");
+            localSettings.Values.Remove("Password");
+            localSettings.Values.Remove("Entropy");
+            localSettings.Values["RememberMe"] = false;
+        }
+
+        private void LoadCredentials()
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.ContainsKey("RememberMe") && (bool)localSettings.Values["RememberMe"])
+            {
+                if (localSettings.Values.ContainsKey("Username"))
+                {
+                    UsernameTextBox.Text = localSettings.Values["Username"].ToString();
+                }
+                if (localSettings.Values.ContainsKey("Password") && localSettings.Values.ContainsKey("Entropy"))
+                {
+                    var encryptedPasswordInBase64 = localSettings.Values["Password"].ToString();
+                    var entropyInBase64 = localSettings.Values["Entropy"].ToString();
+
+                    var encryptedPasswordInBytes = Convert.FromBase64String(encryptedPasswordInBase64);
+                    var entropyInBytes = Convert.FromBase64String(entropyInBase64);
+
+                    var passwordInBytes = ProtectedData.Unprotect(
+                        encryptedPasswordInBytes,
+                        entropyInBytes,
+                        DataProtectionScope.CurrentUser);
+
+                    PasswordBox.Password = Encoding.UTF8.GetString(passwordInBytes);
+                }
+                RememberMeCheckBox.IsChecked = true;
             }
         }
     }

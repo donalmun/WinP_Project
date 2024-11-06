@@ -54,7 +54,6 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
                 <!-- Search Bar -->
                 <TextBox Width="250" Height="35" PlaceholderText="Tìm địa điểm, món ăn, địa chỉ..." Margin="0,0,10,0" />
-                <Button Content="Đăng nhập" Click="GoToLoginPage_Click" Width="100" Height="35" Background="#FFDD4B39" Foreground="Black" BorderBrush="Transparent" Margin="10,0,0,0"/>
                 <Button Content="Tiếng Việt" Width="100" Height="35" Background="Transparent" BorderBrush="Transparent" Margin="10,0,0,0"/>
             </StackPanel>
         </Grid>

@@ -92,6 +92,19 @@ namespace FoodApp.ViewModels
             SubscribeToInvoiceItemChanges();
         }
 
+        public void RemoveFromInvoice(Product product)
+        {
+            var itemToRemove = InvoiceItems.FirstOrDefault(i => i.Product == product);
+            if (itemToRemove != null)
+            {
+                itemToRemove.PropertyChanged -= InvoiceItem_PropertyChanged;
+                InvoiceItems.Remove(itemToRemove);
+                OnPropertyChanged(nameof(TotalAmount));
+                UpdateInvoiceItemIndexes();
+            }
+        }
+
+
         private void UpdateInvoiceItemIndexes()
         {
             for (int i = 0; i < InvoiceItems.Count; i++)
