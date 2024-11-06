@@ -29,10 +29,10 @@
 		<None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
 		<None Remove="Assets\StoreLogo.png" />
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
-		<None Remove="LoginPage.xaml" />
 		<None Remove="MainPage.xaml" />
 		<None Remove="OrderPage.xaml" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="itext7" Version="8.0.5" />
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
@@ -71,7 +71,7 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<None Update="Assets\arial.ttf">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="Assets\sinhto.jpg">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -85,18 +85,12 @@
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-
-
-		<Page Update="Views\OrderPage.xaml">
-
+		<None Update="Views\LoginPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-
-		<Page Update="LoginPage.xaml">
+		</None>
+		<Page Update="Views\OrderPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-	</ItemGroup>
-	<ItemGroup>
 		<Page Update="MainPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>

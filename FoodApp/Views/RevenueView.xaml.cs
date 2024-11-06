@@ -26,7 +26,7 @@ namespace FoodApp.Views
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             // navigate back to the main page
-            Frame.GoBack();
+            Frame.Navigate(typeof(OrderPage));
 
 
         }
