@@ -15,14 +15,14 @@ namespace FoodApp.Service.DataAccess
             {
                 _data.AddRange(new List<T>
                 {
-                    (T)(object)new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Detail_Id = 101, Category_Id = 201,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Detail_Id = 102, Category_Id = 202,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203,Created_At  = DateTime.Now },
-                    (T)(object)new Product { Id = 4, Name = "Mỳ ý", Description = "Mỳ ý sốt bò bằm", Cost = 40000, Image = "/Assets/myy.png", Detail_Id = 104, Category_Id = 204, Created_At = DateTime.Now},
-                    (T)(object)new Product { Id = 5, Name = "Bánh mì", Description = "Bánh mì thịt nguội", Cost = 20000, Image = "/Assets/banhmi.jpg", Detail_Id = 105, Category_Id = 205, Created_At = DateTime.Now},
-                    (T)(object)new Product { Id = 6, Name = "Cơm gà", Description = "Cơm gà sốt cay", Cost = 30000, Image = "/Assets/comga.jpg", Detail_Id = 106, Category_Id = 206, Created_At = DateTime.Now},
-                    (T)(object)new Product { Id = 7, Name = "Cơm chiên", Description = "Cơm chiên thập cẩm", Cost = 25000, Image = "/Assets/comchien.jpg", Detail_Id = 107, Category_Id = 207, Created_At = DateTime.Now},
-                    (T)(object)new Product { Id = 8, Name = "Bún riêu", Description = "Bún riêu cua", Cost = 30000, Image = "/Assets/bunrieu.jpg", Detail_Id = 108, Category_Id = 208, Created_At = DateTime.Now},
+                    (T)(object)new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Category_Id = 201,Created_At  = DateTime.Now },
+                    (T)(object)new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Category_Id = 202,Created_At  = DateTime.Now },
+                    (T)(object)new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Category_Id = 203,Created_At  = DateTime.Now },
+                    (T)(object)new Product { Id = 4, Name = "Mỳ ý", Description = "Mỳ ý sốt bò bằm", Cost = 40000, Image = "/Assets/myy.png", Category_Id = 204, Created_At = DateTime.Now},
+                    (T)(object)new Product { Id = 5, Name = "Bánh mì", Description = "Bánh mì thịt nguội", Cost = 20000, Image = "/Assets/banhmi.jpg", Category_Id = 205, Created_At = DateTime.Now},
+                    (T)(object)new Product { Id = 6, Name = "Cơm gà", Description = "Cơm gà sốt cay", Cost = 30000, Image = "/Assets/comga.jpg", Category_Id = 206, Created_At = DateTime.Now},
+                    (T)(object)new Product { Id = 7, Name = "Cơm chiên", Description = "Cơm chiên thập cẩm", Cost = 25000, Image = "/Assets/comchien.jpg", Category_Id = 207, Created_At = DateTime.Now},
+                    (T)(object)new Product { Id = 8, Name = "Bún riêu", Description = "Bún riêu cua", Cost = 30000, Image = "/Assets/bunrieu.jpg", Category_Id = 208, Created_At = DateTime.Now},
                 });
             }
             else if (typeof(T) == typeof(Users))
@@ -45,9 +45,9 @@ namespace FoodApp.Service.DataAccess
             {
                 var products = new List<Product>
             {
-                new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Detail_Id = 101, Category_Id = 201, Created_At = DateTime.Now },
-                new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Detail_Id = 102, Category_Id = 202, Created_At = DateTime.Now },
-                new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Detail_Id = 103, Category_Id = 203, Created_At = DateTime.Now },
+                new Product { Id = 1, Name = "Trà Chanh The Mát", Description = "Giải khát ngay cùng trà chanh thơm thanh", Cost = 30000, Image = "/Assets/Trachanh.jpg", Category_Id = 201, Created_At = DateTime.Now },
+                new Product { Id = 2, Name = "Trà sữa chân châu đường đen", Description = "Ngon ngọt từng giọt", Cost = 20000, Image = "/Assets/trasua.jpg", Category_Id = 202, Created_At = DateTime.Now },
+                new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Category_Id = 203, Created_At = DateTime.Now },
                 
             };
 
@@ -103,6 +103,11 @@ namespace FoodApp.Service.DataAccess
                 _data.Remove(entity);
             }
             return Task.FromResult(entity);
+        }
+
+        public Task<bool> TestConnectionAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

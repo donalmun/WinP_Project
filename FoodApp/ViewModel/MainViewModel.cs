@@ -46,10 +46,15 @@ namespace FoodApp.ViewModels
 
         public MainViewModel()
         {
-            _productDao = new MockDao<Product>();
+            //_productDao = new MockDao<Product>();
+            _productDao =  new ProductDao();
             Products = new ObservableCollection<Product>();
             InvoiceItems = new ObservableCollection<InvoiceItem>();
             InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
+
+            // Kiểm tra kết nối cơ sở dữ liệu
+            TestDatabaseConnection();
+
             LoadProducts();
 
             SelectedInvoiceItem = new InvoiceItem
@@ -57,6 +62,16 @@ namespace FoodApp.ViewModels
                 SurchargeType = "%",
                 DiscountType = "%"
             };
+        }
+
+        private async void TestDatabaseConnection()
+        {
+            bool isConnected = await _productDao.TestConnectionAsync();
+            if (!isConnected)
+            {
+                // Xử lý khi kết nối thất bại (ví dụ: hiển thị thông báo lỗi cho người dùng)
+                Debug.WriteLine("Failed to connect to the database.");
+            }
         }
 
         private async void LoadProducts()
@@ -129,5 +144,7 @@ namespace FoodApp.ViewModels
                 OnPropertyChanged(nameof(TotalAmount));
             }
         }
+
+
     }
 }

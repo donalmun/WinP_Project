@@ -14,4 +14,5 @@ public interface IDao<T>
     Task<T> UpdateAsync(T entity);
     Task<T> DeleteAsync(int id);
 
+    Task<bool> TestConnectionAsync();
 }
