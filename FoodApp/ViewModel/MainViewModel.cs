@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FoodApp.ViewModels
 {
@@ -145,6 +146,23 @@ namespace FoodApp.ViewModels
             }
         }
 
+        public async Task FilterProductsByCategoryAsync(int categoryId)
+        {
+            // Clear the current products
+            Products.Clear();
+
+            // Load all products from the data access layer
+            var allProducts = await _productDao.GetAllAsync();
+
+            // Filter products by the specified category ID
+            var filteredProducts = allProducts.Where(p => p.Category_Id == categoryId);
+
+            // Add the filtered products to the Products collection
+            foreach (var product in filteredProducts)
+            {
+                Products.Add(product);
+            }
+        }
 
     }
 }

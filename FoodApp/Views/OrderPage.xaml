@@ -18,8 +18,57 @@
         <helper:CurrencyConverter x:Key="CurrencyConverter" />
         <helper:ZeroToCollapsedConverter x:Key="ZeroToCollapsedConverter" />
     </Page.Resources>
+    
+    
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Header row -->
+            <RowDefinition Height="*" />
+            <!-- Content row -->
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Grid Grid.Row="0" Background="Orange" Height="80" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Side Elements -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0">
+                <!-- Logo -->
+                <Image Source="Assets/ShopeeFoodLogo.png" Width="120" Height="40" Margin="0,0,20,0"/>
+
+                <!-- Location Dropdown -->
+                <ComboBox Width="150" Height="30" Margin="10,0,10,0" VerticalAlignment="Center">
+                    <ComboBoxItem Content="TP. HCM"/>
+                    <ComboBoxItem Content="Hà Nội"/>
+                    <ComboBoxItem Content="Đà Nẵng"/>
+                </ComboBox>
+
+                
+                <!-- Menu Links -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Thực phẩm" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" Click="FilterByCategory_Click" Tag="3" />
+                    <Button Content="Thức uống" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" Click="FilterByCategory_Click" Tag="2" />
+                    <Button Content="Món Ăn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" Click="FilterByCategory_Click" Tag="1" />
+                
+                <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                Click="GoToRevenueView_Click"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Right Side Elements -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
+                <!-- Search Bar -->
+                <TextBox Width="250" Height="35" PlaceholderText="Tìm địa điểm, món ăn, địa chỉ..." Margin="0,0,10,0" />
+                <Button Content="Tiếng Việt" Width="100" Height="35" Background="Transparent" BorderBrush="Transparent" Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        
         <!-- Khu vực hiển thị sản phẩm và hóa đơn -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
