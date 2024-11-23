@@ -11,6 +11,7 @@ using System.IO;
 using iText.Layout.Properties;
 using System.Collections.Generic;
 using System.Globalization;
+using FoodApp.Views;
 
 namespace FoodApp
 {
@@ -248,6 +249,19 @@ namespace FoodApp
         //    }
         //}
 
+        private async void FilterByCategory_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && int.TryParse(button.Tag.ToString(), out int categoryId))
+            {
+                await ViewModel.FilterProductsByCategoryAsync(categoryId);
+            }
+        }
 
+
+        private void GoToRevenueView_Click(object sender, RoutedEventArgs e)
+        {
+            // Navigate to RevenueView
+            this.Frame.Navigate(typeof(RevenueView));
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace FoodApp.Views
                         ClearCredentials();
                     }
                     // Navigate to the main page
-                    this.Frame.Navigate(typeof(MainPage));
+                    this.Frame.Navigate(typeof(OrderPage));
                 }
                 else
                 {

@@ -41,9 +41,8 @@
 
                 <!-- Menu Links -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="Đồ ăn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
                     <Button Content="Thực phẩm" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
-                    <Button Content="Rượu bia" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
+                    <Button Content="Thức uống" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
                     <Button Content="Món Ăn" Click="GoToOrderPage_Click" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" />
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
                         Click="GoToRevenueView_Click"/>

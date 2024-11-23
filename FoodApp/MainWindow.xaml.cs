@@ -30,7 +30,7 @@ namespace FoodApp
 
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
-            content.Navigate(typeof(MainPage));
+            content.Navigate(typeof(OrderPage));
         }
     }
 }
