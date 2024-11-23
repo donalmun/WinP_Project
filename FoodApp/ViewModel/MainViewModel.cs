@@ -6,6 +6,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using System;
 
 namespace FoodApp.ViewModels
 {
@@ -13,6 +15,7 @@ namespace FoodApp.ViewModels
     {
         private readonly IDao<Product> _productDao;
         private ObservableCollection<Product> _products;
+        private ObservableCollection<Product> _allProducts;
         private ObservableCollection<InvoiceItem> _invoiceItems;
 
         private InvoiceItem _selectedInvoiceItem;
@@ -45,6 +48,21 @@ namespace FoodApp.ViewModels
 
         public double TotalAmount => InvoiceItems.Sum(item => item.TotalPrice);
 
+        private string _searchKeyword;
+        public string SearchKeyword
+        {
+            get => _searchKeyword;
+            set
+            {
+                if (SetProperty(ref _searchKeyword, value))
+                {
+                    // Trigger search whenever the keyword changes
+                    SearchProducts();
+                }
+            }
+        }
+
+        public ICommand SearchCommand { get; }
         public MainViewModel()
         {
             //_productDao = new MockDao<Product>();
@@ -52,6 +70,9 @@ namespace FoodApp.ViewModels
             Products = new ObservableCollection<Product>();
             InvoiceItems = new ObservableCollection<InvoiceItem>();
             InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
+
+            SearchCommand = new RelayCommand(_ => SearchProducts());
+
 
             // Kiểm tra kết nối cơ sở dữ liệu
             TestDatabaseConnection();
@@ -63,6 +84,36 @@ namespace FoodApp.ViewModels
                 SurchargeType = "%",
                 DiscountType = "%"
             };
+        }
+
+        //private void SearchProducts()
+        //{
+        //    if (string.IsNullOrEmpty(SearchKeyword))
+        //    {
+        //        // If the search keyword is empty, load all products
+        //        LoadProducts();
+        //    }
+        //    else
+        //    {
+        //        // Filter products based on the search keyword
+        //        var filteredProducts = _products.Where(p => p.Name.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0);
+        //        Products = new ObservableCollection<Product>(filteredProducts);
+        //    }
+        //}
+
+        private void SearchProducts()
+        {
+            if (string.IsNullOrWhiteSpace(SearchKeyword))
+            {
+                Products = new ObservableCollection<Product>(_allProducts);
+            }
+            else
+            {
+                var filteredProducts = _allProducts
+                    .Where(p => p.Name.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+                Products = new ObservableCollection<Product>(filteredProducts);
+            }
         }
 
         private async void TestDatabaseConnection()
@@ -78,10 +129,12 @@ namespace FoodApp.ViewModels
         private async void LoadProducts()
         {
             var products = await _productDao.GetAllAsync();
-            foreach (var product in products)
-            {
-                Products.Add(product);
-            }
+            _allProducts = new ObservableCollection<Product>(products);
+            Products = new ObservableCollection<Product>(_allProducts);
+            //foreach (var product in products)
+            //{
+            //    Products.Add(product);
+            //}
         }
 
         public void AddToInvoice(Product product)
