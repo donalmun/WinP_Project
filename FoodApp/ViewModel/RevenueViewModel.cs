@@ -47,7 +47,7 @@ namespace FoodApp.ViewModel
             Console.WriteLine($"Filtered data count: {filteredData.Count}");
         }
 
-        public float TotalRevenue => RevenueData.Sum(d => d.Quantity * d.Cost);
+        public float TotalRevenue => RevenueData.Sum(d => d.Quantity * d.Unit_Price);
 
     }
 }

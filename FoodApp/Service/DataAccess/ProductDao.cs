@@ -108,11 +108,11 @@ namespace FoodApp.Service.DataAccess
         {
             return new Product
             {
-                Id = (int)reader["Id"],
+                Id = Convert.ToInt32(reader["Id"]),
                 Name = (string)reader["Name"],
                 Description = (string)reader["Description"],
                 Cost = Convert.ToSingle(reader["Cost"]),
-                Category_Id = (int)reader["Category_Id"],
+                Category_Id = Convert.ToInt32(reader["Category_Id"]),
                 Image = (string)reader["Image"],
                 Created_At = (DateTime)reader["Created_At"]
             };
