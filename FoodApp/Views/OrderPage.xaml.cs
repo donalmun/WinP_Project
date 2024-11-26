@@ -263,5 +263,10 @@ namespace FoodApp
             // Navigate to RevenueView
             this.Frame.Navigate(typeof(RevenueView));
         }
+
+        private void GoToManagementPage_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ProductManagementPage)); 
+        }
     }
 }

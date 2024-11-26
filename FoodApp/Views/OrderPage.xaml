@@ -56,8 +56,9 @@
                     <Button Content="Thức uống" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" Click="FilterByCategory_Click" Tag="2" />
                     <Button Content="Món Ăn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10,0" Click="FilterByCategory_Click" Tag="1" />
                 
-                <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
-                Click="GoToRevenueView_Click"/>
+                    <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                    Click="GoToRevenueView_Click"/>
+                    <Button Content="Quản lý" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
                 </StackPanel>
             </StackPanel>
 

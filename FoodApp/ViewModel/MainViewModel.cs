@@ -17,6 +17,13 @@ namespace FoodApp.ViewModels
         private ObservableCollection<Product> _products;
         private ObservableCollection<Product> _allProducts;
         private ObservableCollection<InvoiceItem> _invoiceItems;
+        private Product _selectedProduct;
+
+        public Product SelectedProduct
+        {
+            get => _selectedProduct;
+            set => SetProperty(ref _selectedProduct, value);
+        }
 
         private InvoiceItem _selectedInvoiceItem;
 
@@ -62,6 +69,11 @@ namespace FoodApp.ViewModels
             }
         }
 
+        public ICommand SaveProductCommand { get; }
+        public ICommand AddNewProductCommand { get; }
+        public ICommand EditProductCommand { get; }
+        public ICommand DeleteProductCommand { get; }
+
         public ICommand SearchCommand { get; }
         public MainViewModel()
         {
@@ -72,7 +84,10 @@ namespace FoodApp.ViewModels
             InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(_ => SearchProducts());
-
+            SaveProductCommand = new RelayCommand(_ => SaveProduct());
+            AddNewProductCommand = new RelayCommand(_ => AddNewProduct());
+            EditProductCommand = new RelayCommand(EditProduct);
+            DeleteProductCommand = new RelayCommand(DeleteProduct);
 
             // Kiểm tra kết nối cơ sở dữ liệu
             TestDatabaseConnection();
@@ -100,6 +115,44 @@ namespace FoodApp.ViewModels
         //        Products = new ObservableCollection<Product>(filteredProducts);
         //    }
         //}
+
+        private async void SaveProduct()
+        {
+            if (SelectedProduct != null)
+            {
+                if (SelectedProduct.Id == 0)
+                {
+                    await _productDao.AddAsync(SelectedProduct);
+                }
+                else
+                {
+                    await _productDao.UpdateAsync(SelectedProduct);
+                }
+                LoadProducts();
+            }
+        }
+
+        private void AddNewProduct()
+        {
+            SelectedProduct = new Product();
+        }
+
+        private void EditProduct(object parameter)
+        {
+            if (parameter is Product product)
+            {
+                SelectedProduct = product;
+            }
+        }
+
+        private async void DeleteProduct(object parameter)
+        {
+            if (parameter is Product product)
+            {
+                await _productDao.DeleteAsync(product.Id);
+                LoadProducts();
+            }
+        }
 
         private void SearchProducts()
         {
