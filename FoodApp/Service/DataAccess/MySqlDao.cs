@@ -15,7 +15,7 @@ namespace FoodApp.Service.DataAccess
             _connectionString = """
                 Server=localhost;
                 Port=3307;
-                Database=test;
+                Database=foodapp_db;
                 User=root;
                 Password=admin1234; 
              """;
