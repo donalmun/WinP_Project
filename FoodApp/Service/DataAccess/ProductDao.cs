@@ -37,7 +37,7 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("SELECT * FROM Products WHERE Id = @Id", connection))
+                using (var command = new MySqlCommand("SELECT * FROM Product WHERE Id = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
                     using (var reader = await command.ExecuteReaderAsync())
@@ -57,14 +57,14 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("INSERT INTO Products (Name, Description, Cost, Category_Id, Image, Created_At) VALUES (@Name, @Description, @Cost, @Category_Id, @Image, @Created_At)", connection))
+                using (var command = new MySqlCommand("INSERT INTO Product (Name, Description, Cost, Category_Id, Image) VALUES (@Name, @Description, @Cost, @Category_Id, @Image)", connection))
                 {
                     command.Parameters.AddWithValue("@Name", entity.Name);
                     command.Parameters.AddWithValue("@Description", entity.Description);
                     command.Parameters.AddWithValue("@Cost", entity.Cost);
                     command.Parameters.AddWithValue("@Category_Id", entity.Category_Id);
                     command.Parameters.AddWithValue("@Image", entity.Image);
-                    command.Parameters.AddWithValue("@Created_At", entity.Created_At);
+                    
                     await command.ExecuteNonQueryAsync();
                 }
             }
@@ -76,14 +76,13 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("UPDATE Products SET Name = @Name, Description = @Description, Cost = @Cost, Category_Id = @Category_Id, Image = @Image, Created_At = @Created_At WHERE Id = @Id", connection))
+                using (var command = new MySqlCommand("UPDATE Product SET Name = @Name, Description = @Description, Cost = @Cost, Category_Id = @Category_Id, Image = @Image WHERE Id = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@Name", entity.Name);
                     command.Parameters.AddWithValue("@Description", entity.Description);
                     command.Parameters.AddWithValue("@Cost", entity.Cost);
                     command.Parameters.AddWithValue("@Category_Id", entity.Category_Id);
                     command.Parameters.AddWithValue("@Image", entity.Image);
-                    command.Parameters.AddWithValue("@Created_At", entity.Created_At);
                     command.Parameters.AddWithValue("@Id", entity.Id);
                     await command.ExecuteNonQueryAsync();
                 }
@@ -96,7 +95,7 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("DELETE FROM Products WHERE Id = @Id", connection))
+                using (var command = new MySqlCommand("DELETE FROM Product WHERE Id = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
                     await command.ExecuteNonQueryAsync();
