@@ -11,19 +11,21 @@ namespace FoodApp.ViewModel
     {
         public ObservableCollection<Detail> RevenueData { get; set; }
         private ObservableCollection<Detail> _allData;
+        private readonly DetailDAO _detailDao;
 
         public RevenueViewModel()
         {
+            _detailDao = new DetailDAO();
             _ = LoadDataAsync();
         }
 
         private async Task LoadDataAsync()
         {
-            var mockDao = new MockDao<Detail>();
-            var data = await mockDao.GetAllAsync();
+            var data = await _detailDao.GetAllAsync();
             _allData = new ObservableCollection<Detail>(data);
             RevenueData = new ObservableCollection<Detail>(_allData);
         }
+        
 
         public void FilterRevenueData(DateTimeOffset fromDate, DateTimeOffset toDate)
         {
@@ -47,7 +49,7 @@ namespace FoodApp.ViewModel
             Console.WriteLine($"Filtered data count: {filteredData.Count}");
         }
 
-        public float TotalRevenue => RevenueData.Sum(d => d.Quantity * d.Unit_Price);
+        public float TotalRevenue => RevenueData?.Sum(d => d.Quantity * d.Unit_Price) ?? 0;
 
     }
 }

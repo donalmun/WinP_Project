@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="Pink">
+    <Grid Background="Orange">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -22,6 +22,7 @@
                 <PasswordBox x:Name="PasswordBox" PlaceholderText="Password"  BorderThickness="1"/>
                 <TextBox x:Name="PasswordTextBox" Visibility="Collapsed" BorderBrush="#FF004D40" BorderThickness="1"/>
                 <Button Content="👁" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" Click="TogglePasswordVisibility_Click"/>
+
             </Grid>
             <CheckBox x:Name="RememberMeCheckBox" Content="Remember Me" Margin="0,0,0,20" FontFamily="Segoe UI"/>
             <Button Content="Login" Click="LoginButton_Click" Background="#FF00796B" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
