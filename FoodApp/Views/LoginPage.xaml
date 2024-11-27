@@ -17,8 +17,12 @@
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Background="#FF90A4AE" Padding="20" CornerRadius="10">
             <TextBlock Text="Login" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center" Foreground="#FF004D40"/>
 
-            <TextBox x:Name="UsernameTextBox" PlaceholderText="Username" Margin="0,0,0,20" Background="Black" BorderBrush="#FF004D40" BorderThickness="1"/>
-            <PasswordBox x:Name="PasswordBox" PlaceholderText="Password" Margin="0,0,0,20" Background="Black" BorderBrush="#FF004D40" BorderThickness="1"/>
+            <TextBox x:Name="UsernameTextBox" PlaceholderText="Username" Margin="0,0,0,20" BorderThickness="1"/>
+            <Grid Margin="0,0,0,20">
+                <PasswordBox x:Name="PasswordBox" PlaceholderText="Password"  BorderThickness="1"/>
+                <TextBox x:Name="PasswordTextBox" Visibility="Collapsed" BorderBrush="#FF004D40" BorderThickness="1"/>
+                <Button Content="👁" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" Click="TogglePasswordVisibility_Click"/>
+            </Grid>
             <CheckBox x:Name="RememberMeCheckBox" Content="Remember Me" Margin="0,0,0,20" FontFamily="Segoe UI"/>
             <Button Content="Login" Click="LoginButton_Click" Background="#FF00796B" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
         </StackPanel>
