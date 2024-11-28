@@ -22,6 +22,9 @@ namespace FoodApp.ViewModel
             CustomerVisibility = Visibility.Collapsed;
         }
 
+        // Event to notify the View to display messages
+        public event EventHandler<MessageEventArgs>? ShowMessageRequested;
+
         // Số điện thoại để tìm kiếm
         public string SearchPhone
         {
@@ -81,19 +84,25 @@ namespace FoodApp.ViewModel
 
             if (customer != null)
             {
-                CustomerInfo = $"ID: {customer.Id}\n" +
-                               $"Tên: {customer.Full_Name}\n" +
+                CustomerInfo = $"Tên: {customer.Full_Name}\n" +
                                $"Email: {customer.Email}\n" +
                                $"Địa chỉ: {customer.Address}\n" +
                                $"Điểm thưởng: {customer.Loyalty_Points}\n" +
                                $"Ngày đăng ký: {customer.Created_At?.ToString("dd/MM/yyyy")}";
+
                 CustomerVisibility = Visibility.Visible;
             }
             else
             {
-                CustomerInfo = "Không tìm thấy khách hàng với số điện thoại đã nhập.";
-                CustomerVisibility = Visibility.Collapsed;
+                // Invoke the event with appropriate title and message
+                OnShowMessageRequested("Thông báo", "Số điện thoại không tồn tại.");
             }
+        }
+
+        // Method to raise the ShowMessageRequested event
+        protected virtual void OnShowMessageRequested(string title, string message)
+        {
+            ShowMessageRequested?.Invoke(this, new MessageEventArgs(title, message));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -131,6 +140,19 @@ namespace FoodApp.ViewModel
             {
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+    }
+
+    // Custom EventArgs to hold message information
+    public class MessageEventArgs : EventArgs
+    {
+        public string Title { get; }
+        public string Content { get; }
+
+        public MessageEventArgs(string title, string content)
+        {
+            Title = title;
+            Content = content;
         }
     }
 }

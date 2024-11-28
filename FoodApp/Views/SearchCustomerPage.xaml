@@ -1,16 +1,14 @@
 ﻿<Page
-    x:Class="FoodApp.Views.SearchCustomerPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:FoodApp.ViewModel"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+       x:Class="FoodApp.Views.SearchCustomerPage"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:vm="using:FoodApp.ViewModel"
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       mc:Ignorable="d"
+       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.DataContext>
-        <vm:SearchCustomerViewModel />
-    </Page.DataContext>
+    <!-- Removed Page.DataContext block -->
 
     <Grid Background="Orange">
         <Grid.RowDefinitions>
@@ -30,9 +28,9 @@
             </Grid.ColumnDefinitions>
 
             <Button x:Name="BackButton" Content="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="24"
-                    HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
-                    Style="{StaticResource NavigationBackButtonNormalStyle}"
-                    Click="BackButton_Click" />
+                       HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
+                       Style="{StaticResource NavigationBackButtonNormalStyle}"
+                       Click="BackButton_Click" />
         </Grid>
 
         <!-- Main content -->
@@ -40,7 +38,7 @@
             <TextBlock Text="Tìm kiếm khách hàng" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center" Foreground="#FF004D40"/>
 
             <TextBox PlaceholderText="Nhập số điện thoại" Margin="0,0,0,20" BorderThickness="1"
-                     Text="{Binding SearchPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding SearchPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Content="Tìm kiếm" Command="{Binding SearchCommand}" Background="#FF0288D1" Foreground="White" BorderBrush="Transparent" FontWeight="Bold" Height="40"/>
 
@@ -52,3 +50,4 @@
         </StackPanel>
     </Grid>
 </Page>
+   
