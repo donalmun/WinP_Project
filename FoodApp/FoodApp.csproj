@@ -33,6 +33,7 @@
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
 	
+	
 	<ItemGroup>
 		<PackageReference Include="itext7" Version="8.0.5" />
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
@@ -91,6 +92,9 @@
 		<None Update="Views\LoginPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
+		<None Update="Views\RegisterMembershipPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
 		<Page Update="Views\ProductManagementPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
@@ -100,6 +104,9 @@
 		<Page Update="MainPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Assets\Icons\" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>

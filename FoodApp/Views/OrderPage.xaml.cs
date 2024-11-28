@@ -268,5 +268,10 @@ namespace FoodApp
         {
             this.Frame.Navigate(typeof(ProductManagementPage)); 
         }
+        private void GoToRegisterMembership_Click(object sender, RoutedEventArgs e)
+        {
+            // Navigate to RegisterMembership
+            this.Frame.Navigate(typeof(RegisterMembership));
+        }
     }
 }
