@@ -32,6 +32,7 @@
 		<None Remove="MainPage.xaml" />
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
+
 	
 	
 	<ItemGroup>
@@ -93,6 +94,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\RegisterMembershipPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="Views\SearchCustomerPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<Page Update="Views\ProductManagementPage.xaml">
