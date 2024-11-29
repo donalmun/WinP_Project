@@ -1,4 +1,5 @@
 ﻿// WinP_Project\FoodApp\ViewModel\SearchCustomerViewModel.cs
+using FoodApp.Helper;
 using FoodApp.Service.DataAccess;
 using FoodApp.Views;
 using System;
@@ -21,9 +22,9 @@ namespace FoodApp.ViewModel
         public SearchCustomerViewModel()
         {
             _customerDao = new CustomerDAO();
-            SearchCommand = new RelayCommand(async () => await SearchCustomerAsync(), CanSearch);
-            DeleteCommand = new RelayCommand<XamlRoot>(async (xamlRoot) => await DeleteCustomerAsync(xamlRoot));
-            EditCommand = new RelayCommand<XamlRoot>(async (xamlRoot) => await EditCustomerAsync(xamlRoot));
+            SearchCommand = new AsyncRelayCommand(SearchCustomerAsync, CanSearch);
+            DeleteCommand = new AsyncRelayCommand<XamlRoot>(DeleteCustomerAsync);
+            EditCommand = new AsyncRelayCommand<XamlRoot>(EditCustomerAsync);
 
             CustomerVisibility = Visibility.Collapsed;
         }
@@ -47,7 +48,7 @@ namespace FoodApp.ViewModel
                 {
                     _searchPhone = value;
                     OnPropertyChanged(nameof(SearchPhone));
-                    ((RelayCommand)SearchCommand).RaiseCanExecuteChanged();
+                    ((AsyncRelayCommand)SearchCommand).RaiseCanExecuteChanged();
                 }
             }
         }
@@ -182,73 +183,6 @@ namespace FoodApp.ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        // *** RelayCommand classes ***
-
-        // Non-generic RelayCommand for commands without parameters
-        private class RelayCommand : ICommand
-        {
-            private readonly Func<Task> _executeAsync;
-            private readonly Func<bool> _canExecute;
-
-            public event EventHandler? CanExecuteChanged;
-
-            public RelayCommand(Func<Task> executeAsync, Func<bool>? canExecute = null)
-            {
-                _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-                _canExecute = canExecute ?? (() => true);
-            }
-
-            public bool CanExecute(object? parameter)
-            {
-                return _canExecute();
-            }
-
-            public async void Execute(object? parameter)
-            {
-                await _executeAsync();
-            }
-
-            public void RaiseCanExecuteChanged()
-            {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        // Generic RelayCommand for commands with parameters
-        private class RelayCommand<T> : ICommand
-        {
-            private readonly Func<T, Task> _executeAsync;
-            private readonly Func<T, bool>? _canExecute;
-
-            public event EventHandler? CanExecuteChanged;
-
-            public RelayCommand(Func<T, Task> executeAsync, Func<T, bool>? canExecute = null)
-            {
-                _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-                _canExecute = canExecute;
-            }
-
-            public bool CanExecute(object? parameter)
-            {
-                if (_canExecute == null)
-                    return true;
-                if (parameter is T t)
-                    return _canExecute(t);
-                return false;
-            }
-
-            public async void Execute(object? parameter)
-            {
-                if (parameter is T t)
-                    await _executeAsync(t);
-            }
-
-            public void RaiseCanExecuteChanged()
-            {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
         }
     }
 

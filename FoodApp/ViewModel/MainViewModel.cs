@@ -73,23 +73,23 @@ namespace FoodApp.ViewModels
         public ICommand AddNewProductCommand { get; }
         public ICommand EditProductCommand { get; }
         public ICommand DeleteProductCommand { get; }
-
         public ICommand SearchCommand { get; }
+
         public MainViewModel()
         {
             //_productDao = new MockDao<Product>();
-            _productDao =  new ProductDao();
+            _productDao = new ProductDao();
             Products = new ObservableCollection<Product>();
             InvoiceItems = new ObservableCollection<InvoiceItem>();
             InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
 
-            SearchCommand = new RelayCommand(_ => SearchProducts());
-            SaveProductCommand = new RelayCommand(_ => SaveProduct());
-            AddNewProductCommand = new RelayCommand(_ => AddNewProduct());
-            EditProductCommand = new RelayCommand(EditProduct);
-            DeleteProductCommand = new RelayCommand(DeleteProduct);
+            SearchCommand = new RelayCommand(() => SearchProducts());
+            SaveProductCommand = new RelayCommand(() => SaveProduct());
+            AddNewProductCommand = new RelayCommand(() => AddNewProduct());
+            EditProductCommand = new RelayCommand<Product>(EditProduct);
+            DeleteProductCommand = new RelayCommand<Product>(DeleteProduct);
 
-            // Kiểm tra kết nối cơ sở dữ liệu
+            // Check database connection
             TestDatabaseConnection();
 
             LoadProducts();
