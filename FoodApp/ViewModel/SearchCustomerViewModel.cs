@@ -1,9 +1,11 @@
-﻿using FoodApp.Service.DataAccess;
+﻿// WinP_Project\FoodApp\ViewModel\SearchCustomerViewModel.cs
+using FoodApp.Service.DataAccess;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace FoodApp.ViewModel
 {
@@ -19,9 +21,35 @@ namespace FoodApp.ViewModel
         {
             _customerDao = new CustomerDAO();
             SearchCommand = new RelayCommand(async () => await SearchCustomerAsync(), CanSearch);
+            DeleteCommand = new RelayCommand<XamlRoot>(async (xamlRoot) => await DeleteCustomerAsync(xamlRoot));
+
             CustomerVisibility = Visibility.Collapsed;
         }
 
+        // Added DeleteCommand property
+        public ICommand DeleteCommand { get; }
+
+        private async Task DeleteCustomerAsync(XamlRoot xamlRoot)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Xác nhận xóa",
+                Content = "Bạn có chắc chắn muốn xóa khách hàng này không?",
+                PrimaryButtonText = "Xóa",
+                CloseButtonText = "Hủy",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = xamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                await _customerDao.DeleteCustomerByPhoneAsync(SearchPhone.Trim());
+                CustomerInfo = string.Empty;
+                CustomerVisibility = Visibility.Collapsed;
+                OnShowMessageRequested("Thông báo", "Khách hàng đã được xóa.");
+            }
+        }
         // Event to notify the View to display messages
         public event EventHandler<MessageEventArgs>? ShowMessageRequested;
 
@@ -89,7 +117,6 @@ namespace FoodApp.ViewModel
                                $"Địa chỉ: {customer.Address}\n" +
                                $"Điểm thưởng: {customer.Loyalty_Points}\n" +
                                $"Ngày đăng ký: {customer.Created_At?.ToString("dd/MM/yyyy")}";
-
                 CustomerVisibility = Visibility.Visible;
             }
             else
@@ -112,7 +139,9 @@ namespace FoodApp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // *** Lớp RelayCommand nội bộ được lồng bên trong SearchCustomerViewModel ***
+        // *** Updated RelayCommand classes ***
+
+        // Non-generic RelayCommand for commands without parameters
         private class RelayCommand : ICommand
         {
             private readonly Func<Task> _executeAsync;
@@ -134,6 +163,41 @@ namespace FoodApp.ViewModel
             public async void Execute(object? parameter)
             {
                 await _executeAsync();
+            }
+
+            public void RaiseCanExecuteChanged()
+            {
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        // Generic RelayCommand for commands with parameters
+        private class RelayCommand<T> : ICommand
+        {
+            private readonly Func<T, Task> _executeAsync;
+            private readonly Func<T, bool>? _canExecute;
+
+            public event EventHandler? CanExecuteChanged;
+
+            public RelayCommand(Func<T, Task> executeAsync, Func<T, bool>? canExecute = null)
+            {
+                _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+                _canExecute = canExecute;
+            }
+
+            public bool CanExecute(object? parameter)
+            {
+                if (_canExecute == null)
+                    return true;
+                if (parameter is T t)
+                    return _canExecute(t);
+                return false;
+            }
+
+            public async void Execute(object? parameter)
+            {
+                if (parameter is T t)
+                    await _executeAsync(t);
             }
 
             public void RaiseCanExecuteChanged()

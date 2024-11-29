@@ -50,6 +50,18 @@ namespace FoodApp.Service.DataAccess
 
             return null;
         }
+        public async Task DeleteCustomerByPhoneAsync(string phone)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("DELETE FROM Customer WHERE Phone = @Phone", connection))
+                {
+                    command.Parameters.AddWithValue("@Phone", phone);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
 
         protected override Customer MapToEntity(IDataReader reader)
         {
