@@ -33,6 +33,7 @@
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
 	
+	
 
 	
 	
@@ -90,6 +91,9 @@
 		</None>
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\EditCustomerControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\LoginPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>

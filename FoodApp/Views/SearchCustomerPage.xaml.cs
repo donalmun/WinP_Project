@@ -1,4 +1,5 @@
-﻿using FoodApp.ViewModel;
+﻿// WinP_Project\FoodApp\Views\SearchCustomerPage.xaml.cs
+using FoodApp.ViewModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;

@@ -1,5 +1,6 @@
 ﻿// WinP_Project\FoodApp\ViewModel\SearchCustomerViewModel.cs
 using FoodApp.Service.DataAccess;
+using FoodApp.Views;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -22,13 +23,90 @@ namespace FoodApp.ViewModel
             _customerDao = new CustomerDAO();
             SearchCommand = new RelayCommand(async () => await SearchCustomerAsync(), CanSearch);
             DeleteCommand = new RelayCommand<XamlRoot>(async (xamlRoot) => await DeleteCustomerAsync(xamlRoot));
+            EditCommand = new RelayCommand<XamlRoot>(async (xamlRoot) => await EditCustomerAsync(xamlRoot));
 
             CustomerVisibility = Visibility.Collapsed;
         }
 
-        // Added DeleteCommand property
+        // EditCommand property
+        public ICommand EditCommand { get; }
+
+        // DeleteCommand property
         public ICommand DeleteCommand { get; }
 
+        // SearchCommand property
+        public ICommand SearchCommand { get; }
+
+        // SearchPhone property
+        public string SearchPhone
+        {
+            get => _searchPhone;
+            set
+            {
+                if (_searchPhone != value)
+                {
+                    _searchPhone = value;
+                    OnPropertyChanged(nameof(SearchPhone));
+                    ((RelayCommand)SearchCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        // CustomerInfo property
+        public string CustomerInfo
+        {
+            get => _customerInfo;
+            set
+            {
+                if (_customerInfo != value)
+                {
+                    _customerInfo = value;
+                    OnPropertyChanged(nameof(CustomerInfo));
+                }
+            }
+        }
+
+        // CustomerVisibility property
+        public Visibility CustomerVisibility
+        {
+            get => _customerVisibility;
+            set
+            {
+                if (_customerVisibility != value)
+                {
+                    _customerVisibility = value;
+                    OnPropertyChanged(nameof(CustomerVisibility));
+                }
+            }
+        }
+
+        // CanSearch method
+        private bool CanSearch()
+        {
+            return !string.IsNullOrWhiteSpace(SearchPhone);
+        }
+
+        // SearchCustomerAsync method
+        private async Task SearchCustomerAsync()
+        {
+            var customer = await _customerDao.GetCustomerByPhoneAsync(SearchPhone.Trim());
+
+            if (customer != null)
+            {
+                CustomerInfo = $"Tên: {customer.Full_Name}\n" +
+                               $"Email: {customer.Email}\n" +
+                               $"Địa chỉ: {customer.Address}\n" +
+                               $"Điểm thưởng: {customer.Loyalty_Points}\n" +
+                               $"Ngày đăng ký: {customer.Created_At?.ToString("dd/MM/yyyy")}";
+                CustomerVisibility = Visibility.Visible;
+            }
+            else
+            {
+                OnShowMessageRequested("Thông báo", "Số điện thoại không tồn tại.");
+            }
+        }
+
+        // DeleteCustomerAsync method
         private async Task DeleteCustomerAsync(XamlRoot xamlRoot)
         {
             var dialog = new ContentDialog
@@ -50,81 +128,46 @@ namespace FoodApp.ViewModel
                 OnShowMessageRequested("Thông báo", "Khách hàng đã được xóa.");
             }
         }
-        // Event to notify the View to display messages
-        public event EventHandler<MessageEventArgs>? ShowMessageRequested;
 
-        // Số điện thoại để tìm kiếm
-        public string SearchPhone
-        {
-            get => _searchPhone;
-            set
-            {
-                if (_searchPhone != value)
-                {
-                    _searchPhone = value;
-                    OnPropertyChanged(nameof(SearchPhone));
-                    ((RelayCommand)SearchCommand).RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-        // Thông tin khách hàng
-        public string CustomerInfo
-        {
-            get => _customerInfo;
-            set
-            {
-                if (_customerInfo != value)
-                {
-                    _customerInfo = value;
-                    OnPropertyChanged(nameof(CustomerInfo));
-                }
-            }
-        }
-
-        // Hiển thị hoặc ẩn thông tin khách hàng
-        public Visibility CustomerVisibility
-        {
-            get => _customerVisibility;
-            set
-            {
-                if (_customerVisibility != value)
-                {
-                    _customerVisibility = value;
-                    OnPropertyChanged(nameof(CustomerVisibility));
-                }
-            }
-        }
-
-        // Lệnh tìm kiếm
-        public ICommand SearchCommand { get; }
-
-        // Kiểm tra khả năng thực thi lệnh tìm kiếm
-        private bool CanSearch()
-        {
-            return !string.IsNullOrWhiteSpace(SearchPhone);
-        }
-
-        // Thực hiện tìm kiếm khách hàng
-        private async Task SearchCustomerAsync()
+        // EditCustomerAsync method
+        private async Task EditCustomerAsync(XamlRoot xamlRoot)
         {
             var customer = await _customerDao.GetCustomerByPhoneAsync(SearchPhone.Trim());
-
-            if (customer != null)
+            if (customer == null)
             {
-                CustomerInfo = $"Tên: {customer.Full_Name}\n" +
-                               $"Email: {customer.Email}\n" +
-                               $"Địa chỉ: {customer.Address}\n" +
-                               $"Điểm thưởng: {customer.Loyalty_Points}\n" +
-                               $"Ngày đăng ký: {customer.Created_At?.ToString("dd/MM/yyyy")}";
-                CustomerVisibility = Visibility.Visible;
+                OnShowMessageRequested("Thông báo", "Không tìm thấy khách hàng để chỉnh sửa.");
+                return;
             }
-            else
+
+            var dialog = new ContentDialog
             {
-                // Invoke the event with appropriate title and message
-                OnShowMessageRequested("Thông báo", "Số điện thoại không tồn tại.");
+                Title = "Chỉnh sửa thông tin khách hàng",
+                PrimaryButtonText = "Lưu",
+                CloseButtonText = "Hủy",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = xamlRoot,
+                Content = new EditCustomerControl(customer) // EditCustomerControl UserControl
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                if (dialog.Content is EditCustomerControl editControl)
+                {
+                    var updatedCustomer = editControl.UpdatedCustomer;
+                    await _customerDao.UpdateAsync(updatedCustomer);
+                    CustomerInfo = $"Tên: {updatedCustomer.Full_Name}\n" +
+                                   $"Email: {updatedCustomer.Email}\n" +
+                                   $"Địa chỉ: {updatedCustomer.Address}\n" +
+                                   $"Điểm thưởng: {updatedCustomer.Loyalty_Points}\n" +
+                                   $"Ngày đăng ký: {updatedCustomer.Created_At?.ToString("dd/MM/yyyy")}";
+                    OnShowMessageRequested("Thông báo", "Thông tin khách hàng đã được cập nhật.");
+                }
             }
         }
+
+        // Event to notify the View to display messages
+        public event EventHandler<MessageEventArgs>? ShowMessageRequested;
 
         // Method to raise the ShowMessageRequested event
         protected virtual void OnShowMessageRequested(string title, string message)
@@ -132,14 +175,16 @@ namespace FoodApp.ViewModel
             ShowMessageRequested?.Invoke(this, new MessageEventArgs(title, message));
         }
 
+        // INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // OnPropertyChanged method
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // *** Updated RelayCommand classes ***
+        // *** RelayCommand classes ***
 
         // Non-generic RelayCommand for commands without parameters
         private class RelayCommand : ICommand

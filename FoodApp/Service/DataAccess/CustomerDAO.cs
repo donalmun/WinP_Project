@@ -62,6 +62,25 @@ namespace FoodApp.Service.DataAccess
                 }
             }
         }
+        public override async Task<Customer> UpdateAsync(Customer customer)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("UPDATE Customer SET Full_Name = @FullName, Email = @Email, Address = @Address, Loyalty_Points = @LoyaltyPoints WHERE Phone = @Phone", connection))
+                {
+                    command.Parameters.AddWithValue("@FullName", customer.Full_Name);
+                    command.Parameters.AddWithValue("@Email", customer.Email);
+                    command.Parameters.AddWithValue("@Address", customer.Address);
+                    command.Parameters.AddWithValue("@LoyaltyPoints", customer.Loyalty_Points);
+                    command.Parameters.AddWithValue("@Phone", customer.Phone);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+
+            return customer;
+        }
 
         protected override Customer MapToEntity(IDataReader reader)
         {
