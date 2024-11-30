@@ -268,15 +268,15 @@ namespace FoodApp
         {
             this.Frame.Navigate(typeof(ProductManagementPage)); 
         }
-        private void GoToRegisterMembership_Click(object sender, RoutedEventArgs e)
+        private void GoToMembershipPage_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to RegisterMembership
-            this.Frame.Navigate(typeof(RegisterMembership));
+            this.Frame.Navigate(typeof(CustomerManagementPage));
         }
-        private void GoToSearchMembership_Click(object sender, RoutedEventArgs e)
-        {
-            // Navigate to RegisterMembership
-            this.Frame.Navigate(typeof(SearchCustomerPage));
-        }
+        //private void GoToSearchMembership_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Navigate to RegisterMembership
+        //    this.Frame.Navigate(typeof(SearchCustomerPage));
+        //}
     }
 }

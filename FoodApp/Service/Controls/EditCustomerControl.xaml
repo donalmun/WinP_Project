@@ -1,6 +1,6 @@
-﻿<!-- WinP_Project\FoodApp\Views\EditCustomerControl.xaml -->
+﻿<!-- WinP_Project\FoodApp\Service\Controls\EditCustomerControl.xaml -->
 <UserControl
-    x:Class="FoodApp.Views.EditCustomerControl"
+    x:Class="FoodApp.Service.Controls.EditCustomerControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

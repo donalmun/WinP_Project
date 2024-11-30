@@ -32,6 +32,9 @@
 		<None Remove="MainPage.xaml" />
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
+
+	
+	
 	
 	
 
@@ -92,16 +95,13 @@
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Views\EditCustomerControl.xaml">
+		<None Update="Service\Controls\EditCustomerControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="Views\CustomerManagementPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\LoginPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Views\RegisterMembershipPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Views\SearchCustomerPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<Page Update="Views\ProductManagementPage.xaml">
