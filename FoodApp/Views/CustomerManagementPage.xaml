@@ -127,7 +127,7 @@
 				</Grid>
 			</Border>
 
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
 				<Button Content="Edit" Command="{Binding EditCustomerCommand}"
                         CommandParameter="{Binding SelectedCustomer}"
                         Background="#17A2B8" Foreground="White" CornerRadius="4"/>
