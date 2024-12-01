@@ -64,11 +64,11 @@ namespace FoodApp.Service.DataAccess
                     new Product { Id = 3, Name = "Sinh tố dâu", Description = "Cung cấp dinh dưỡng tươi ngon", Cost = 30000, Image = "/Assets/sinhto.jpg", Category_Id = 3, Created_At = DateTime.Now },
                 };
 
-                _data.AddRange(new List<T>
-                {
-                    (T)(object)new Detail { Id = 1, Quantity = 2, Unit_Price = 30000, Sub_Total = 60000, Order_Id = 1, Product_Id = 1, Created_At = DateTime.Now, Product = products[0], Order = orders[0] },
-                    (T)(object)new Detail { Id = 2, Quantity = 1, Unit_Price = 20000, Sub_Total = 20000, Order_Id = 2, Product_Id = 2, Created_At = DateTime.Now, Product = products[1], Order = orders[1] }
-                });
+                //_data.AddRange(new List<T>
+                //{
+                //    (T)(object)new Detail { Id = 1, Quantity = 2, Unit_Price = 30000, Sub_Total = 60000, Order_Id = 1, Product_Id = 1, Created_At = DateTime.Now, Product = products[0], Order = orders[0] },
+                //    (T)(object)new Detail { Id = 2, Quantity = 1, Unit_Price = 20000, Sub_Total = 20000, Order_Id = 2, Product_Id = 2, Created_At = DateTime.Now, Product = products[1], Order = orders[1] }
+                //});
             }
             else if (typeof(T) == typeof(Category))
             {
@@ -90,8 +90,8 @@ namespace FoodApp.Service.DataAccess
             {
                 _data.AddRange(new List<T>
                 {
-                    (T)(object)new Table { Id = 1, Table_Name = "A1", Capacity = 4, Status = 0, Orders = new List<Order>() },
-                    (T)(object)new Table { Id = 2, Table_Name = "B1", Capacity = 2, Status = 1, Orders = new List<Order>() }
+                    (T)(object)new Table { Id = 1, Table_Name = "A1", Capacity = 4, Status = 0 },
+                    (T)(object)new Table { Id = 2, Table_Name = "B1", Capacity = 2, Status = 1 }
                 });
             }
         }

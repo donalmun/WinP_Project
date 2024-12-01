@@ -31,50 +31,38 @@ namespace FoodApp
         {
             if (e.ClickedItem is Product product)
             {
-                ViewModel.AddToInvoice(product);
+                ViewModel.AddToDetail(product);
             }
-        }
-
-        private void CheckoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Handle checkout button click event here
-            DisplayCheckoutMessage();
-        }
-
-        private void DisplayCheckoutMessage()
-        {
-            var dialog = new ContentDialog
-            {
-                Title = "Thanh toán",
-                Content = "Bạn đã nhấn nút thanh toán.",
-                CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot // Set the XamlRoot property
-            };
-
-            _ = dialog.ShowAsync();
-        }
-
-        private void GoToLoginPage_Click(object sender, RoutedEventArgs e)
-        {
-            // Handle login page navigation here
         }
 
         private void DecreaseQuantity_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is InvoiceItem item)
+            if (sender is Button button && button.Tag is Detail detail)
             {
-                if (item.Quantity > 1)
+                if (detail.Quantity > 1)
                 {
-                    item.Quantity--;
+                    detail.Quantity--;
+                }
+                else
+                {
+                    ViewModel.RemoveFromDetail(detail);
                 }
             }
         }
 
         private void IncreaseQuantity_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is InvoiceItem item)
+            if (sender is Button button && button.Tag is Detail detail)
             {
-                item.Quantity++;
+                detail.Quantity++;
+            }
+        }
+
+        private void RemoveDetail_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Detail detail)
+            {
+                ViewModel.RemoveFromDetail(detail);
             }
         }
 
@@ -84,13 +72,12 @@ namespace FoodApp
             DiscountPopup.IsOpen = true;
 
             Button button = sender as Button;
-            ViewModel.SelectedInvoiceItem = button?.Tag as InvoiceItem;
+            ViewModel.SelectedDetailItem = button?.Tag as Detail;
         }
 
-        private void ShowDiscountPopup()
+        private void SaveOrder_Click(object sender, RoutedEventArgs e)
         {
-            PopupContainer.Visibility = Visibility.Visible;
-            DiscountPopup.IsOpen = true;
+            ViewModel.SaveOrderCommand.Execute(null);
         }
 
         private void DiscountPopup_Opened(object sender, object e)
@@ -103,12 +90,12 @@ namespace FoodApp
             PopupContainer.Visibility = Visibility.Collapsed;
         }
 
-        private async void GenerateInvoiceFile_Click(object sender, RoutedEventArgs e)
+        private async void GenerateDetailFile_Click(object sender, RoutedEventArgs e)
         {
-            var invoiceItems = (this.DataContext as MainViewModel)?.InvoiceItems;
+            var invoiceItems = (this.DataContext as MainViewModel)?.Details; 
             if (invoiceItems == null) return;
 
-            decimal totalInvoice = (decimal)invoiceItems.Sum(item => (double)item.TotalPrice);
+            decimal totalInvoice = (decimal)invoiceItems.Sum(item => (double)item.Sub_Total);
 
             var savePicker = new FileSavePicker
             {
@@ -148,19 +135,15 @@ namespace FoodApp
                         .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
                     document.Add(dateParagraph);
 
-                    var table = new iText.Layout.Element.Table(5).UseAllAvailableWidth();
-                    table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("STT").SetFont(font)));
+                    var table = new iText.Layout.Element.Table(4).UseAllAvailableWidth();
                     table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Tên món").SetFont(font)));
                     table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Số lượng").SetFont(font)));
                     table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Đơn giá").SetFont(font)));
                     table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Thành tiền").SetFont(font)));
 
-                    int index = 1;
                     var cultureInfo = new CultureInfo("vi-VN");
                     foreach (var item in invoiceItems)
                     {
-                        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(index.ToString()).SetFont(font)));
-
                         var productParagraph = new iText.Layout.Element.Paragraph(item.Product.Name)
                             .SetFont(font)
                             .SetFontSize(12)
@@ -192,12 +175,8 @@ namespace FoodApp
 
                         table.AddCell(new iText.Layout.Element.Cell().Add(productParagraph));
                         table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(item.Quantity.ToString()).SetFont(font)));
-
-                        // Corrected line with VND formatting
-                        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(item.UnitPrice.ToString("C0", cultureInfo)).SetFont(font)));
-
-                        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(item.TotalPrice.ToString("C0", cultureInfo)).SetFont(font)));
-                        index++;
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(item.Unit_Price.ToString("C0", cultureInfo)).SetFont(font)));
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(item.Sub_Total.ToString("C0", cultureInfo)).SetFont(font)));
                     }
 
                     document.Add(table);
@@ -216,15 +195,14 @@ namespace FoodApp
         }
 
 
-
         private void DiscountCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 // Update DiscountType based on selection
-                if (ViewModel.SelectedInvoiceItem != null)
+                if (ViewModel.SelectedDetailItem != null)
                 {
-                    ViewModel.SelectedInvoiceItem.DiscountType = selectedItem.Tag.ToString();
+                    ViewModel.SelectedDetailItem.DiscountType = selectedItem.Tag.ToString();
                 }
             }
         }
@@ -234,20 +212,32 @@ namespace FoodApp
             if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 // Update SurchargeType based on selection
-                if (ViewModel.SelectedInvoiceItem != null)
+                if (ViewModel.SelectedDetailItem != null)
                 {
-                    ViewModel.SelectedInvoiceItem.SurchargeType = selectedItem.Tag.ToString();
+                    ViewModel.SelectedDetailItem.SurchargeType = selectedItem.Tag.ToString();
                 }
             }
         }
 
-        //private void RemoveItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (sender is Button button && button.Tag is InvoiceItem item)
-        //    {
-        //        ViewModel.RemoveFromInvoice(item.Product);
-        //    }
-        //}
+        private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                var viewModel = DataContext as MainViewModel;
+                await viewModel.SearchCustomersAsync(sender.Text);
+            }
+        }
+
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            var selectedCustomer = args.SelectedItem as Customer;
+            var viewModel = DataContext as MainViewModel;
+            if (selectedCustomer != null)
+            {
+                viewModel.PhoneNumber = selectedCustomer.Phone;
+                viewModel.SelectedCustomer = selectedCustomer;
+            }
+        }
 
         private async void FilterByCategory_Click(object sender, RoutedEventArgs e)
         {
@@ -273,10 +263,5 @@ namespace FoodApp
             // Navigate to RegisterMembership
             this.Frame.Navigate(typeof(CustomerManagementPage));
         }
-        //private void GoToSearchMembership_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Navigate to RegisterMembership
-        //    this.Frame.Navigate(typeof(SearchCustomerPage));
-        //}
     }
 }

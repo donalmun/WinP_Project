@@ -13,11 +13,17 @@ namespace FoodApp.ViewModels
 {
     public class MainViewModel : BindableBase
     {
+        private readonly OrderDAO _orderDao;
         private readonly IDao<Product> _productDao;
+        private readonly CustomerDAO _customerDao;
+        private readonly TableDAO _tableDao;
         private ObservableCollection<Product> _products;
         private ObservableCollection<Product> _allProducts;
-        private ObservableCollection<InvoiceItem> _invoiceItems;
+        private ObservableCollection<Detail> _details;
+        private ObservableCollection<Table> _tables;
         private Product _selectedProduct;
+        private Table _selectedTable;
+        private Customer _selectedCustomer;
 
         public Product SelectedProduct
         {
@@ -25,35 +31,59 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _selectedProduct, value);
         }
 
-        private InvoiceItem _selectedInvoiceItem;
-
-        public InvoiceItem SelectedInvoiceItem
+        public ObservableCollection<Table> Tables
         {
-            get => _selectedInvoiceItem;
-            set => SetProperty(ref _selectedInvoiceItem, value);
+            get => _tables;
+            set => SetProperty(ref _tables, value);
         }
+
+        public Table SelectedTable
+        {
+            get => _selectedTable;
+            set => SetProperty(ref _selectedTable, value);
+        }
+
+        public Customer SelectedCustomer
+        {
+            get => _selectedCustomer;
+            set => SetProperty(ref _selectedCustomer, value);
+        }
+
+        private ObservableCollection<Customer> _suggestedCustomers;
+        public ObservableCollection<Customer> SuggestedCustomers
+        {
+            get => _suggestedCustomers;
+            set => SetProperty(ref _suggestedCustomers, value);
+        }
+
+        private Detail _selectedDetailItem;
+
+        public Detail SelectedDetailItem
+        {
+            get => _selectedDetailItem;
+            set => SetProperty(ref _selectedDetailItem, value);
+        }
+
         public ObservableCollection<Product> Products
         {
             get => _products;
             set => SetProperty(ref _products, value);
-
         }
 
-        public ObservableCollection<InvoiceItem> InvoiceItems
+        public ObservableCollection<Detail> Details
         {
-            get => _invoiceItems;
+            get => _details;
             set
             {
-                if (SetProperty(ref _invoiceItems, value))
+                if (SetProperty(ref _details, value))
                 {
                     OnPropertyChanged(nameof(TotalAmount));
-                    UpdateInvoiceItemIndexes();
-                    SubscribeToInvoiceItemChanges();
+                    SubscribeToDetailItemChanges();
                 }
             }
         }
 
-        public double TotalAmount => InvoiceItems.Sum(item => item.TotalPrice);
+        public double TotalAmount => Details.Sum(item => item.Sub_Total);
 
         private string _searchKeyword;
         public string SearchKeyword
@@ -69,52 +99,113 @@ namespace FoodApp.ViewModels
             }
         }
 
+        private string _phoneNumber;
+        public string PhoneNumber
+        {
+            get => _phoneNumber;
+            set => SetProperty(ref _phoneNumber, value);
+        }
+
         public ICommand SaveProductCommand { get; }
         public ICommand AddNewProductCommand { get; }
         public ICommand EditProductCommand { get; }
         public ICommand DeleteProductCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand SaveOrderCommand { get; }
+        public ICommand SearchCustomerCommand { get; }
 
         public MainViewModel()
         {
-            //_productDao = new MockDao<Product>();
+            _orderDao = new OrderDAO();
             _productDao = new ProductDao();
+            _customerDao = new CustomerDAO();
+            _tableDao = new TableDAO();
             Products = new ObservableCollection<Product>();
-            InvoiceItems = new ObservableCollection<InvoiceItem>();
-            InvoiceItems.CollectionChanged += InvoiceItems_CollectionChanged;
+            Details = new ObservableCollection<Detail>();
+            Tables = new ObservableCollection<Table>();
+            Details.CollectionChanged += DetailItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(() => SearchProducts());
             SaveProductCommand = new RelayCommand(() => SaveProduct());
             AddNewProductCommand = new RelayCommand(() => AddNewProduct());
             EditProductCommand = new RelayCommand<Product>(EditProduct);
             DeleteProductCommand = new RelayCommand<Product>(DeleteProduct);
+            SaveOrderCommand = new RelayCommand(async () => await SaveOrderAsync());
+            SuggestedCustomers = new ObservableCollection<Customer>();
 
             // Check database connection
             TestDatabaseConnection();
 
             LoadProducts();
+            LoadTables();
 
-            SelectedInvoiceItem = new InvoiceItem
+            SelectedDetailItem = new Detail
             {
                 SurchargeType = "%",
                 DiscountType = "%"
             };
         }
 
-        //private void SearchProducts()
-        //{
-        //    if (string.IsNullOrEmpty(SearchKeyword))
-        //    {
-        //        // If the search keyword is empty, load all products
-        //        LoadProducts();
-        //    }
-        //    else
-        //    {
-        //        // Filter products based on the search keyword
-        //        var filteredProducts = _products.Where(p => p.Name.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0);
-        //        Products = new ObservableCollection<Product>(filteredProducts);
-        //    }
-        //}
+        private async void LoadTables()
+        {
+            try
+            {
+                var tables = await _tableDao.GetAllAsync();
+                Tables = new ObservableCollection<Table>(tables);
+                Debug.WriteLine($"Loaded {Tables.Count} tables.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading tables: {ex.Message}");
+            }
+        }
+
+        private async Task SaveOrderAsync()
+        {
+            var order = new Order
+            {
+                Order_Date = DateTime.Now,
+                Total_Amount = (float)TotalAmount,
+                Status = 1,
+                Customer_Id = SelectedCustomer?.Id,
+                Table_Id = SelectedTable?.Id,
+                Details = Details.ToList()
+            };
+
+            try
+            {
+                await _orderDao.AddAsync(order);
+                DisplayMessage("Order and details saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                DisplayMessage($"An error occurred while saving the order: {ex.Message}");
+            }
+        }
+
+        public async Task SearchCustomersAsync(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                var filteredCustomers = await _customerDao.SearchCustomersByPhoneAsync(query);
+
+                SuggestedCustomers.Clear();
+                foreach (var customer in filteredCustomers)
+                {
+                    SuggestedCustomers.Add(customer);
+                }
+            }
+            else
+            {
+                SuggestedCustomers.Clear();
+            }
+        }
+
+        private void DisplayMessage(string message)
+        {
+            // Implement a method to display messages to the user
+            Debug.WriteLine(message);
+        }
 
         private async void SaveProduct()
         {
@@ -174,7 +265,7 @@ namespace FoodApp.ViewModels
             bool isConnected = await _productDao.TestConnectionAsync();
             if (!isConnected)
             {
-                // Xử lý khi kết nối thất bại (ví dụ: hiển thị thông báo lỗi cho người dùng)
+                // Handle connection failure (e.g., display an error message to the user)
                 Debug.WriteLine("Failed to connect to the database.");
             }
         }
@@ -184,69 +275,62 @@ namespace FoodApp.ViewModels
             var products = await _productDao.GetAllAsync();
             _allProducts = new ObservableCollection<Product>(products);
             Products = new ObservableCollection<Product>(_allProducts);
-            //foreach (var product in products)
-            //{
-            //    Products.Add(product);
-            //}
         }
 
-        public void AddToInvoice(Product product)
+        public void AddToDetail(Product product)
         {
-            var existingItem = InvoiceItems.FirstOrDefault(i => i.Product == product);
+            var existingItem = Details.FirstOrDefault(i => i.Product_Id == product.Id);
             if (existingItem != null)
             {
                 existingItem.Quantity++;
+                existingItem.Sub_Total = existingItem.Quantity * existingItem.Unit_Price;
             }
             else
             {
-                var newItem = new InvoiceItem { Product = product, Quantity = 1 };
-                newItem.PropertyChanged += InvoiceItem_PropertyChanged;
-                InvoiceItems.Add(newItem);
+                var newItem = new Detail
+                {
+                    Product_Id = product.Id,
+                    Product = product,
+                    Quantity = 1,
+                    Unit_Price = product.Cost,
+                    Sub_Total = product.Cost,
+                    DiscountType = "%",
+                    SurchargeType = "%",
+                };
+                newItem.PropertyChanged += DetailItem_PropertyChanged;
+                Details.Add(newItem);
             }
             OnPropertyChanged(nameof(TotalAmount));
-            UpdateInvoiceItemIndexes();
         }
 
-        private void InvoiceItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void RemoveFromDetail(Detail detail)
         {
-            OnPropertyChanged(nameof(TotalAmount));
-            UpdateInvoiceItemIndexes();
-            SubscribeToInvoiceItemChanges();
-        }
-
-        public void RemoveFromInvoice(Product product)
-        {
-            var itemToRemove = InvoiceItems.FirstOrDefault(i => i.Product == product);
-            if (itemToRemove != null)
+            if (Details.Contains(detail))
             {
-                itemToRemove.PropertyChanged -= InvoiceItem_PropertyChanged;
-                InvoiceItems.Remove(itemToRemove);
+                detail.PropertyChanged -= DetailItem_PropertyChanged;
+                Details.Remove(detail);
                 OnPropertyChanged(nameof(TotalAmount));
-                UpdateInvoiceItemIndexes();
             }
         }
 
-
-        private void UpdateInvoiceItemIndexes()
+        private void DetailItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            for (int i = 0; i < InvoiceItems.Count; i++)
+            OnPropertyChanged(nameof(TotalAmount));
+            SubscribeToDetailItemChanges();
+        }
+
+        private void SubscribeToDetailItemChanges()
+        {
+            foreach (var item in Details)
             {
-                InvoiceItems[i].Index = i + 1;
+                item.PropertyChanged -= DetailItem_PropertyChanged;
+                item.PropertyChanged += DetailItem_PropertyChanged;
             }
         }
 
-        private void SubscribeToInvoiceItemChanges()
+        private void DetailItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            foreach (var item in InvoiceItems)
-            {
-                item.PropertyChanged -= InvoiceItem_PropertyChanged;
-                item.PropertyChanged += InvoiceItem_PropertyChanged;
-            }
-        }
-
-        private void InvoiceItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(InvoiceItem.TotalPrice))
+            if (e.PropertyName == nameof(Detail.Sub_Total))
             {
                 OnPropertyChanged(nameof(TotalAmount));
             }
@@ -269,6 +353,5 @@ namespace FoodApp.ViewModels
                 Products.Add(product);
             }
         }
-
     }
 }

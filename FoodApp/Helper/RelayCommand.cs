@@ -1,4 +1,5 @@
-// WinP_Project\FoodApp\Helper\RelayCommand.cs
+#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -146,3 +147,4 @@ namespace FoodApp.Helper
         public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }
+#nullable disable
