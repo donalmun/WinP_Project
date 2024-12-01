@@ -15,7 +15,17 @@ public class Customer : INotifyPropertyChanged
     public string Phone { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
-    public int Loyalty_Points { get; set; }
+
+    private int _loyaltyPoints;
+    public int Loyalty_Points
+    {
+        get => _loyaltyPoints;
+        set
+        {
+            _loyaltyPoints = value;
+            OnPropertyChanged(nameof(Loyalty_Points));
+        }
+    }
     public DateTime? Created_At { get; set; }
 
     public ICollection<Order> Orders { get; set; }
@@ -26,4 +36,6 @@ public class Customer : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

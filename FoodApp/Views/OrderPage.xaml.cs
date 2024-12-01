@@ -17,13 +17,12 @@ namespace FoodApp
 {
     public partial class OrderPage : global::Microsoft.UI.Xaml.Controls.Page
     {
-        public MainViewModel ViewModel { get; }
+        public OrderViewModel ViewModel { get; }
 
-        // Constructor
         public OrderPage()
         {
             this.InitializeComponent();
-            ViewModel = new MainViewModel();
+            ViewModel = new OrderViewModel();
             this.DataContext = ViewModel;
         }
 
@@ -92,7 +91,7 @@ namespace FoodApp
 
         private async void GenerateDetailFile_Click(object sender, RoutedEventArgs e)
         {
-            var invoiceItems = (this.DataContext as MainViewModel)?.Details; 
+            var invoiceItems = (this.DataContext as OrderViewModel)?.Details; 
             if (invoiceItems == null) return;
 
             decimal totalInvoice = (decimal)invoiceItems.Sum(item => (double)item.Sub_Total);
@@ -223,7 +222,7 @@ namespace FoodApp
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                var viewModel = DataContext as MainViewModel;
+                var viewModel = DataContext as OrderViewModel;
                 await viewModel.SearchCustomersAsync(sender.Text);
             }
         }
@@ -231,7 +230,7 @@ namespace FoodApp
         private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
             var selectedCustomer = args.SelectedItem as Customer;
-            var viewModel = DataContext as MainViewModel;
+            var viewModel = DataContext as OrderViewModel;
             if (selectedCustomer != null)
             {
                 viewModel.PhoneNumber = selectedCustomer.Phone;

@@ -63,7 +63,7 @@ namespace FoodApp.Service.DataAccess
                 }
             }
         }
-        public override async Task<Customer> UpdateAsync(Customer customer)
+        public async Task<Customer> UpdateAsyncByPhoneAsync(Customer customer)
         {
             using (var connection = GetConnection())
             {
@@ -82,6 +82,28 @@ namespace FoodApp.Service.DataAccess
 
             return customer;
         }
+
+        // CustomerDAO.cs
+        public override async Task<Customer> UpdateAsync(Customer customer)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("UPDATE Customer SET Full_Name = @FullName, Email = @Email, Address = @Address, Loyalty_Points = @LoyaltyPoints WHERE Id = @Id", connection))
+                {
+                    command.Parameters.AddWithValue("@FullName", customer.Full_Name);
+                    command.Parameters.AddWithValue("@Email", customer.Email);
+                    command.Parameters.AddWithValue("@Address", customer.Address);
+                    command.Parameters.AddWithValue("@Loyalty_Points", customer.Loyalty_Points);
+                    command.Parameters.AddWithValue("@Id", customer.Id);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+
+            return customer;
+        }
+
 
         protected override Customer MapToEntity(IDataReader reader)
         {

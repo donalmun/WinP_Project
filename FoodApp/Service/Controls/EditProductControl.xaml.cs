@@ -1,17 +1,42 @@
-﻿// EditProductControl.xaml.cs
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
+using System;
+using FoodApp.Service.DataAccess;
+using System.ComponentModel;
 
 namespace FoodApp.Service.Controls
 {
     public sealed partial class EditProductControl : UserControl
     {
-        public Product UpdatedProduct { get; private set; }
+        public event EventHandler<bool> ValidityChanged;
 
         public EditProductControl(Product product)
         {
-            this.InitializeComponent();
-            this.DataContext = product;
-            UpdatedProduct = product;
+            InitializeComponent();
+            DataContext = product;
+
+            // Subscribe to property changes
+            if (product != null)
+            {
+                product.PropertyChanged += Product_PropertyChanged;
+                CheckValidity();
+            }
+        }
+
+        private void Product_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CheckValidity();
+        }
+
+        private void CheckValidity()
+        {
+            var product = DataContext as Product;
+            bool isValid = product != null &&
+                !string.IsNullOrWhiteSpace(product.Name) &&
+                product.Cost > 0 &&
+                !string.IsNullOrWhiteSpace(product.Image) &&
+                product.Category_Id > 0;
+
+            ValidityChanged?.Invoke(this, isValid);
         }
     }
 }

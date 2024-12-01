@@ -145,14 +145,23 @@ namespace FoodApp.ViewModels
         private async Task AddProductAsync()
         {
             var newProduct = new Product();
+            var editControl = new EditProductControl(newProduct);
+
             var addDialog = new ContentDialog
             {
                 Title = "Add New Product",
-                Content = new EditProductControl(newProduct),
+                Content = editControl,
                 PrimaryButtonText = "Add",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
+                IsPrimaryButtonEnabled = false // Disable the Add button initially
+            };
+
+            // Subscribe to the ValidityChanged event
+            editControl.ValidityChanged += (s, isValid) =>
+            {
+                addDialog.IsPrimaryButtonEnabled = isValid;
             };
 
             var result = await addDialog.ShowAsync();
@@ -164,6 +173,7 @@ namespace FoodApp.ViewModels
                 await ShowMessageAsync("Success", "Product added successfully.");
             }
         }
+
 
         private async Task ShowMessageAsync(string title, string message)
         {

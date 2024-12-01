@@ -1,29 +1,36 @@
-﻿using System.Collections.ObjectModel;
-using FoodApp.Service.DataAccess;
-using FoodApp.Helper;
-using System.Linq;
-using System.Collections.Specialized;
+// OrderViewModel.cs
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System;
+using FoodApp.Helper;
+using FoodApp.Service.DataAccess;
+using System.Linq;
 
 namespace FoodApp.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public class OrderViewModel : BindableBase
     {
         private readonly OrderDAO _orderDao;
         private readonly IDao<Product> _productDao;
         private readonly CustomerDAO _customerDao;
         private readonly TableDAO _tableDao;
+
         private ObservableCollection<Product> _products;
         private ObservableCollection<Product> _allProducts;
         private ObservableCollection<Detail> _details;
         private ObservableCollection<Table> _tables;
+
         private Product _selectedProduct;
         private Table _selectedTable;
         private Customer _selectedCustomer;
+        private Detail _selectedDetailItem;
+
+        private string _searchKeyword;
+        private string _phoneNumber;
+
+        private ObservableCollection<Customer> _suggestedCustomers;
 
         public Product SelectedProduct
         {
@@ -37,10 +44,21 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _tables, value);
         }
 
+        // OrderViewModel.cs
         public Table SelectedTable
         {
             get => _selectedTable;
-            set => SetProperty(ref _selectedTable, value);
+            set
+            {
+                if (SetProperty(ref _selectedTable, value))
+                {
+                    if (_selectedTable != null)
+                    {
+                        // Set table status to 'in use' (assuming 1 represents 'in use')
+                        UpdateTableStatus(_selectedTable, 1);
+                    }
+                }
+            }
         }
 
         public Customer SelectedCustomer
@@ -49,14 +67,11 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _selectedCustomer, value);
         }
 
-        private ObservableCollection<Customer> _suggestedCustomers;
         public ObservableCollection<Customer> SuggestedCustomers
         {
             get => _suggestedCustomers;
             set => SetProperty(ref _suggestedCustomers, value);
         }
-
-        private Detail _selectedDetailItem;
 
         public Detail SelectedDetailItem
         {
@@ -85,7 +100,6 @@ namespace FoodApp.ViewModels
 
         public double TotalAmount => Details.Sum(item => item.Sub_Total);
 
-        private string _searchKeyword;
         public string SearchKeyword
         {
             get => _searchKeyword;
@@ -99,37 +113,28 @@ namespace FoodApp.ViewModels
             }
         }
 
-        private string _phoneNumber;
         public string PhoneNumber
         {
             get => _phoneNumber;
             set => SetProperty(ref _phoneNumber, value);
         }
 
-        public ICommand SaveProductCommand { get; }
-        public ICommand AddNewProductCommand { get; }
-        public ICommand EditProductCommand { get; }
-        public ICommand DeleteProductCommand { get; }
-        public ICommand SearchCommand { get; }
         public ICommand SaveOrderCommand { get; }
-        public ICommand SearchCustomerCommand { get; }
+        public ICommand SearchCommand { get; }
 
-        public MainViewModel()
+        public OrderViewModel()
         {
             _orderDao = new OrderDAO();
             _productDao = new ProductDao();
             _customerDao = new CustomerDAO();
             _tableDao = new TableDAO();
+
             Products = new ObservableCollection<Product>();
             Details = new ObservableCollection<Detail>();
             Tables = new ObservableCollection<Table>();
             Details.CollectionChanged += DetailItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(() => SearchProducts());
-            SaveProductCommand = new RelayCommand(() => SaveProduct());
-            AddNewProductCommand = new RelayCommand(() => AddNewProduct());
-            EditProductCommand = new RelayCommand<Product>(EditProduct);
-            DeleteProductCommand = new RelayCommand<Product>(DeleteProduct);
             SaveOrderCommand = new RelayCommand(async () => await SaveOrderAsync());
             SuggestedCustomers = new ObservableCollection<Customer>();
 
@@ -152,121 +157,10 @@ namespace FoodApp.ViewModels
             {
                 var tables = await _tableDao.GetAllAsync();
                 Tables = new ObservableCollection<Table>(tables);
-                Debug.WriteLine($"Loaded {Tables.Count} tables.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error loading tables: {ex.Message}");
-            }
-        }
-
-        private async Task SaveOrderAsync()
-        {
-            var order = new Order
-            {
-                Order_Date = DateTime.Now,
-                Total_Amount = (float)TotalAmount,
-                Status = 1,
-                Customer_Id = SelectedCustomer?.Id,
-                Table_Id = SelectedTable?.Id,
-                Details = Details.ToList()
-            };
-
-            try
-            {
-                await _orderDao.AddAsync(order);
-                DisplayMessage("Order and details saved successfully.");
-            }
-            catch (Exception ex)
-            {
-                DisplayMessage($"An error occurred while saving the order: {ex.Message}");
-            }
-        }
-
-        public async Task SearchCustomersAsync(string query)
-        {
-            if (!string.IsNullOrEmpty(query))
-            {
-                var filteredCustomers = await _customerDao.SearchCustomersByPhoneAsync(query);
-
-                SuggestedCustomers.Clear();
-                foreach (var customer in filteredCustomers)
-                {
-                    SuggestedCustomers.Add(customer);
-                }
-            }
-            else
-            {
-                SuggestedCustomers.Clear();
-            }
-        }
-
-        private void DisplayMessage(string message)
-        {
-            // Implement a method to display messages to the user
-            Debug.WriteLine(message);
-        }
-
-        private async void SaveProduct()
-        {
-            if (SelectedProduct != null)
-            {
-                if (SelectedProduct.Id == 0)
-                {
-                    await _productDao.AddAsync(SelectedProduct);
-                }
-                else
-                {
-                    await _productDao.UpdateAsync(SelectedProduct);
-                }
-                LoadProducts();
-            }
-        }
-
-        private void AddNewProduct()
-        {
-            SelectedProduct = new Product();
-        }
-
-        private void EditProduct(object parameter)
-        {
-            if (parameter is Product product)
-            {
-                SelectedProduct = product;
-            }
-        }
-
-        private async void DeleteProduct(object parameter)
-        {
-            if (parameter is Product product)
-            {
-                await _productDao.DeleteAsync(product.Id);
-                LoadProducts();
-            }
-        }
-
-        private void SearchProducts()
-        {
-            if (string.IsNullOrWhiteSpace(SearchKeyword))
-            {
-                Products = new ObservableCollection<Product>(_allProducts);
-            }
-            else
-            {
-                var filteredProducts = _allProducts
-                    .Where(p => p.Name.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-                Products = new ObservableCollection<Product>(filteredProducts);
-            }
-        }
-
-        private async void TestDatabaseConnection()
-        {
-            bool isConnected = await _productDao.TestConnectionAsync();
-            if (!isConnected)
-            {
-                // Handle connection failure (e.g., display an error message to the user)
-                Debug.WriteLine("Failed to connect to the database.");
+                // Handle exceptions
             }
         }
 
@@ -275,6 +169,15 @@ namespace FoodApp.ViewModels
             var products = await _productDao.GetAllAsync();
             _allProducts = new ObservableCollection<Product>(products);
             Products = new ObservableCollection<Product>(_allProducts);
+        }
+
+        private async void TestDatabaseConnection()
+        {
+            bool isConnected = await _productDao.TestConnectionAsync();
+            if (!isConnected)
+            {
+                // Handle connection failure
+            }
         }
 
         public void AddToDetail(Product product)
@@ -313,7 +216,7 @@ namespace FoodApp.ViewModels
             }
         }
 
-        private void DetailItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void DetailItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(TotalAmount));
             SubscribeToDetailItemChanges();
@@ -338,20 +241,97 @@ namespace FoodApp.ViewModels
 
         public async Task FilterProductsByCategoryAsync(int categoryId)
         {
-            // Clear the current products
             Products.Clear();
-
-            // Load all products from the data access layer
             var allProducts = await _productDao.GetAllAsync();
-
-            // Filter products by the specified category ID
             var filteredProducts = allProducts.Where(p => p.Category_Id == categoryId);
-
-            // Add the filtered products to the Products collection
             foreach (var product in filteredProducts)
             {
                 Products.Add(product);
             }
+        }
+
+        private void SearchProducts()
+        {
+            if (string.IsNullOrWhiteSpace(SearchKeyword))
+            {
+                Products = new ObservableCollection<Product>(_allProducts);
+            }
+            else
+            {
+                var filteredProducts = _allProducts
+                    .Where(p => p.Name.IndexOf(SearchKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+                Products = new ObservableCollection<Product>(filteredProducts);
+            }
+        }
+
+        public async Task SearchCustomersAsync(string query)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                var filteredCustomers = await _customerDao.SearchCustomersByPhoneAsync(query);
+
+                SuggestedCustomers.Clear();
+                foreach (var customer in filteredCustomers)
+                {
+                    SuggestedCustomers.Add(customer);
+                }
+            }
+            else
+            {
+                SuggestedCustomers.Clear();
+            }
+        }
+
+        // OrderViewModel.cs
+        private async Task SaveOrderAsync()
+        {
+            var order = new Order
+            {
+                Order_Date = DateTime.Now,
+                Total_Amount = (float)TotalAmount,
+                Status = 1,
+                Customer_Id = SelectedCustomer?.Id,
+                Table_Id = SelectedTable?.Id,
+                Details = Details.ToList()
+            };
+
+            try
+            {
+                await _orderDao.AddAsync(order);
+
+                if (SelectedCustomer != null)
+                {
+                    // Increase customer's loyalty points based on the total amount
+                    await UpdateCustomerLoyaltyPointsAsync(SelectedCustomer, TotalAmount);
+                }
+
+                if (SelectedTable != null)
+                {
+                    // Reset table status to 'empty' (assuming 0 represents 'empty')
+                    UpdateTableStatus(SelectedTable, 0);
+                }
+
+                // Optionally, clear the form or display a success message
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+            }
+        }
+        
+        private async void UpdateTableStatus(Table table, byte status)
+        {
+            table.Status = status; // 1 for 'in use', 0 for 'empty'
+            await _tableDao.UpdateAsync(table);
+        }
+        
+        private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
+        {
+            // Example: 1 point for every 10 units of currency spent
+            int pointsToAdd = (int)(amount / 10);
+            customer.Loyalty_Points += pointsToAdd;
+            await _customerDao.UpdateAsync(customer);
         }
     }
 }

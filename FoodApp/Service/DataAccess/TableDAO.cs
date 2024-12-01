@@ -39,5 +39,23 @@ namespace FoodApp.Service.DataAccess
                 Status = Convert.ToByte(reader["status"])
             };
         }
+       
+        public override async Task<Table> UpdateAsync(Table table)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("UPDATE `Table` SET table_name = @TableName, capacity = @Capacity, status = @Status WHERE id = @Id", connection))
+                {
+                    command.Parameters.AddWithValue("@TableName", table.Table_Name);
+                    command.Parameters.AddWithValue("@Capacity", table.Capacity);
+                    command.Parameters.AddWithValue("@Status", table.Status);
+                    command.Parameters.AddWithValue("@Id", table.Id);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            return table;
+        }
     }
 }

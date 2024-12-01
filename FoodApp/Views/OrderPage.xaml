@@ -11,7 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.DataContext>
-        <viewModels:MainViewModel />
+        <viewModels:OrderViewModel />
     </Page.DataContext>
 
     <Page.Resources>
@@ -42,19 +42,14 @@
                 <!-- Logo -->
                 <Image Source="Assets/ShopeeFoodLogo.png" Width="120" Height="40" Margin="0,0,20,0"/>
 
-                <!-- Location Dropdown -->
-                <ComboBox Width="150" Height="30" Margin="10,0,10,0" VerticalAlignment="Center">
-                    <ComboBoxItem Content="TP. HCM"/>
-                    <ComboBoxItem Content="Hà Nội"/>
-                    <ComboBoxItem Content="Đà Nẵng"/>
-                </ComboBox>
+                
 
 
                 <!-- Menu Links -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
                     Click="GoToRevenueView_Click"/>
-                    <Button Content="Quản lý" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
+                    <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
 
                 </StackPanel>
             </StackPanel>
