@@ -28,7 +28,7 @@
             </RelativePanel>
 
             <!-- Search Panel -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,10" Spacing="10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,5" Spacing="10">
                 <TextBox
                     PlaceholderText="Search Products"
                     Text="{Binding SearchText, Mode=TwoWay}"
@@ -36,8 +36,8 @@
                 <Button Content="Search" Command="{Binding SearchCommand}" Width="100"/>
             </StackPanel>
 
-            <GridView x:Name="ProductGridView" ItemsSource="{Binding FilteredProducts}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" Margin="0,20,0,20"
-              Background="White" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Width="830"
+            <GridView x:Name="ProductGridView" ItemsSource="{Binding FilteredProducts}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" Margin="0,10,0,20"
+              Background="White" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Width="830" Height="550"
               CornerRadius="8" HorizontalAlignment="Stretch" SelectionMode="Single"
               MaxHeight="600" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <GridView.ItemsPanel>
