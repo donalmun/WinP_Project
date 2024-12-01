@@ -59,12 +59,22 @@
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
                     Click="GoToRevenueView_Click"/>
                     <Button Content="Quản lý" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
+                    
                 </StackPanel>
             </StackPanel>
 
             <!-- Right Side Elements -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
                 <!-- Search Bar -->
+
+
+                <Button Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="0,0,0,0" 
+                    Click="GoToMembershipPage_Click"
+                    ToolTipService.ToolTip="Membership">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE77B;" FontFamily="Segoe MDL2 Assets" />
+                    </StackPanel>
+                </Button>
                 <TextBox Width="250" Height="35" PlaceholderText="Tìm địa điểm, món ăn, địa chỉ..." Margin="0,0,10,0"
                         Text="{Binding SearchKeyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Content="Tiếng Việt" Width="100" Height="35" Background="Transparent" BorderBrush="Transparent" Margin="10,0,0,0"/>

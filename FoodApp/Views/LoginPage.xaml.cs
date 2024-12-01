@@ -143,12 +143,17 @@ namespace FoodApp.Views
                 PasswordBox.Visibility = Visibility.Collapsed;
                 PasswordTextBox.Visibility = Visibility.Visible;
                 PasswordTextBox.Text = PasswordBox.Password;
+                (sender as Button).Content = "🙈";
+
+
             }
             else
             {
                 PasswordBox.Visibility = Visibility.Visible;
                 PasswordTextBox.Visibility = Visibility.Collapsed;
                 PasswordBox.Password = PasswordTextBox.Text;
+                (sender as Button).Content = "👁";
+
             }
         }
     }

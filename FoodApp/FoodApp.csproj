@@ -32,6 +32,13 @@
 		<None Remove="MainPage.xaml" />
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
+
+	
+	
+	
+	
+
+	
 	
 	<ItemGroup>
 		<PackageReference Include="itext7" Version="8.0.5" />
@@ -87,6 +94,12 @@
 		</None>
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Service\Controls\EditCustomerControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="Views\CustomerManagementPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\LoginPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
