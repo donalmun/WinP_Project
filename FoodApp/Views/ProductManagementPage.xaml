@@ -6,7 +6,6 @@
     xmlns:viewModels="using:FoodApp.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mediaAnimation="using:Microsoft.UI.Xaml.Media.Animation" 
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -16,17 +15,8 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Page.DataContext>
-        <viewModels:MainViewModel />
-    </Page.DataContext>
-
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Column="0" Margin="20">
+        <StackPanel Margin="20">
             <RelativePanel>
                 <Button x:Name="BackButton" Content="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
                         HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
@@ -34,16 +24,25 @@
                         Click="BackButton_Click" />
                 <TextBlock Text="Product Management" FontSize="30" FontWeight="Bold" 
                            Foreground="DarkSlateGray" RelativePanel.RightOf="BackButton" 
-                           Margin="10,0,0,0"/>
+                           Margin="550,10,0,0"/>
             </RelativePanel>
 
-            <GridView x:Name="ProductGridView" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" Margin="0,20,0,20" 
-             Background="White" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
-             CornerRadius="8" HorizontalAlignment="Stretch" SelectionMode="Single">
+            <!-- Search Panel -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,10" Spacing="10">
+                <TextBox
+                    PlaceholderText="Search Products"
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    Width="300"/>
+                <Button Content="Search" Command="{Binding SearchCommand}" Width="100"/>
+            </StackPanel>
+
+            <GridView x:Name="ProductGridView" ItemsSource="{Binding FilteredProducts}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" Margin="0,20,0,20"
+              Background="White" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" Width="830"
+              CornerRadius="8" HorizontalAlignment="Stretch" SelectionMode="Single"
+              MaxHeight="600" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <VariableSizedWrapGrid Orientation="Horizontal"  
-                                  MaximumRowsOrColumns="4" />
+                        <ItemsWrapGrid Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
                 <GridView.ItemTemplate>
@@ -61,13 +60,13 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid x:Name="RootGrid">
-                                    <Image Source="{x:Bind Image}" Width="180" Height="150" Stretch="UniformToFill" 
+                                    <Image Source="{x:Bind Image}" Width="180" Height="150" Stretch="UniformToFill"
                                HorizontalAlignment="Center" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Vertical" Spacing="5" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" 
-                                       Foreground="Black" TextWrapping="Wrap" 
+                                        <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="Black" TextWrapping="Wrap"
                                        HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{x:Bind Cost}" FontSize="14"  
+                                        <TextBlock Text="{x:Bind Cost}" FontSize="14"
                                        Foreground="Green" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Grid>
@@ -77,36 +76,16 @@
                 </GridView.ItemTemplate>
             </GridView>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                
-                <Button Content="Delete" Command="{Binding DeleteProductCommand}" 
-                        CommandParameter="{Binding ElementName=ProductGridView, Path=SelectedItem}"
+            <!-- Action Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                <Button Content="Delete" Command="{Binding DeleteCommand}" 
+                        CommandParameter="{Binding SelectedItem, ElementName=ProductGridView}"
                         Background="LightCoral" Foreground="White" CornerRadius="4"/>
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="20" Background="White" 
-                    Padding="20" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                    BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch">
-            <TextBlock Text="Thông Tin Sản Phẩm" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" />
-
-            <TextBox Header="Tên sản phẩm" Text="{Binding SelectedProduct.Name, Mode=TwoWay}" Margin="0,0,0,10" />
-            <TextBox Header="Giá" Text="{Binding SelectedProduct.Cost, Mode=TwoWay}" Margin="0,0,0,10" InputScope="Number" />
-            <TextBox Header="Mô tả" Text="{Binding SelectedProduct.Description, Mode=TwoWay}" Margin="0,0,0,10" TextWrapping="Wrap" AcceptsReturn="True" Height="100" />
-            <TextBox Header="URL Hình ảnh" Text="{Binding SelectedProduct.Image, Mode=TwoWay}" Margin="0,0,0,10" />
-            <ComboBox Header="Danh Mục" SelectedValue="{Binding SelectedProduct.Category_Id, Mode=TwoWay}" Margin="0,0,0,20"
-                    SelectedValuePath="Tag" DisplayMemberPath="Content">
-                <!-- Thêm các mục danh mục sản phẩm tại đây -->
-                <ComboBoxItem Content="Món Ăn" Tag="1" />
-                <ComboBoxItem Content="Thức Uống" Tag="2" />
-                <ComboBoxItem Content="Thực Phẩm" Tag="3" />
-            </ComboBox>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                <Button Content="Lưu" Command="{Binding SaveProductCommand}"
-                        Background="#28A745" Foreground="White" CornerRadius="4" Width="80" />
-                <Button Content="Thêm Mới" Command="{Binding AddNewProductCommand}"
-                        Background="#17A2B8" Foreground="White" CornerRadius="4" Width="100" />
+                <Button Content="Edit" Command="{Binding EditCommand}" 
+                        CommandParameter="{Binding SelectedItem, ElementName=ProductGridView}"
+                        Background="LightBlue" Foreground="White" CornerRadius="4"/>
+                <Button Content="Add" Command="{Binding AddCommand}" 
+                        Background="LightGreen" Foreground="White" CornerRadius="4"/>
             </StackPanel>
         </StackPanel>
     </Grid>

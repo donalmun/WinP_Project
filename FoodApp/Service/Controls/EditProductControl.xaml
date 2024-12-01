@@ -1,0 +1,25 @@
+﻿<!-- EditProductControl.xaml -->
+<UserControl
+    x:Class="FoodApp.Service.Controls.EditProductControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="White"
+    Width="350"
+    Height="400">
+
+    <StackPanel Margin="10">
+        <TextBox PlaceholderText="Tên sản phẩm" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,10" />
+        <TextBox PlaceholderText="Giá" Text="{Binding Cost, Mode=TwoWay}" Margin="0,0,0,10" InputScope="Number" />
+        <TextBox PlaceholderText="Mô tả" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,10" TextWrapping="Wrap" AcceptsReturn="True" Height="100" />
+        <TextBox PlaceholderText="URL Hình ảnh" Text="{Binding Image, Mode=TwoWay}" Margin="0,0,0,10" />
+        <ComboBox Header="Danh Mục" SelectedValue="{Binding Category_Id, Mode=TwoWay}" Margin="0,0,0,20"
+                  SelectedValuePath="Tag" DisplayMemberPath="Content">
+            <ComboBoxItem Content="Món Ăn" Tag="1" />
+            <ComboBoxItem Content="Thức Uống" Tag="2" />
+            <ComboBoxItem Content="Thực Phẩm" Tag="3" />
+        </ComboBox>
+    </StackPanel>
+</UserControl>
