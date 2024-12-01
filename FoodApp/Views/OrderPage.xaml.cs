@@ -35,20 +35,6 @@ namespace FoodApp
             }
         }
 
-
-        private void DisplayCheckoutMessage()
-        {
-            var dialog = new ContentDialog
-            {
-                Title = "Thanh toán",
-                Content = "Bạn đã nhấn nút thanh toán.",
-                CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot 
-            };
-
-            _ = dialog.ShowAsync();
-        }
-
         private void DecreaseQuantity_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is Detail detail)
@@ -220,7 +206,6 @@ namespace FoodApp
                 }
             }
         }
-
 
         private void SurchargeCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

@@ -16,9 +16,11 @@ namespace FoodApp.ViewModels
         private readonly OrderDAO _orderDao;
         private readonly IDao<Product> _productDao;
         private readonly CustomerDAO _customerDao;
+        private readonly TableDAO _tableDao;
         private ObservableCollection<Product> _products;
         private ObservableCollection<Product> _allProducts;
         private ObservableCollection<Detail> _details;
+        private ObservableCollection<Table> _tables;
         private Product _selectedProduct;
         private Table _selectedTable;
         private Customer _selectedCustomer;
@@ -29,12 +31,12 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _selectedProduct, value);
         }
 
-        private ObservableCollection<Customer> _suggestedCustomers;
-        public ObservableCollection<Customer> SuggestedCustomers
+        public ObservableCollection<Table> Tables
         {
-            get => _suggestedCustomers;
-            set => SetProperty(ref _suggestedCustomers, value);
+            get => _tables;
+            set => SetProperty(ref _tables, value);
         }
+
         public Table SelectedTable
         {
             get => _selectedTable;
@@ -45,6 +47,13 @@ namespace FoodApp.ViewModels
         {
             get => _selectedCustomer;
             set => SetProperty(ref _selectedCustomer, value);
+        }
+
+        private ObservableCollection<Customer> _suggestedCustomers;
+        public ObservableCollection<Customer> SuggestedCustomers
+        {
+            get => _suggestedCustomers;
+            set => SetProperty(ref _suggestedCustomers, value);
         }
 
         private Detail _selectedDetailItem;
@@ -61,7 +70,7 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _products, value);
         }
 
-        public ObservableCollection<Detail> Details 
+        public ObservableCollection<Detail> Details
         {
             get => _details;
             set
@@ -69,7 +78,6 @@ namespace FoodApp.ViewModels
                 if (SetProperty(ref _details, value))
                 {
                     OnPropertyChanged(nameof(TotalAmount));
-                    UpdateDetailItemIndexes();
                     SubscribeToDetailItemChanges();
                 }
             }
@@ -108,12 +116,13 @@ namespace FoodApp.ViewModels
 
         public MainViewModel()
         {
-            //_productDao = new MockDao<Product>();
             _orderDao = new OrderDAO();
             _productDao = new ProductDao();
-            _customerDao = new CustomerDAO(); 
+            _customerDao = new CustomerDAO();
+            _tableDao = new TableDAO();
             Products = new ObservableCollection<Product>();
             Details = new ObservableCollection<Detail>();
+            Tables = new ObservableCollection<Table>();
             Details.CollectionChanged += DetailItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(() => SearchProducts());
@@ -128,6 +137,7 @@ namespace FoodApp.ViewModels
             TestDatabaseConnection();
 
             LoadProducts();
+            LoadTables();
 
             SelectedDetailItem = new Detail
             {
@@ -136,15 +146,29 @@ namespace FoodApp.ViewModels
             };
         }
 
+        private async void LoadTables()
+        {
+            try
+            {
+                var tables = await _tableDao.GetAllAsync();
+                Tables = new ObservableCollection<Table>(tables);
+                Debug.WriteLine($"Loaded {Tables.Count} tables.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading tables: {ex.Message}");
+            }
+        }
+
         private async Task SaveOrderAsync()
         {
             var order = new Order
             {
                 Order_Date = DateTime.Now,
                 Total_Amount = (float)TotalAmount,
-                Status = 1, 
-                Customer_Id = SelectedCustomer?.Id, 
-                Table_Id = SelectedTable?.Id, 
+                Status = 1,
+                Customer_Id = SelectedCustomer?.Id,
+                Table_Id = SelectedTable?.Id,
                 Details = Details.ToList()
             };
 
@@ -266,10 +290,10 @@ namespace FoodApp.ViewModels
                 var newItem = new Detail
                 {
                     Product_Id = product.Id,
-                    Product = product, // Assign the Product property
+                    Product = product,
                     Quantity = 1,
                     Unit_Price = product.Cost,
-                    Sub_Total = product.Cost, // Initialize Sub_Total correctly
+                    Sub_Total = product.Cost,
                     DiscountType = "%",
                     SurchargeType = "%",
                 };
@@ -286,35 +310,13 @@ namespace FoodApp.ViewModels
                 detail.PropertyChanged -= DetailItem_PropertyChanged;
                 Details.Remove(detail);
                 OnPropertyChanged(nameof(TotalAmount));
-                UpdateDetailItemIndexes();
-            }
-        }
-
-        public void RemoveFromDetail(Product product)
-        {
-            var itemToRemove = Details.FirstOrDefault(i => i.Product_Id == product.Id);
-            if (itemToRemove != null)
-            {
-                itemToRemove.PropertyChanged -= DetailItem_PropertyChanged;
-                Details.Remove(itemToRemove);
-                OnPropertyChanged(nameof(TotalAmount));
-                UpdateDetailItemIndexes();
             }
         }
 
         private void DetailItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(TotalAmount));
-            UpdateDetailItemIndexes();
             SubscribeToDetailItemChanges();
-        }
-
-        private void UpdateDetailItemIndexes()
-        {
-            for (int i = 0; i < Details.Count; i++)
-            {
-                Details[i].Id = i + 1;
-            }
         }
 
         private void SubscribeToDetailItemChanges()

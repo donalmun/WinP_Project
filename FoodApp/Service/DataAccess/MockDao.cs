@@ -90,8 +90,8 @@ namespace FoodApp.Service.DataAccess
             {
                 _data.AddRange(new List<T>
                 {
-                    (T)(object)new Table { Id = 1, Table_Name = "A1", Capacity = 4, Status = 0, Orders = new List<Order>() },
-                    (T)(object)new Table { Id = 2, Table_Name = "B1", Capacity = 2, Status = 1, Orders = new List<Order>() }
+                    (T)(object)new Table { Id = 1, Table_Name = "A1", Capacity = 4, Status = 0 },
+                    (T)(object)new Table { Id = 2, Table_Name = "B1", Capacity = 2, Status = 1 }
                 });
             }
         }

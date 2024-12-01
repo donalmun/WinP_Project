@@ -1,20 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
-namespace FoodApp;
-
-public class Table : INotifyPropertyChanged
+namespace FoodApp
 {
-    public int Id { get; set; }
-    public string Table_Name { get; set; }
-    public int Capacity { get; set; }
-    public byte Status { get; set; }
+    public class Table : INotifyPropertyChanged
+    {
+        private int _id;
+        private string _tableName;
+        private int _capacity;
+        private byte _status;
 
-    public ICollection<Order> Orders { get; set; }
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                OnPropertyChanged(nameof(Id));
+            }
+        }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+        public string Table_Name
+        {
+            get => _tableName;
+            set
+            {
+                _tableName = value;
+                OnPropertyChanged(nameof(Table_Name));
+            }
+        }
+
+        public int Capacity
+        {
+            get => _capacity;
+            set
+            {
+                _capacity = value;
+                OnPropertyChanged(nameof(Capacity));
+            }
+        }
+
+        public byte Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                OnPropertyChanged(nameof(Status));
+            }
+        }
+
+        // INotifyPropertyChanged Implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

@@ -179,27 +179,17 @@
                 <Grid Grid.Row="0" Background="#F2F2F2" Padding="10" 
                          ColumnDefinitions="*,Auto">
                     <!-- Menu Lựa chọn Bàn -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Grid.Column="0">
-                        <TextBlock Text="Chọn Bàn:" FontSize="16" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#333" />
+                    <!-- ComboBox chọn bàn -->
+                    <ComboBox Width="200" Height="35"
+                          SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
+                          ItemsSource="{Binding Tables}"
+                          DisplayMemberPath="Table_Name"
+                          PlaceholderText="Chọn bàn"
+                          FontSize="16"
+                          Background="White"
+                          Foreground="#333"
+                          Margin="0,0,10,0"/>
 
-                        <!-- ComboBox chọn bàn -->
-                        <ComboBox Width="200" Height="35" 
-                                  SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
-                                  PlaceholderText="Chọn bàn"
-                                  FontSize="16" 
-                                  Background="White" 
-                                  Foreground="#333" 
-                                  Margin="0,0,10,0">
-                            <!-- Danh sách các bàn có thể chọn -->
-                            <ComboBox.Items>
-                                <ComboBoxItem Content="Bàn 1" />
-                                <ComboBoxItem Content="Bàn 2" />
-                                <ComboBoxItem Content="Bàn 3" />
-                                <ComboBoxItem Content="Bàn 4" />
-                                <ComboBoxItem Content="Bàn 5" />
-                            </ComboBox.Items>
-                        </ComboBox>
-                    </StackPanel>
 
                     <!-- Right Side Elements -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10, 0, 20, 0" Grid.Column="1">
