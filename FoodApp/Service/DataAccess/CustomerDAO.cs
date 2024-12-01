@@ -96,5 +96,27 @@ namespace FoodApp.Service.DataAccess
                 Created_At = reader["Created_At"] as DateTime?
             };
         }
+
+        public async Task<IEnumerable<Customer>> SearchCustomersByPhoneAsync(string phoneQuery)
+        {
+            var customers = new List<Customer>();
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("SELECT * FROM Customer WHERE Phone LIKE @PhoneQuery", connection))
+                {
+                    command.Parameters.AddWithValue("@PhoneQuery", $"%{phoneQuery}%");
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var customer = MapToEntity(reader);
+                            customers.Add(customer);
+                        }
+                    }
+                }
+            }
+            return customers;
+        }
     }
 }

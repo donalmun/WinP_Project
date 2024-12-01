@@ -20,5 +20,10 @@ public class Customer : INotifyPropertyChanged
 
     public ICollection<Order> Orders { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Full_Name} - {Phone}";
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 }

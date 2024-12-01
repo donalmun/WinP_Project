@@ -27,29 +27,29 @@ namespace FoodApp.ViewModel
         }
         
 
-        public void FilterRevenueData(DateTimeOffset fromDate, DateTimeOffset toDate)
-        {
-            // Debugging: Print the fromDate and toDate
-            Console.WriteLine($"Filtering from: {fromDate} to: {toDate}");
+        //public void FilterRevenueData(DateTimeOffset fromDate, DateTimeOffset toDate)
+        //{
+        //    // Debugging: Print the fromDate and toDate
+        //    Console.WriteLine($"Filtering from: {fromDate} to: {toDate}");
 
-            var filteredData = _allData.Where(d =>
-            {
-                // Debugging: Print each Created_At date
-                Console.WriteLine($"Checking Created_At: {d.Created_At}");
-                return d.Created_At >= fromDate && d.Created_At <= toDate;
-            }).ToList();
+        //    var filteredData = _allData.Where(d =>
+        //    {
+        //        // Debugging: Print each Created_At date
+        //        Console.WriteLine($"Checking Created_At: {d.Created_At}");
+        //        return d.Created_At >= fromDate && d.Created_At <= toDate;
+        //    }).ToList();
 
-            RevenueData.Clear();
-            foreach (var item in filteredData)
-            {
-                RevenueData.Add(item);
-            }
+        //    RevenueData.Clear();
+        //    foreach (var item in filteredData)
+        //    {
+        //        RevenueData.Add(item);
+        //    }
 
-            // Debugging: Print the count of filtered data
-            Console.WriteLine($"Filtered data count: {filteredData.Count}");
-        }
+        //    // Debugging: Print the count of filtered data
+        //    Console.WriteLine($"Filtered data count: {filteredData.Count}");
+        //}
 
-        public float TotalRevenue => RevenueData?.Sum(d => d.Quantity * d.Unit_Price) ?? 0;
+        //public float TotalRevenue => RevenueData?.Sum(d => d.Quantity * d.Unit_Price) ?? 0;
 
     }
 }

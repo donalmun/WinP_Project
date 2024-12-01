@@ -20,7 +20,7 @@ namespace FoodApp.Views
 
             // Assuming you have a method in your ViewModel to filter data
             var viewModel = (RevenueViewModel)this.DataContext;
-            viewModel.FilterRevenueData(fromDate, toDate);
+            //viewModel.FilterRevenueData(fromDate, toDate);
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
