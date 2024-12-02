@@ -329,8 +329,11 @@ namespace FoodApp.ViewModels
         private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
         {
             // Example: 1 point for every 10 units of currency spent
-            int pointsToAdd = (int)(amount / 10);
+            
+            int pointsToAdd = (int)(amount / 1000);
+            Console.WriteLine("customer loyalty_point before: " + customer.Loyalty_Points);
             customer.Loyalty_Points += pointsToAdd;
+            Console.WriteLine("customer loyalty_point after: " + customer.Loyalty_Points);
             await _customerDao.UpdateAsync(customer);
         }
     }

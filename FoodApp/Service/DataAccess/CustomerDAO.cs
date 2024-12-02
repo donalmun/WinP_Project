@@ -89,7 +89,7 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("UPDATE Customer SET Full_Name = @FullName, Email = @Email, Address = @Address, Loyalty_Points = @LoyaltyPoints WHERE Id = @Id", connection))
+                using (var command = new MySqlCommand("UPDATE Customer SET Full_Name = @FullName, Email = @Email, Address = @Address, Loyalty_Points = @Loyalty_Points WHERE Id = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@FullName", customer.Full_Name);
                     command.Parameters.AddWithValue("@Email", customer.Email);
