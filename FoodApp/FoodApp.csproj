@@ -33,6 +33,9 @@
 		<None Remove="Views\ProductManagementPage.xaml" />
 	</ItemGroup>
 
+	
+	
+
 
 	
 	
@@ -100,6 +103,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Service\Controls\EditProductControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="Service\Controls\PaymentOptionsControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\CustomerManagementPage.xaml">

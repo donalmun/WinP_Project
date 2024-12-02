@@ -13,9 +13,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using FoodApp.Views;
 
+
 namespace FoodApp
 {
-    public partial class OrderPage : global::Microsoft.UI.Xaml.Controls.Page
+    public partial class OrderPage : Page
     {
         public OrderViewModel ViewModel { get; }
 
@@ -76,7 +77,35 @@ namespace FoodApp
 
         private void SaveOrder_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.SaveOrderCommand.Execute(null);
+            PopupContainer.Visibility = Visibility.Visible;
+            PaymentOptionsPopup.IsOpen = true;
+        }
+
+        private async void PaymentOptionsControl_PaymentConfirmed(object sender, RoutedEventArgs e)
+        {
+            var paymentControl = sender as Service.Controls.PaymentOptionsControl;
+            PaymentOptionsPopup.IsOpen = false;
+
+            // Optionally, you can use the selected payment method
+            string paymentMethod = paymentControl.SelectedPaymentMethod;
+
+            // Proceed with saving the order
+            await ViewModel.SaveOrderAsync();
+
+            // Optionally, show a success message
+            var dialog = new ContentDialog
+            {
+                Title = "Thành công",
+                Content = "Đơn hàng đã được lưu thành công.",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot // Set the XamlRoot here
+            };
+            await dialog.ShowAsync(); ;
+        }
+        private void PaymentOptionsControl_PaymentCanceled(object sender, RoutedEventArgs e)
+        {
+            PaymentOptionsPopup.IsOpen = false; // Close the popup
+            PopupContainer.Visibility = Visibility.Collapsed;
         }
 
         private void DiscountPopup_Opened(object sender, object e)
@@ -91,10 +120,10 @@ namespace FoodApp
 
         private async void GenerateDetailFile_Click(object sender, RoutedEventArgs e)
         {
-            var invoiceItems = (this.DataContext as OrderViewModel)?.Details; 
+            var invoiceItems = (this.DataContext as OrderViewModel)?.Details;
             if (invoiceItems == null) return;
 
-            decimal totalInvoice = (decimal)invoiceItems.Sum(item => (double)item.Sub_Total);
+            double totalInvoice = invoiceItems.Sum(item => item.Sub_Total); // Changed to double for compatibility
 
             var savePicker = new FileSavePicker
             {
@@ -193,7 +222,6 @@ namespace FoodApp
             }
         }
 
-
         private void DiscountCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
@@ -246,7 +274,6 @@ namespace FoodApp
             }
         }
 
-
         private void GoToRevenueView_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to RevenueView
@@ -255,8 +282,9 @@ namespace FoodApp
 
         private void GoToManagementPage_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(ProductManagementPage)); 
+            this.Frame.Navigate(typeof(ProductManagementPage));
         }
+
         private void GoToMembershipPage_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to RegisterMembership

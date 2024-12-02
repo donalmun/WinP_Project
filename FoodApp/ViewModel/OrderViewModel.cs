@@ -284,7 +284,7 @@ namespace FoodApp.ViewModels
         }
 
         // OrderViewModel.cs
-        private async Task SaveOrderAsync()
+        public async Task SaveOrderAsync()
         {
             var order = new Order
             {
@@ -325,6 +325,7 @@ namespace FoodApp.ViewModels
             table.Status = status; // 1 for 'in use', 0 for 'empty'
             await _tableDao.UpdateAsync(table);
         }
+
         
         private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
         {
