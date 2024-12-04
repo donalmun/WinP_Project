@@ -1,6 +1,5 @@
-﻿using System;
+﻿// OrderDAO.cs
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using MySqlConnector;
 
@@ -15,44 +14,34 @@ namespace FoodApp.Service.DataAccess
             _detailDao = new DetailDAO();
         }
 
-        public override async Task<Order> AddAsync(Order order)
+        public override async Task<IEnumerable<Order>> GetAllAsync()
         {
+            var orders = new List<Order>();
             using var connection = GetConnection();
             await connection.OpenAsync();
 
-            using var transaction = await connection.BeginTransactionAsync();
+            string query = "SELECT * FROM Orders";
 
-            try
+            using var cmd = new MySqlCommand(query, connection);
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                string insertOrderQuery = @"
-                    INSERT INTO Orders (order_date, Total_Amount, Status, Customer_Id, Table_Id)
-                    VALUES (@OrderDate, @TotalAmount, @Status, @CustomerId, @TableId);
-                    SELECT LAST_INSERT_ID();";
-
-                using var cmd = new MySqlCommand(insertOrderQuery, connection, transaction);
-                cmd.Parameters.AddWithValue("@OrderDate", order.Order_Date);
-                cmd.Parameters.AddWithValue("@TotalAmount", order.Total_Amount);
-                cmd.Parameters.AddWithValue("@Status", order.Status);
-                cmd.Parameters.AddWithValue("@CustomerId", order.Customer_Id ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@TableId", order.Table_Id ?? (object)DBNull.Value);
-
-                order.Id = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-
-                foreach (var detail in order.Details)
+                var order = new Order
                 {
-                    detail.Order_Id = order.Id;
-                    await _detailDao.AddAsync(detail, connection, transaction);
-                }
+                    Id = reader.GetInt32("Id"),
+                    Order_Date = reader.GetDateTime("order_date"),
+                    Total_Amount = reader.GetFloat("Total_Amount"),
+                    Status = reader.GetByte("Status"),
+                    Customer_Id = reader.IsDBNull(reader.GetOrdinal("Customer_Id")) ? (int?)null : reader.GetInt32("Customer_Id"),
+                    Table_Id = reader.IsDBNull(reader.GetOrdinal("Table_Id")) ? (int?)null : reader.GetInt32("Table_Id")
+                };
+                orders.Add(order);
+            }
 
-                await transaction.CommitAsync();
-                return order;
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            return orders;
         }
 
+        // Existing AddAsync method...
     }
 }
