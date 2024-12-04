@@ -1,4 +1,4 @@
-// OrderViewModel.cs
+﻿// OrderViewModel.cs
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -135,7 +135,7 @@ namespace FoodApp.ViewModels
             Details.CollectionChanged += DetailItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(() => SearchProducts());
-            SaveOrderCommand = new RelayCommand(async () => await SaveOrderAsync());
+            SaveOrderCommand = new AsyncRelayCommand(SaveOrderAsync);
             SuggestedCustomers = new ObservableCollection<Customer>();
 
             // Check database connection
@@ -316,7 +316,8 @@ namespace FoodApp.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle exceptions
+                ShowMessage($"Đã xảy ra lỗi: {ex.Message}");
+
             }
         }
         
@@ -336,5 +337,13 @@ namespace FoodApp.ViewModels
             Console.WriteLine("customer loyalty_point after: " + customer.Loyalty_Points);
             await _customerDao.UpdateAsync(customer);
         }
+        private void ShowMessage(string message)
+        {
+            // Vì ViewModel không có quyền truy cập vào XamlRoot, bạn cần sử dụng một cách khác để hiển thị dialog.
+            // Một cách là sử dụng sự kiện hoặc hành động được gán từ code-behind.
+            ShowMessageAction?.Invoke(message);
+        }
+
+        public Action<string>? ShowMessageAction { get; set; }
     }
 }
