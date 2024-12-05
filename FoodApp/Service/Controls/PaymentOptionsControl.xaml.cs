@@ -20,10 +20,10 @@ namespace FoodApp.Service.Controls
 
         // Dependency Properties for OrderSubTotal and OrderId
         public static readonly DependencyProperty OrderSubTotalProperty =
-            DependencyProperty.Register("OrderSubTotal", typeof(float), typeof(PaymentOptionsControl), new PropertyMetadata(0f, OnOrderDetailsChanged));
+            DependencyProperty.Register("OrderSubTotal", typeof(float), typeof(PaymentOptionsControl), new PropertyMetadata(0f));
 
         public static readonly DependencyProperty OrderIdProperty =
-            DependencyProperty.Register("OrderId", typeof(string), typeof(PaymentOptionsControl), new PropertyMetadata(string.Empty, OnOrderDetailsChanged));
+            DependencyProperty.Register("OrderId", typeof(string), typeof(PaymentOptionsControl), new PropertyMetadata(string.Empty));
 
         public float OrderSubTotal
         {
@@ -34,7 +34,14 @@ namespace FoodApp.Service.Controls
             }
         }
 
-     
+        public string OrderId
+        {
+            get { return (string)GetValue(OrderIdProperty); }
+            set
+            {
+                SetValue(OrderIdProperty, value);
+            }
+        }
 
         public PaymentOptionsControl()
         {
@@ -42,12 +49,6 @@ namespace FoodApp.Service.Controls
             _vietQRService = new VietQRService();
             BankTransferRadioButton.Checked += PaymentMethodChanged;
             BankTransferRadioButton.Unchecked += PaymentMethodChanged;
-        }
-
-        private static void OnOrderDetailsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as PaymentOptionsControl;
-            control?.GenerateVietQRAsync();
         }
 
         private async void PaymentMethodChanged(object sender, RoutedEventArgs e)
@@ -96,9 +97,10 @@ namespace FoodApp.Service.Controls
 
         private async Task GenerateVietQRAsync()
         {
-            Console.WriteLine($"GenerateVietQRAsync called with OrderSubTotal: {OrderSubTotal}");
+            Console.WriteLine($"GenerateVietQRAsync called with OrderId: {OrderId}, OrderSubTotal: {OrderSubTotal}");
+            OrderId= Guid.NewGuid().ToString();
 
-            if (OrderSubTotal <= 0)
+            if (string.IsNullOrEmpty(OrderId) || OrderSubTotal <= 0)
             {
                 QRCodeImage.Source = null;
                 return;
@@ -106,7 +108,7 @@ namespace FoodApp.Service.Controls
 
             try
             {
-                byte[] qrBytes = await _vietQRService.GenerateVietQRAsync(OrderSubTotal);
+                byte[] qrBytes = await _vietQRService.GenerateVietQRAsync(OrderSubTotal, OrderId);
                 BitmapImage bitmapImage = new BitmapImage();
 
                 using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())

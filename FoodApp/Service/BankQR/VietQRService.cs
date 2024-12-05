@@ -17,7 +17,7 @@ namespace FoodApp.Service.BankQR
         /// <param name="amount">The total amount for the order (float).</param>
         /// <param name="orderId">The unique identifier for the order.</param>
         /// <returns>A byte array representing the QR code image.</returns>
-        public async Task<byte[]> GenerateVietQRAsync(float amount)
+        public async Task<byte[]> GenerateVietQRAsync(float amount, String OrderID)
         {
             // Convert float amount to int (VND does not use subunits)
             int amountInt = Convert.ToInt32(Math.Round(amount, 0));
@@ -28,7 +28,7 @@ namespace FoodApp.Service.BankQR
                 accountNo = 9399784975,
                 accountName = "TRẦN VĂN PHƯƠNG",
                 amount = amountInt, // API expects amount as integer
-                addInfo = "Quý khách thanh toán đơn hàng",
+                addInfo = OrderID,
                 format = "text",
                 template = "default" // Use 'default' to include more information
             };
