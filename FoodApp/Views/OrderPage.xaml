@@ -48,8 +48,11 @@
                 <!-- Menu Links -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
-                    Click="GoToRevenueView_Click"/>
-                    <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
+                            Click="GoToRevenueView_Click"/>
+                    <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                            Click="GoToManagementPage_Click" />
+                    <Button Content="Quản lý bàn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0"
+                            Click="GoToTablePage_Click" />
 
                 </StackPanel>
             </StackPanel>
