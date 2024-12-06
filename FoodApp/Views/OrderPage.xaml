@@ -1,3 +1,4 @@
+<!-- FoodApp\Views\OrderPage.xaml -->
 <Page
     x:Class="FoodApp.OrderPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,17 +8,28 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helper="using:FoodApp.Helper"
     xmlns:viewModels="using:FoodApp.ViewModels"
+    xmlns:controls="using:FoodApp.Service.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-
 
     <Page.Resources>
         <helper:CurrencyConverter x:Key="CurrencyConverter" />
         <helper:ZeroToCollapsedConverter x:Key="ZeroToCollapsedConverter" />
+
+        <!-- Fade In Animation -->
+        <Storyboard x:Name="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetName="AIChatControlPanel"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.3"/>
+        </Storyboard>
+
+        <!-- Fade Out Animation -->
+        <Storyboard x:Name="FadeOutStoryboard">
+            <DoubleAnimation Storyboard.TargetName="AIChatControlPanel"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0" Duration="0:0:0.3"/>
+        </Storyboard>
     </Page.Resources>
-    
-    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,7 +38,7 @@
             <RowDefinition Height="*" />
             <!-- Content row -->
         </Grid.RowDefinitions>
-        
+
         <!-- Header -->
         <Grid Grid.Row="0" Background="Orange" Height="80" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
@@ -40,18 +52,14 @@
                 <!-- Logo -->
                 <Image Source="Assets/ShopeeFoodLogo.png" Width="120" Height="40" Margin="0,0,20,0"/>
 
-                
-
-
                 <!-- Menu Links -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
                     Click="GoToRevenueView_Click"/>
                     <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
-
                 </StackPanel>
             </StackPanel>
-            
+
         </Grid>
 
         <Grid Grid.Row="1">
@@ -330,9 +338,37 @@
             </Grid>
         </Grid>
 
+            <!-- AI Chat Button -->
+        <Button 
+            x:Name="AIChatButton"
+            Grid.Row="1"
+            Content="💬" 
+            FontSize="24" 
+            Width="50" 
+            Height="50" 
+            Background="#FF5722" 
+            Foreground="White" 
+            CornerRadius="25" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Bottom" 
+            Margin="20"
+            Click="AIChatButton_Click"/>
+
+        <!-- AI Chat Control -->
+        <controls:AIChatControl 
+            x:Name="AIChatControlPanel"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Bottom" 
+            Margin="20"
+            Opacity="0"/>
+        <!-- Initial opacity for animation -->
+
+        <!-- Popup Container -->
         <Grid x:Name="PopupContainer" Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Center">
             <Popup x:Name="DiscountPopup" IsLightDismissEnabled="True" 
-           Opened="DiscountPopup_Opened" Closed="DiscountPopup_Closed">
+               Opened="DiscountPopup_Opened" Closed="DiscountPopup_Closed">
                 <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="2" CornerRadius="12" Width="500" Height="650">
                     <StackPanel Padding="20" Spacing="20">
                         <!-- Title -->
@@ -414,7 +450,6 @@
                                 </ComboBox>
                             </StackPanel>
                         </Grid>
-
 
 
 
