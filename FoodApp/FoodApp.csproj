@@ -30,7 +30,9 @@
 		<None Remove="Assets\StoreLogo.png" />
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
 		<None Remove="MainPage.xaml" />
+		<None Remove="Service\Controls\EditTableControl.xaml" />
 		<None Remove="Views\ProductManagementPage.xaml" />
+		<None Remove="Views\TableManagementPage.xaml" />
 	</ItemGroup>
 
 
@@ -102,12 +104,18 @@
 		<None Update="Service\Controls\EditProductControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
+		<Page Update="Service\Controls\EditTableControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</Page>
 		<None Update="Views\CustomerManagementPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="Views\LoginPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>
+		<Page Update="Views\TableManagementPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</Page>
 		<Page Update="Views\ProductManagementPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
