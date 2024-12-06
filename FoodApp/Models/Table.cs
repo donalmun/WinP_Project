@@ -6,8 +6,8 @@ namespace FoodApp
     {
         private int _id;
         private string _tableName;
-        private int _capacity;
-        private byte _status;
+        
+        private int _status;
 
         public int Id
         {
@@ -29,23 +29,18 @@ namespace FoodApp
             }
         }
 
-        public int Capacity
-        {
-            get => _capacity;
-            set
-            {
-                _capacity = value;
-                OnPropertyChanged(nameof(Capacity));
-            }
-        }
+        
 
-        public byte Status
+        public int Status
         {
             get => _status;
             set
             {
-                _status = value;
-                OnPropertyChanged(nameof(Status));
+                if (_status != value)
+                {
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
+                }
             }
         }
 

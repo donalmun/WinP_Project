@@ -1,4 +1,4 @@
-﻿// WinP_Project\FoodApp\Views\EditCustomerControl.xaml.cs
+﻿// WinP_Project\FoodApp\Service\Controls\EditCustomerControl.xaml.cs
 using Microsoft.UI.Xaml.Controls;
 
 namespace FoodApp.Service.Controls
