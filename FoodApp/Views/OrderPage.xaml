@@ -338,31 +338,38 @@
             </Grid>
         </Grid>
 
-            <!-- AI Chat Button -->
-        <Button 
-            x:Name="AIChatButton"
-            Grid.Row="1"
-            Content="💬" 
-            FontSize="24" 
-            Width="50" 
-            Height="50" 
-            Background="#FF5722" 
-            Foreground="White" 
-            CornerRadius="25" 
-            HorizontalAlignment="Left" 
-            VerticalAlignment="Bottom" 
-            Margin="20"
-            Click="AIChatButton_Click"/>
 
-        <!-- AI Chat Control -->
-        <controls:AIChatControl 
-            x:Name="AIChatControlPanel"
-            Grid.Row="1"
-            Visibility="Collapsed"
-            HorizontalAlignment="Left" 
-            VerticalAlignment="Bottom" 
-            Margin="20"
-            Opacity="0"/>
+        <Grid Grid.Row="2" Margin="0,0,500,0">
+            <controls:AIChatControl 
+                x:Name="AIChatControlPanel"
+                Grid.Row="1"
+                Visibility="Collapsed"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Bottom" 
+                Margin="70,-150,0,0"
+                Opacity="0"
+                />
+            
+            <Button 
+                x:Name="AIChatButton"
+                Grid.Row="1"
+                Content="💬" 
+                FontSize="24" 
+                Width="50" 
+                Height="50" 
+                Background="#FF5722" 
+                Foreground="White" 
+                CornerRadius="25" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Bottom" 
+                Margin="20,-50,0,0"
+                Click="AIChatButton_Click"/>
+
+        </Grid>
+
+        
+
+
         <!-- Initial opacity for animation -->
 
         <!-- Popup Container -->

@@ -1,4 +1,3 @@
-<!-- FoodApp\Service\Controls\AIChatControl.xaml -->
 <UserControl
     x:Class="FoodApp.Service.Controls.AIChatControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,23 +10,48 @@
     Height="500">
 
 	<Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="10" Background="White">
-		<StackPanel>
-			<!-- Header -->
-			<TextBlock Text="AI Chat" FontSize="20" FontWeight="Bold" Margin="10" HorizontalAlignment="Center"/>
+		<Grid>
+			<Grid.RowDefinitions>
+				<!-- Header Row -->
+				<RowDefinition Height="Auto"/>
+				<!-- Chat Content Row -->
+				<RowDefinition Height="*"/>
+				<!-- Input Area Row -->
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<!-- Header with Close Button -->
+			<Grid Grid.Row="0" Background="#F5F5F5" Height="40">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Text="AI Assistant" FontSize="20" FontWeight="Bold" Margin="10,0,0,0" VerticalAlignment="Center"/>
+
+				
+			</Grid>
 
 			<!-- Chat Content -->
-			<ScrollViewer x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" Margin="10" Height="350">
+			<ScrollViewer Grid.Row="1" x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" Margin="10">
 				<StackPanel x:Name="ChatMessagesPanel">
-					<!-- Example chat messages -->
-					<TextBlock Text="AI: Hello! How can I assist you today?" TextWrapping="Wrap" Margin="0,0,0,10"/>
+					<!-- Chat messages will be added here -->
 				</StackPanel>
 			</ScrollViewer>
 
+			<!-- Loading Indicator -->
+
 			<!-- Input Area -->
-			<StackPanel Orientation="Horizontal" Margin="10">
-				<TextBox x:Name="ChatInputBox" PlaceholderText="Type your message..." Width="220" Height="30" KeyDown="ChatInputBox_KeyDown"/>
-				<Button Content="Send" Width="60" Height="30" Margin="5,0,0,0" Click="SendMessage_Click"/>
+			<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10">
+				<TextBox x:Name="ChatInputBox"
+                         PlaceholderText="Nhập tin nhắn..."
+                         Width="220"
+                         MinHeight="30"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         KeyDown="ChatInputBox_KeyDown"/>
+				<Button Content="Gửi" Width="60" Height="30" Margin="5,0,0,0" Click="SendMessage_Click"/>
 			</StackPanel>
-		</StackPanel>
+		</Grid>
 	</Border>
 </UserControl>
