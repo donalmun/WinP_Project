@@ -1,4 +1,5 @@
-﻿using FoodApp.Helper;
+﻿// FoodApp\Views\OrderPage.xaml.cs
+using FoodApp.Service.Controls;
 using FoodApp.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -287,13 +288,35 @@ namespace FoodApp
 
         private void GoToMembershipPage_Click(object sender, RoutedEventArgs e)
         {
-            // Navigate to RegisterMembership
+            // Navigate to CustomerManagementPage
             this.Frame.Navigate(typeof(CustomerManagementPage));
         }
+
+
+        // AI Chat Button Click Event
+        private void AIChatButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (AIChatControlPanel.Visibility == Visibility.Collapsed)
+            {
+                AIChatControlPanel.Visibility = Visibility.Visible;
+                AIChatControlPanel.Opacity = 0;
+                FadeInStoryboard.Begin();
+                AIChatButton.Content = "❌"; // Change button icon to close
+            }
+            else
+            {
+                FadeOutStoryboard.Begin();
+                FadeOutStoryboard.Completed += (s, args) =>
+                {
+                    AIChatControlPanel.Visibility = Visibility.Collapsed;
+                };
+                AIChatButton.Content = "💬"; // Revert button icon to chat
+            }
 
         private void GoToTablePage_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(TableManagementPage));
+
         }
     }
 }
