@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System;
+using System.Threading.Tasks;
 
 namespace FoodApp.Views
 {
@@ -10,25 +11,29 @@ namespace FoodApp.Views
         public RevenueView()
         {
             this.InitializeComponent();
-        }
 
-        private void FilterButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Handle the filter button click event
-            var fromDate = FromDatePicker.Date;
-            var toDate = ToDatePicker.Date;
+            if (this.DataContext is RevenueViewModel viewModel)
+            {
+                viewModel.ShowMessageAction = async (message) =>
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "Date Error",
+                        Content = message,
+                        CloseButtonText = "Try Again",
+                        DefaultButton = ContentDialogButton.Close,
+                        XamlRoot = this.XamlRoot
+                    };
 
-            // Assuming you have a method in your ViewModel to filter data
-            var viewModel = (RevenueViewModel)this.DataContext;
-            //viewModel.FilterRevenueData(fromDate, toDate);
+                    await dialog.ShowAsync();
+                };
+            }
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            // navigate back to the main page
+            // Điều hướng trở lại trang chính
             Frame.Navigate(typeof(OrderPage));
-
-
         }
     }
 }

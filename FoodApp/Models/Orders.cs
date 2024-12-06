@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using FoodApp;
 using System.Threading.Tasks;
 
 namespace FoodApp;
@@ -15,7 +16,8 @@ public class Order : INotifyPropertyChanged
     public byte Status { get; set; }
     public int? Customer_Id { get; set; }
     public int? Table_Id { get; set; }
-    public DateTime Created_At { get; set; }
+    // Remove or comment out the Created_At property
+    // public DateTime Created_At { get; set; }
 
     public Customer Customer { get; set; }
     public Table Table { get; set; }

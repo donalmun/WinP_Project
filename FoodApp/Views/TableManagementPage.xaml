@@ -1,0 +1,90 @@
+<!-- TableManagementPage.xaml -->
+<Page
+    x:Class="FoodApp.Views.TableManagementPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FoodApp"
+    xmlns:helper="using:FoodApp.Helper"
+    xmlns:viewModels="using:FoodApp.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:FoodApp.Service.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    x:Name="Page">
+
+
+    <Page.Resources>
+        <helper:StatusConverter x:Key="StatusConverter" />
+    </Page.Resources>
+    
+    <Page.DataContext>
+        <viewModels:TableManagementViewModel />
+    </Page.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Table List and Actions -->
+        <StackPanel Grid.Column="0" Margin="20">
+            <RelativePanel>
+                <Button x:Name="BackButton" Content="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="24"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
+                        Style="{StaticResource NavigationBackButtonNormalStyle}"
+                        Click="BackButton_Click" />
+                <TextBlock Text="Table Management" FontSize="30" FontWeight="Bold" 
+                           Foreground="DarkSlateGray" RelativePanel.RightOf="BackButton"
+                           Margin="200,20,0,0"/>
+            </RelativePanel>
+
+            <StackPanel Orientation="Horizontal" Margin="240,20,0,20">
+                <TextBox Width="400" PlaceholderText="Search by Table Name"
+                         Text="{Binding SearchTableName, Mode=TwoWay}" />
+                <Button Content="Search" Command="{Binding SearchCommand}"
+                        Margin="10,0,0,0" Background="#FF0288D1" Foreground="White" />
+            </StackPanel>
+
+            <!-- Table ListView -->
+            <ListView ItemsSource="{Binding Tables}" SelectedItem="{Binding SelectedTable}" 
+                      Margin="0,20,0,0" SelectionMode="Single" IsItemClickEnabled="False">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Table">
+                        <StackPanel Orientation="Vertical" Padding="10" Background="White" Margin="0,0,0,10" 
+                                    CornerRadius="4" BorderBrush="Gray" BorderThickness="1">
+                            <TextBlock Text="{Binding Table_Name}" FontSize="18" FontWeight="Bold" />
+                            <TextBlock>
+                                <Run Text="Status: " />
+                                <Run Text="{Binding Status, Mode=TwoWay, Converter={StaticResource StatusConverter}}" />
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                                <Button Content="Edit" Command="{Binding DataContext.EditTableCommand, ElementName=Page}"
+                                        CommandParameter="{Binding}" Background="#17A2B8" Foreground="White" CornerRadius="4"/>
+                                <Button Content="Delete" Command="{Binding DataContext.DeleteTableCommand, ElementName=Page}"
+                                        CommandParameter="{Binding}" Background="LightCoral" Foreground="White" CornerRadius="4"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <!-- Add Table -->
+        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="20" Background="White"
+                    Padding="20" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch">
+            <TextBlock Text="Add New Table" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" />
+
+            <TextBox Header="Table Name" Text="{Binding TableName, Mode=TwoWay}" Margin="0,0,0,10" />
+            <ComboBox Header="Status" SelectedValue="{Binding Status, Mode=TwoWay}" Margin="0,0,0,10">
+                <ComboBoxItem Content="Empty" Tag="0" />
+                <ComboBoxItem Content="Occupied" Tag="1" />
+            </ComboBox>
+
+            <Button Content="Add Table" Command="{Binding AddTableCommand}"
+                    Background="#28A745" Foreground="White" CornerRadius="4" Width="100" />
+        </StackPanel>
+    </Grid>
+</Page>

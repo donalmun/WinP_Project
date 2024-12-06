@@ -8,7 +8,6 @@
     xmlns:viewModels="using:FoodApp.ViewModel"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <!-- Changed to light theme -->
 
     <Page.DataContext>
         <viewModels:RevenueViewModel />
@@ -23,7 +22,6 @@
 
         <!-- Header -->
         <Grid Grid.Row="0" Margin="20" Background="Orange" Padding="10" CornerRadius="5">
-            <!-- Changed background to Orange -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -44,7 +42,6 @@
                 FontWeight="Bold"
                 Text="Revenue Analysis"
                 Foreground="White"/>
-            <!-- Maintained white text for contrast -->
         </Grid>
 
         <!-- Content -->
@@ -65,27 +62,28 @@
                     VerticalAlignment="Center"
                     Text="From:" 
                     Foreground="Black"/>
-                <!-- Changed text color to Black -->
                 <DatePicker
                     x:Name="FromDatePicker"
                     Width="200"
-                    Margin="0,0,20,0" />
+                    Margin="0,0,20,0"
+                    SelectedDate="{Binding FromDate, Mode=TwoWay}" />
                 <TextBlock
                     Margin="0,0,10,0"
                     VerticalAlignment="Center"
                     Text="To:" 
                     Foreground="Black"/>
-                <!-- Changed text color to Black -->
-                <DatePicker x:Name="ToDatePicker" Width="200" />
+                <DatePicker
+                    x:Name="ToDatePicker"
+                    Width="200"
+                    SelectedDate="{Binding ToDate, Mode=TwoWay}" />
                 <Button
                     Margin="20,0,0,0"
-                    Click="FilterButton_Click"
+                    Command="{Binding FilterCommand}"
                     Content="Filter" 
                     Background="#4CAF50" 
                     Foreground="White" 
                     Padding="5,10" 
                     CornerRadius="3"/>
-                <!-- Styled button remains the same -->
             </StackPanel>
 
             <!-- Table Header -->
@@ -93,69 +91,47 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Grid.Column="0"
                     FontSize="18"
                     FontWeight="Bold"
-                    Text="Product Name" 
+                    Text="Order Date" 
                     Foreground="Black"/>
-                <!-- Changed text color to Black -->
                 <TextBlock
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     FontSize="18"
                     FontWeight="Bold"
-                    Text="Revenue(VND)" 
+                    Text="Total Amount (VND)" 
                     Foreground="Black"/>
-                <!-- Changed text color to Black -->
-                <TextBlock
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Text="Quantities" 
-                    Foreground="Black"/>
-                <!-- Changed text color to Black -->
             </Grid>
 
             <!-- Revenue Data -->
             <ListView
                 Grid.Row="1"
                 Margin="0,40,0,0"
-                ItemsSource="{Binding RevenueData}"
+                ItemsSource="{Binding OrdersData}"
                 Background="White" 
                 Foreground="Black">
-                <!-- Changed background to White and text to Black -->
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Detail">
+                    <DataTemplate x:DataType="local:Order">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Grid.Column="0"
                                 FontSize="18"
-                                Text="{x:Bind Product.Name}" 
+                                Text="{x:Bind Order_Date}" 
                                 Foreground="Black"/>
-                            <!-- Changed text color to Black -->
                             <TextBlock
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
                                 FontSize="18"
-                            
+                                Text="{x:Bind Total_Amount}" 
                                 Foreground="Black"/>
-                            <!-- Changed text color to Black -->
-                            <TextBlock
-                                Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                FontSize="18"
-                                Text="{x:Bind Quantity}" 
-                                Foreground="Black"/>
-                            <!-- Changed text color to Black -->
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -164,10 +140,8 @@
 
         <!-- Total Revenue Row -->
         <Grid Grid.Row="2" Margin="20" Background="Orange" Padding="10" CornerRadius="5">
-            <!-- Changed background to Orange -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <TextBlock
@@ -175,9 +149,8 @@
                 VerticalAlignment="Center"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="Total Revenue(VND):" 
+                Text="Total Revenue (VND):" 
                 Foreground="White"/>
-            <!-- Maintained white text for contrast -->
             <TextBlock
                 Grid.Column="1"
                 HorizontalAlignment="Right"
@@ -186,7 +159,6 @@
                 FontWeight="Bold"
                 Text="{Binding TotalRevenue}" 
                 Foreground="White"/>
-            <!-- Maintained white text for contrast -->
         </Grid>
     </Grid>
 </Page>

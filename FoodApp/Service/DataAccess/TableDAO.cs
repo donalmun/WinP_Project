@@ -35,8 +35,8 @@ namespace FoodApp.Service.DataAccess
             {
                 Id = Convert.ToInt32(reader["id"]),
                 Table_Name = reader["table_name"].ToString(),
-                Capacity = Convert.ToInt32(reader["capacity"]),
-                Status = Convert.ToByte(reader["status"])
+                
+                Status = Convert.ToInt32(reader["status"])
             };
         }
        
@@ -45,10 +45,9 @@ namespace FoodApp.Service.DataAccess
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                using (var command = new MySqlCommand("UPDATE `Table` SET table_name = @TableName, capacity = @Capacity, status = @Status WHERE id = @Id", connection))
+                using (var command = new MySqlCommand("UPDATE `Table` SET table_name = @TableName, status = @Status WHERE id = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@TableName", table.Table_Name);
-                    command.Parameters.AddWithValue("@Capacity", table.Capacity);
                     command.Parameters.AddWithValue("@Status", table.Status);
                     command.Parameters.AddWithValue("@Id", table.Id);
 
@@ -57,5 +56,62 @@ namespace FoodApp.Service.DataAccess
             }
             return table;
         }
+
+        // TableDAO.cs
+        public async Task<IEnumerable<Table>> SearchTablesByNameAsync(string nameQuery)
+        {
+            var tables = new List<Table>();
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("SELECT * FROM `Table` WHERE table_name LIKE @NameQuery", connection))
+                {
+                    command.Parameters.AddWithValue("@NameQuery", $"%{nameQuery}%");
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var table = MapToEntity(reader);
+                            tables.Add(table);
+                        }
+                    }
+                }
+            }
+            return tables;
+        }
+
+        public override async Task<Table> AddAsync(Table table)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("INSERT INTO `Table` (table_name, status) VALUES (@TableName, @Status)", connection))
+                {
+                    command.Parameters.AddWithValue("@TableName", table.Table_Name);
+                    
+                    command.Parameters.AddWithValue("@Status", table.Status);
+
+                    await command.ExecuteNonQueryAsync();
+                    table.Id = (int)command.LastInsertedId;
+                }
+            }
+            return table;
+        }
+
+        public override async Task<Table> DeleteAsync(int id)
+        {
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand("DELETE FROM `Table` WHERE id = @Id", connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            return null;
+        }
+
     }
+
 }

@@ -11,9 +11,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.DataContext>
-        <viewModels:OrderViewModel />
-    </Page.DataContext>
+
 
     <Page.Resources>
         <helper:CurrencyConverter x:Key="CurrencyConverter" />
@@ -45,7 +43,14 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="Doanh thu" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
                             Click="GoToRevenueView_Click"/>
-                    <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" Click="GoToManagementPage_Click" />
+
+
+                    <Button Content="Quản lý mặt hàng" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0" 
+                            Click="GoToManagementPage_Click" />
+                    <Button Content="Quản lý bàn" Background="Transparent" BorderBrush="Transparent" FontSize="16" Margin="10.0"
+                            Click="GoToTablePage_Click" />
+
+
                 </StackPanel>
             </StackPanel>
         </Grid>
