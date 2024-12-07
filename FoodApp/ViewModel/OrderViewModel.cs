@@ -222,7 +222,8 @@ namespace FoodApp.ViewModels
             try
             {
                 var tables = await _tableDao.GetAllAsync();
-                Tables = new ObservableCollection<Table>(tables);
+                var emptyTables = tables.Where(t => t.Status == 0);
+                Tables = new ObservableCollection<Table>(emptyTables);
             }
             catch (Exception ex)
             {
