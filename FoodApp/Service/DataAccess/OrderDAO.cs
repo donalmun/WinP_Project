@@ -1,6 +1,7 @@
 ﻿// OrderDAO.cs
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using MySqlConnector;
 
@@ -9,10 +10,14 @@ namespace FoodApp.Service.DataAccess
     public class OrderDAO : MySqlDao<Order>
     {
         private readonly DetailDAO _detailDao;
+        private readonly ProductDao _productDao;
+        private readonly CustomerDAO _customerDao;
 
         public OrderDAO()
         {
             _detailDao = new DetailDAO();
+            _productDao = new ProductDao();
+            _customerDao = new CustomerDAO();
         }
 
         public override async Task<IEnumerable<Order>> GetAllAsync()
@@ -81,5 +86,115 @@ namespace FoodApp.Service.DataAccess
                 throw;
             }
         }
+
+        public async Task LoadOrderDetailsAsync(Order order)
+        {
+            if (order == null) return;
+
+            var details = new List<Detail>();
+
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = "SELECT * FROM Detail WHERE Order_Id = @OrderId";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@OrderId", order.Id);
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var detail = new Detail
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Order_Id = Convert.ToInt32(reader["Order_Id"]),
+                                Product_Id = Convert.ToInt32(reader["Product_Id"]),
+                                Quantity = Convert.ToInt32(reader["Quantity"]),
+                                Unit_Price = Convert.ToSingle(reader["Unit_Price"]),
+                                Sub_Total = Convert.ToSingle(reader["Sub_Total"]),
+                                Note = reader["Note"].ToString()
+                            };
+
+                            // Load product details
+                            detail.Product = await _productDao.GetByIdAsync(detail.Product_Id);
+
+                            details.Add(detail);
+                        }
+                    }
+                }
+                // Load customer details if Customer_Id is not null
+                if (order.Customer_Id.HasValue)
+                {
+                    order.Customer = await _customerDao.GetByIdAsync(order.Customer_Id.Value);
+                }
+
+            }
+
+            order.Details = details;
+        }
+
+        public async Task<List<Order>> GetOrdersByTableIdAsync(int tableId)
+        {
+            var orders = new List<Order>();
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = @"
+                    SELECT o.*, c.*
+                    FROM `Orders` o
+                    LEFT JOIN Customer c ON o.Customer_Id = c.Id
+                    WHERE o.Table_Id = @TableId";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@TableId", tableId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var order = MapToEntity(reader);
+                            orders.Add(order);
+                        }
+                    }
+                }
+            }
+            return orders;
+        }
+
+        protected override Order MapToEntity(IDataReader reader)
+        {
+            var order = new Order
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                Order_Date = Convert.ToDateTime(reader["Order_Date"]),
+                Total_Amount = Convert.ToSingle(reader["Total_Amount"]),
+                Status = Convert.ToByte(reader["Status"]),
+                Customer_Id = reader["Customer_Id"] as int?,
+                Table_Id = reader["Table_Id"] as int?,
+                // Initialize Details as empty list
+                Details = new List<Detail>()
+            };
+
+            // Map Customer data if present
+            if (!reader.IsDBNull(reader.GetOrdinal("Customer_Id")))
+            {
+                order.Customer = new Customer
+                {
+                    Id = Convert.ToInt32(reader["Customer_Id"]),
+                    Full_Name = reader["Full_Name"].ToString(),
+                    Phone = reader["Phone"].ToString(),
+                    Email = reader["Email"].ToString(),
+                    Address = reader["Address"].ToString(),
+                    Loyalty_Points = Convert.ToInt32(reader["Loyalty_Points"]),
+                    Created_At = Convert.ToDateTime(reader["Created_At"])
+                };
+            }
+
+
+            return order;
+        }
+
+
     }
 }

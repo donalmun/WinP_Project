@@ -334,7 +334,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Button Grid.Row="4" Content="Thanh toán" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" />
+                <Button Grid.Row="4" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" />
             </Grid>
         </Grid>
 
@@ -492,25 +492,24 @@
                 <Popup x:Name="PaymentOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Border 
-            Background="White" 
-            BorderThickness="2" 
-            CornerRadius="12" 
-            Width="450" 
-            Height="550"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center">
+                            Background="White" 
+                            BorderThickness="2" 
+                            CornerRadius="12" 
+                            Width="450" 
+                            Height="550"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
                             <controls:PaymentOptionsControl 
-                OrderSubTotal="{Binding TotalAmount, Mode=OneWay}"
-                PaymentConfirmed="PaymentOptionsControl_PaymentConfirmed"
-                PaymentCanceled="PaymentOptionsControl_PaymentCanceled"/>
+                                OrderSubTotal="{Binding TotalAmount, Mode=OneWay}"
+                                PaymentConfirmed="PaymentOptionsControl_PaymentConfirmed"
+                                PaymentCanceled="PaymentOptionsControl_PaymentCanceled"/>
                         </Border>
                     </Grid>
                 </Popup>
 
             </Grid>
 
-            
-
+           
         </Grid>
     </Grid>
 </Page>

@@ -312,6 +312,7 @@ namespace FoodApp
                 };
                 AIChatButton.Content = "💬"; // Revert button icon to chat
             }
+        }
 
         private void GoToTablePage_Click(object sender, RoutedEventArgs e)
         {

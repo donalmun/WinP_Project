@@ -8,19 +8,24 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FoodApp.Service.Controls;
+using FoodApp.Views;
+using System.Linq;
 
 namespace FoodApp.ViewModels
 {
     public class TableManagementViewModel : BindableBase
     {
+        private readonly OrderDAO _orderDao;
         private readonly TableDAO _tableDao;
         private string _searchTableName;
         private Table _selectedTable;
         private string _tableName;
-        private byte _status;
+        private int _status;
+        private Order _selectedOrder;
 
         public TableManagementViewModel()
         {
+            _orderDao = new OrderDAO();
             _tableDao = new TableDAO();
             Tables = new ObservableCollection<Table>();
             LoadTablesCommand = new AsyncRelayCommand(LoadTablesAsync);
@@ -28,6 +33,7 @@ namespace FoodApp.ViewModels
             EditTableCommand = new AsyncRelayCommand<Table>(EditTableAsync);
             DeleteTableCommand = new AsyncRelayCommand<Table>(DeleteTableAsync);
             SearchCommand = new AsyncRelayCommand(SearchAsync);
+            ViewDetailsCommand = new AsyncRelayCommand<Table>(ViewDetailsAsync);
 
             // Load tables on initialization
             LoadTablesCommand.Execute(null);
@@ -53,10 +59,16 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _tableName, value);
         }
 
-        public byte Status
+        public int Status
         {
             get => _status;
             set => SetProperty(ref _status, value);
+        }
+
+        public Order SelectedOrder
+        {
+            get => _selectedOrder;
+            set => SetProperty(ref _selectedOrder, value);
         }
 
         public ICommand LoadTablesCommand { get; }
@@ -64,6 +76,7 @@ namespace FoodApp.ViewModels
         public ICommand EditTableCommand { get; }
         public ICommand DeleteTableCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand ViewDetailsCommand { get; } // Added
 
         public XamlRoot XamlRoot { get; set; }
 
@@ -157,6 +170,56 @@ namespace FoodApp.ViewModels
                 }
             }
         }
+
+        private async Task ViewDetailsAsync(Table table)
+        {
+            if (table == null) return;
+
+            await LoadOrderDetailsAsync(table);
+
+            if (SelectedOrder != null)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Order Details",
+                    Content = new OrderDetailsControl { DataContext = SelectedOrder },
+                    CloseButtonText = "Close",
+                    XamlRoot = XamlRoot
+                };
+
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                await ShowMessageAsync("No Order", "No active order found for this table.");
+            }
+        }
+
+        private async Task LoadOrderDetailsAsync(Table table)
+        {
+            if (table == null || table.Status == 0) // Assuming 0 means empty
+            {
+                SelectedOrder = null;
+                return;
+            }
+
+            // Fetch the orders for the table where the status indicates active
+            var orders = await _orderDao.GetOrdersByTableIdAsync(table.Id);
+
+            // Assuming the most recent order is the active one
+            var activeOrder = orders?.OrderByDescending(o => o.Order_Date).FirstOrDefault(o => o.Status != 0);
+
+            if (activeOrder != null)
+            {
+                await _orderDao.LoadOrderDetailsAsync(activeOrder);
+                SelectedOrder = activeOrder;
+            }
+            else
+            {
+                SelectedOrder = null;
+            }
+        }
+
 
         private void ClearFields()
         {

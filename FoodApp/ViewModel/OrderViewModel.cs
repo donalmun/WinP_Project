@@ -54,11 +54,51 @@ namespace FoodApp.ViewModels
                 {
                     if (_selectedTable != null)
                     {
-                        // Set table status to 'in use' (assuming 1 represents 'in use')
-                        UpdateTableStatus(_selectedTable, 1);
+                        // Call the async method to handle table selection
+                        SetSelectedTableAsync(_selectedTable);
+                    }
+                    else
+                    {
+                        // Clear details and customer info if no table is selected
+                        Details.Clear();
+                        SelectedCustomer = null;
                     }
                 }
             }
+        }
+
+        private async void SetSelectedTableAsync(Table selectedTable)
+        {
+            // Update table status
+            await UpdateTableStatus(selectedTable, 1); // Assuming 1 represents 'in use'
+
+            // Load the order for the selected table
+            await LoadOrderForSelectedTableAsync(selectedTable);
+        }
+
+        // Implement the method to load order details and customer info
+        private async Task LoadOrderForSelectedTableAsync(Table selectedTable)
+        {
+            var orders = await _orderDao.GetOrdersByTableIdAsync(selectedTable.Id);
+
+            if (orders != null && orders.Any())
+            {
+                var latestOrder = orders.OrderByDescending(o => o.Order_Date).FirstOrDefault();
+
+                if (latestOrder != null)
+                {
+                    await _orderDao.LoadOrderDetailsAsync(latestOrder);
+                    Details = new ObservableCollection<Detail>(latestOrder.Details);
+                    SelectedCustomer = latestOrder.Customer;
+                }
+            }
+            else
+            {
+                Details.Clear();
+                SelectedCustomer = null;
+            }
+
+            OnPropertyChanged(nameof(TotalAmount));
         }
 
         public Customer SelectedCustomer
@@ -120,6 +160,7 @@ namespace FoodApp.ViewModels
         }
 
         public ICommand SaveOrderCommand { get; }
+        public ICommand PaymentCommand { get; }
         public ICommand SearchCommand { get; }
 
         public OrderViewModel()
@@ -136,6 +177,9 @@ namespace FoodApp.ViewModels
 
             SearchCommand = new RelayCommand(() => SearchProducts());
             SaveOrderCommand = new AsyncRelayCommand(SaveOrderAsync);
+            
+            // Initialize the PaymentCommand
+            PaymentCommand = new RelayCommand(async () => await ExecutePaymentAsync());
             SuggestedCustomers = new ObservableCollection<Customer>();
 
             // Check database connection
@@ -151,6 +195,20 @@ namespace FoodApp.ViewModels
             };
         }
 
+        private async Task ExecutePaymentAsync()
+        {
+            // Save the order details to the database
+            await SaveOrderAsync();
+
+            // Update the table status if needed
+            if (SelectedTable != null)
+            {
+                await UpdateTableStatus(SelectedTable, 1); // Assuming 1 means occupied
+            }
+
+            // Show a message or perform any other actions needed after payment
+            ShowMessage("Payment successful and order saved.");
+        }
         private async void LoadTables()
         {
             try
@@ -286,6 +344,12 @@ namespace FoodApp.ViewModels
         // OrderViewModel.cs
         public async Task SaveOrderAsync()
         {
+            if (SelectedTable == null || Details == null || Details.Count == 0)
+            {
+                ShowMessage("Please select a table and add items to the order.");
+                return;
+            }
+
             var order = new Order
             {
                 Order_Date = DateTime.Now,
@@ -306,12 +370,6 @@ namespace FoodApp.ViewModels
                     await UpdateCustomerLoyaltyPointsAsync(SelectedCustomer, TotalAmount);
                 }
 
-                if (SelectedTable != null)
-                {
-                    // Reset table status to 'empty' (assuming 0 represents 'empty')
-                    UpdateTableStatus(SelectedTable, 0);
-                }
-
                 // Optionally, clear the form or display a success message
             }
             catch (Exception ex)
@@ -321,16 +379,18 @@ namespace FoodApp.ViewModels
             }
         }
         
-        private async void UpdateTableStatus(Table table, byte status)
+        private async Task UpdateTableStatus(Table table, int status)
         {
+            Console.WriteLine("table status before: " + table.Status);
             table.Status = status; // 1 for 'in use', 0 for 'empty'
+            Console.WriteLine("table status after: " + table.Status);
             await _tableDao.UpdateAsync(table);
         }
 
         
         private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
         {
-            // Example: 1 point for every 10 units of currency spent
+            // Example: 1 point for every 1000 units of currency spent
             
             int pointsToAdd = (int)(amount / 1000);
             Console.WriteLine("customer loyalty_point before: " + customer.Loyalty_Points);
