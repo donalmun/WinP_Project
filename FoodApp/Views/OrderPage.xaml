@@ -334,7 +334,32 @@
                     </StackPanel>
                 </Grid>
 
-                <Button Grid.Row="4" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" />
+                <Grid Grid.Row="4" Margin="10" Padding="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200px" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Cột 0 -->
+                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+                        <Button Background="Transparent" BorderBrush="Transparent">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Lưu hóa đơn" Click="SaveNormall_Click"/>
+                                    <MenuFlyoutItem Text="Hủy hóa đơn" Click="CancelOrder_Click"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE14C;" FontSize="24" FontWeight="Bold" Foreground="#333" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <Button Grid.Column="2" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" 
+                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" Width="300px"/>
+                </Grid>
+
+                
             </Grid>
         </Grid>
 
