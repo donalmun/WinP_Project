@@ -30,7 +30,7 @@
 		<None Remove="Assets\StoreLogo.png" />
 		<None Remove="Assets\Wide310x150Logo.scale-200.png" />
 		<None Remove="MainPage.xaml" />
-		<None Remove="Service\Controls\EditTableControl.xaml" />
+		<None Remove="Views\Controls\EditTableControl.xaml" />
 		<None Remove="Views\OrderDetailsControl.xaml" />
 		<None Remove="Views\ProductManagementPage.xaml" />
 		<None Remove="Views\TableManagementPage.xaml" />
@@ -106,25 +106,8 @@
 		<None Update="Assets\Wide310x150Logo.scale-200.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Service\Controls\AIChatControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Service\Controls\EditCustomerControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Service\Controls\EditProductControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-
-		<None Update="Service\Controls\PaymentOptionsControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
 
 		<Page Update="Views\OrderDetailsControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-
-		<Page Update="Service\Controls\EditTableControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
 

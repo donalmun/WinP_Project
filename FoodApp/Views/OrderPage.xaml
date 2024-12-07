@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helper="using:FoodApp.Helper"
     xmlns:viewModels="using:FoodApp.ViewModels"
-    xmlns:controls="using:FoodApp.Service.Controls" 
+    xmlns:controls="using:FoodApp.Views.Controls" 
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

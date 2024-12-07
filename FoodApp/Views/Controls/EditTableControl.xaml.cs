@@ -1,7 +1,7 @@
 // EditTableControl.xaml.cs
 using Microsoft.UI.Xaml.Controls;
 
-namespace FoodApp.Service.Controls
+namespace FoodApp.Views.Controls
 {
     public sealed partial class EditTableControl : UserControl
     {

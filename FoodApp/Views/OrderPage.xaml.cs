@@ -1,5 +1,5 @@
 ﻿// FoodApp\Views\OrderPage.xaml.cs
-using FoodApp.Service.Controls;
+using FoodApp.Views.Controls;
 using FoodApp.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -84,7 +84,7 @@ namespace FoodApp
 
         private async void PaymentOptionsControl_PaymentConfirmed(object sender, RoutedEventArgs e)
         {
-            var paymentControl = sender as Service.Controls.PaymentOptionsControl;
+            var paymentControl = sender as Views.Controls.PaymentOptionsControl;
             PaymentOptionsPopup.IsOpen = false;
 
             // Optionally, you can use the selected payment method

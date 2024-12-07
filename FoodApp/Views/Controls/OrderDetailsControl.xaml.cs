@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace FoodApp.Views
+namespace FoodApp.Views.Controls
 {
     public sealed partial class OrderDetailsControl : UserControl
     {

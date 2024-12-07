@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using FoodApp.Views;
 using FoodApp.Helper;
-using FoodApp.Service.Controls;
+using FoodApp.Views.Controls;
 
 namespace FoodApp.ViewModels
 {

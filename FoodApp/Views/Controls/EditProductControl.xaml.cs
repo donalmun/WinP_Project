@@ -3,7 +3,7 @@ using System;
 using FoodApp.Service.DataAccess;
 using System.ComponentModel;
 
-namespace FoodApp.Service.Controls
+namespace FoodApp.Views.Controls
 {
     public sealed partial class EditProductControl : UserControl
     {

@@ -1,7 +1,7 @@
 ﻿// WinP_Project\FoodApp\Service\Controls\EditCustomerControl.xaml.cs
 using Microsoft.UI.Xaml.Controls;
 
-namespace FoodApp.Service.Controls
+namespace FoodApp.Views.Controls
 {
     public sealed partial class EditCustomerControl : UserControl
     {

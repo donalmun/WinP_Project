@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System;
 using System.Linq;
-using FoodApp.Service.Controls;
+using FoodApp.Views.Controls;
 
 namespace FoodApp.ViewModels
 {

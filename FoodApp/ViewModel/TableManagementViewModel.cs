@@ -7,7 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FoodApp.Service.Controls;
+using FoodApp.Views.Controls;
 using FoodApp.Views;
 using System.Linq;
 

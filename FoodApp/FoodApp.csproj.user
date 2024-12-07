@@ -5,12 +5,6 @@
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
-    <Page Update="Views\OrderDetailsControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Service\Controls\EditTableControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Views\TableManagementPage.xaml">
       <SubType>Designer</SubType>
     </Page>

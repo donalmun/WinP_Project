@@ -9,7 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 
-namespace FoodApp.Service.Controls
+namespace FoodApp.Views.Controls
 {
     public sealed partial class PaymentOptionsControl : UserControl
     {
