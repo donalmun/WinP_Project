@@ -67,6 +67,14 @@ namespace FoodApp.ViewModels
             }
         }
 
+        public void ClearOrder()
+        {
+            Details.Clear();
+            SelectedCustomer = null;
+            SelectedTable = null;
+            OnPropertyChanged(nameof(TotalAmount));
+        }
+
         private async void SetSelectedTableAsync(Table selectedTable)
         {
             // Update table status
@@ -176,8 +184,8 @@ namespace FoodApp.ViewModels
             Details.CollectionChanged += DetailItems_CollectionChanged;
 
             SearchCommand = new RelayCommand(() => SearchProducts());
-            SaveOrderCommand = new AsyncRelayCommand(SaveOrderAsync);
-            
+            SaveOrderCommand = new AsyncRelayCommand(() => SaveOrderAsync(false));
+
             // Initialize the PaymentCommand
             PaymentCommand = new RelayCommand(async () => await ExecutePaymentAsync());
             SuggestedCustomers = new ObservableCollection<Customer>();
@@ -198,12 +206,12 @@ namespace FoodApp.ViewModels
         private async Task ExecutePaymentAsync()
         {
             // Save the order details to the database
-            await SaveOrderAsync();
+            await SaveOrderAsync(true);
 
             // Update the table status if needed
             if (SelectedTable != null)
             {
-                await UpdateTableStatus(SelectedTable, 1); // Assuming 1 means occupied
+                await UpdateTableStatus(SelectedTable, 1);
             }
 
             // Show a message or perform any other actions needed after payment
@@ -342,7 +350,7 @@ namespace FoodApp.ViewModels
         }
 
         // OrderViewModel.cs
-        public async Task SaveOrderAsync()
+        public async Task SaveOrderAsync(bool isPayment)
         {
             if (SelectedTable == null || Details == null || Details.Count == 0)
             {
@@ -354,11 +362,13 @@ namespace FoodApp.ViewModels
             {
                 Order_Date = DateTime.Now,
                 Total_Amount = (float)TotalAmount,
-                Status = 1,
+                Status = (byte)(isPayment ? 1 : 0),
                 Customer_Id = SelectedCustomer?.Id,
                 Table_Id = SelectedTable?.Id,
                 Details = Details.ToList()
             };
+
+            Console.WriteLine("order status: " + order.Status);
 
             try
             {
@@ -398,6 +408,7 @@ namespace FoodApp.ViewModels
             Console.WriteLine("customer loyalty_point after: " + customer.Loyalty_Points);
             await _customerDao.UpdateAsync(customer);
         }
+
         private void ShowMessage(string message)
         {
             // Vì ViewModel không có quyền truy cập vào XamlRoot, bạn cần sử dụng một cách khác để hiển thị dialog.

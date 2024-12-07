@@ -90,8 +90,9 @@ namespace FoodApp
             // Optionally, you can use the selected payment method
             string paymentMethod = paymentControl.SelectedPaymentMethod;
 
-            // Proceed with saving the order
-            await ViewModel.SaveOrderAsync();
+            //await ViewModel.SaveOrderAsync(true);
+
+            ViewModel.ClearOrder();
 
             // Optionally, show a success message
             var dialog = new ContentDialog
@@ -121,10 +122,11 @@ namespace FoodApp
 
         private async void GenerateDetailFile_Click(object sender, RoutedEventArgs e)
         {
-            var invoiceItems = (this.DataContext as OrderViewModel)?.Details;
+            var viewModel = this.DataContext as OrderViewModel;
+            var invoiceItems = viewModel?.Details;
             if (invoiceItems == null) return;
 
-            double totalInvoice = invoiceItems.Sum(item => item.Sub_Total); // Changed to double for compatibility
+            double totalInvoice = invoiceItems.Sum(item => item.Sub_Total);
 
             var savePicker = new FileSavePicker
             {
@@ -163,6 +165,25 @@ namespace FoodApp
                         .SetFontSize(12)
                         .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
                     document.Add(dateParagraph);
+
+                    // Kết hợp thông tin bàn và mã hóa đơn
+                    var tableInfo = $"Bàn: {viewModel.SelectedTable?.Table_Name ?? "N/A"} - Mã hóa đơn: {viewModel.SelectedTable?.Id ?? 0}";
+                    var tableInfoParagraph = new iText.Layout.Element.Paragraph(tableInfo)
+                        .SetFont(font)
+                        .SetFontSize(12)
+                        .SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT);
+                    document.Add(tableInfoParagraph);
+
+                    // Kết hợp tên khách hàng và số điện thoại
+                    if (viewModel.SelectedCustomer != null)
+                    {
+                        var customerInfo = $"Khách hàng: {viewModel.SelectedCustomer.Full_Name} - SĐT: {viewModel.SelectedCustomer.Phone}";
+                        var customerInfoParagraph = new iText.Layout.Element.Paragraph(customerInfo)
+                            .SetFont(font)
+                            .SetFontSize(12)
+                            .SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT);
+                        document.Add(customerInfoParagraph);
+                    }
 
                     var table = new iText.Layout.Element.Table(4).UseAllAvailableWidth();
                     table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Tên món").SetFont(font)));
@@ -222,6 +243,8 @@ namespace FoodApp
                 }
             }
         }
+
+
 
         private void DiscountCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -318,6 +341,16 @@ namespace FoodApp
         {
             this.Frame.Navigate(typeof(TableManagementPage));
 
+        }
+
+        private async void SaveNormall_Click(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.SaveOrderAsync(false);
+        }
+
+        private void CancelOrder_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ClearOrder();
         }
     }
 }
