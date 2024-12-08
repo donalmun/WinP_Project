@@ -512,7 +512,7 @@
                 </Border>
             </Popup>
 
-            <Grid Margin="0,0,700,-100" VerticalAlignment="Bottom">
+            <Grid Margin="-150,0,0,-200" VerticalAlignment="Center">
                 <!-- Payment Options Popup -->
                 <Popup x:Name="PaymentOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
