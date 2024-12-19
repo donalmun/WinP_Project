@@ -6,6 +6,7 @@
     xmlns:local="using:FoodApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="using:FoodApp.ViewModel"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"  
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -16,8 +17,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <!-- Header -->
             <RowDefinition Height="*" />
+            <!-- Content -->
             <RowDefinition Height="Auto" />
+            <!-- Total Revenue -->
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -46,96 +50,155 @@
 
         <!-- Content -->
         <Grid Grid.Row="1" Margin="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <!-- Chart Column -->
+                <ColumnDefinition Width="3*" />
+                <!-- Data Column -->
+            </Grid.ColumnDefinitions>
 
-            <!-- Filters -->
-            <StackPanel
-                Grid.Row="0"
-                Margin="0,0,0,20"
-                HorizontalAlignment="Left"
-                Orientation="Horizontal">
-                <TextBlock
-                    Margin="0,0,10,0"
-                    VerticalAlignment="Center"
-                    Text="From:" 
-                    Foreground="Black"/>
-                <DatePicker
-                    x:Name="FromDatePicker"
-                    Width="200"
-                    Margin="0,0,20,0"
-                    SelectedDate="{Binding FromDate, Mode=TwoWay}" />
-                <TextBlock
-                    Margin="0,0,10,0"
-                    VerticalAlignment="Center"
-                    Text="To:" 
-                    Foreground="Black"/>
-                <DatePicker
-                    x:Name="ToDatePicker"
-                    Width="200"
-                    SelectedDate="{Binding ToDate, Mode=TwoWay}" />
-                <Button
-                    Margin="20,0,0,0"
-                    Command="{Binding FilterCommand}"
-                    Content="Filter" 
-                    Background="#4CAF50" 
-                    Foreground="White" 
-                    Padding="5,10" 
-                    CornerRadius="3"/>
-            </StackPanel>
+            <!-- Chart Column -->
+            <Grid Grid.Column="0" Background="LightGray" Padding="10" CornerRadius="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <!-- Table Header -->
-            <Grid Grid.Row="1" Margin="0,0,0,30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+                <!-- Chart Title -->
                 <TextBlock
-                    Grid.Column="0"
-                    FontSize="18"
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    FontSize="20"
                     FontWeight="Bold"
-                    Text="Order Date" 
-                    Foreground="Black"/>
-                <TextBlock
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Text="Total Amount (VND)" 
-                    Foreground="Black"/>
+                    HorizontalAlignment="Center"
+                    Text="Chart Revenue"
+                    Foreground="Black" />
+
+                <!-- Chart Placeholder -->
+                <Border
+                    Grid.Row="1"
+                    Background="White"
+                    CornerRadius="5"
+                    BorderThickness="1"
+                    BorderBrush="Gray">
+                    <controls:WebView2
+                        x:Name="ChartWebView"
+                        DefaultBackgroundColor="Transparent"
+                        Margin="0,10,0,10" />
+                </Border>
             </Grid>
 
-            <!-- Revenue Data -->
-            <ListView
-                Grid.Row="1"
-                Margin="0,40,0,0"
-                ItemsSource="{Binding OrdersData}"
-                Background="White" 
-                Foreground="Black">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Order">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                FontSize="18"
-                                Text="{x:Bind Order_Date}" 
-                                Foreground="Black"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                FontSize="18"
-                                Text="{x:Bind Total_Amount}" 
-                                Foreground="Black"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <!-- Data Column -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <!-- Filters -->
+                    <RowDefinition Height="Auto" />
+                    <!-- Table Header -->
+                    <RowDefinition Height="*" />
+                    <!-- Revenue Data -->
+                </Grid.RowDefinitions>
+
+                <!-- Filters -->
+                <StackPanel
+                    Grid.Row="0"
+                    Margin="0,0,0,20"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="From:" 
+                        Foreground="Black"/>
+                    <DatePicker
+                        x:Name="FromDatePicker"
+                        Width="200"
+                        Margin="0,0,20,0"
+                        SelectedDate="{Binding FromDate, Mode=TwoWay}" />
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="To:" 
+                        Foreground="Black"/>
+                    <DatePicker
+                        x:Name="ToDatePicker"
+                        Width="200"
+                        SelectedDate="{Binding ToDate, Mode=TwoWay}" />
+                    <Button
+                        Margin="20,0,0,0"
+                        Command="{Binding FilterCommand}"
+                        Content="Filter" 
+                        Background="#4CAF50" 
+                        Foreground="White" 
+                        Padding="5,10" 
+                        CornerRadius="3"/>
+                    <!-- Add ComboBox to select chart type -->
+                    <TextBlock
+                        Margin="20,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="Chart Type:" 
+                        Foreground="Black"/>
+                    <ComboBox
+                        x:Name="ChartTypeComboBox"
+                        Width="200"
+                        Margin="10,0,0,0"
+                        SelectionChanged="ChartTypeComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Revenue by Month" />
+                        <ComboBoxItem Content="Revenue by Day" />
+                        <ComboBoxItem Content="Sales by Category" />
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Table Header -->
+                <Grid Grid.Row="1" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Text="Order Date" 
+                        Foreground="Black"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Text="Total Amount (VND)" 
+                        Foreground="Black"/>
+                </Grid>
+
+                <!-- Revenue Data -->
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <ListView
+                        ItemsSource="{Binding OrdersData}"
+                        Background="White" 
+                        Foreground="Black">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:Order">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        FontSize="18"
+                                        Text="{x:Bind Order_Date}" 
+                                        Foreground="Black"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        FontSize="18"
+                                        Text="{x:Bind Total_Amount}" 
+                                        Foreground="Black"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </Grid>
         </Grid>
 
         <!-- Total Revenue Row -->

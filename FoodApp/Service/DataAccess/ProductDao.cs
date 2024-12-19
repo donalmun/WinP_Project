@@ -104,6 +104,38 @@ namespace FoodApp.Service.DataAccess
             return default;
         }
 
+        public async Task<Dictionary<string, int>> GetSalesByCategoryAsync()
+        {
+            var result = new Dictionary<string, int>();
+
+            using (var connection = GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = @"
+               SELECT Category.Name, SUM(Detail.Quantity) as TotalQuantity
+               FROM Detail
+               INNER JOIN Product ON Detail.Product_Id = Product.Id
+               INNER JOIN Category ON Product.Category_Id = Category.Id
+               GROUP BY Category.Name";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            string categoryName = reader.GetString("Name");
+                            int totalQuantity = reader.GetInt32("TotalQuantity");
+                            result[categoryName] = totalQuantity;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
         protected override Product MapToEntity(IDataReader reader)
         {
             return new Product

@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodApp.Service.DataAccess;
 using FoodApp.Helper;
+using System.Text.Json;
+using Microsoft.UI.Xaml.Controls;
+using System.Collections.Generic;
 
 #nullable enable
 
@@ -136,6 +139,66 @@ namespace FoodApp.ViewModel
         }
 
         public float TotalRevenue => OrdersData?.Sum(o => o.Total_Amount) ?? 0;
+
+        public string GetChartDataJson()
+        {
+            var chartData = OrdersData.Select(o => new { Date = o.Order_Date.ToString("MMM dd"), Amount = o.Total_Amount });
+            return JsonSerializer.Serialize(chartData);
+        }
+
+        public async Task<string> GetMonthlyRevenueDataJsonAsync()
+        {
+            var chartData = _allOrders?
+                .GroupBy(o => new { o.Order_Date.Year, o.Order_Date.Month })
+                .Select(g => new { Month = $"{g.Key.Year}-{g.Key.Month}", Amount = g.Sum(o => o.Total_Amount) })
+                .Select(cd => (dynamic)cd) // Cast to dynamic
+                .ToList() ?? new List<dynamic>();
+
+            return JsonSerializer.Serialize(new
+            {
+                labels = chartData.Select(cd => cd.Month).ToList(),
+                data = chartData.Select(cd => cd.Amount).ToList()
+            });
+        }
+
+        public async Task<string> GetDailyRevenueDataJsonAsync()
+        {
+            var chartData = _allOrders?
+                .GroupBy(o => o.Order_Date.Date)
+                .Select(g => new { Date = g.Key.ToString("yyyy-MM-dd"), Amount = g.Sum(o => o.Total_Amount) })
+                .Select(cd => (dynamic)cd) // Cast to dynamic
+                .ToList() ?? new List<dynamic>();
+
+            return JsonSerializer.Serialize(new
+            {
+                labels = chartData.Select(cd => cd.Date).ToList(),
+                data = chartData.Select(cd => cd.Amount).ToList()
+            });
+        }
+
+
+        public async Task<string> GetSalesByCategoryDataJsonAsync()
+        {
+            var productDao = new ProductDao();
+            var salesData = await productDao.GetSalesByCategoryAsync();
+
+            var chartData = salesData.Select(kvp => new { Category = kvp.Key, Amount = kvp.Value }).ToList();
+
+            return JsonSerializer.Serialize(new
+            {
+                labels = chartData.Select(cd => cd.Category).ToList(),
+                data = chartData.Select(cd => cd.Amount).ToList(),
+                colors = chartData.Select(cd => GetRandomColor()).ToList()
+            });
+        }
+
+
+        // Helper method to generate random colors
+        private string GetRandomColor()
+        {
+            var random = new Random();
+            return $"rgba({random.Next(0,255)}, {random.Next(0,255)}, {random.Next(0,255)}, 0.6)";
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
