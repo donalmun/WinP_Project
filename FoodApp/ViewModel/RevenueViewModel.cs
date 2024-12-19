@@ -6,6 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodApp.Service.DataAccess;
 using FoodApp.Helper;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.WinUI; // Correct namespace
+using LiveChartsCore.SkiaSharpView.Painting; // For SolidColorPaint
+using System.Collections.Generic;
 
 #nullable enable
 
@@ -54,6 +59,51 @@ namespace FoodApp.ViewModel
         // Action Delegate for Showing Messages
         public Action<string>? ShowMessageAction { get; set; }
 
+        // LiveCharts2 Properties
+        private ISeries[] _revenueSeries = Array.Empty<ISeries>();
+        public ISeries[] RevenueSeries
+        {
+            get => _revenueSeries;
+            set
+            {
+                _revenueSeries = value;
+                OnPropertyChanged(nameof(RevenueSeries));
+            }
+        }
+
+        private string[] _labels = Array.Empty<string>();
+        public string[] Labels
+        {
+            get => _labels;
+            set
+            {
+                _labels = value;
+                OnPropertyChanged(nameof(Labels));
+            }
+        }
+
+        private Axis[] _xAxes = Array.Empty<Axis>();
+        public Axis[] XAxes
+        {
+            get => _xAxes;
+            set
+            {
+                _xAxes = value;
+                OnPropertyChanged(nameof(XAxes));
+            }
+        }
+
+        private Axis[] _yAxes = Array.Empty<Axis>();
+        public Axis[] YAxes
+        {
+            get => _yAxes;
+            set
+            {
+                _yAxes = value;
+                OnPropertyChanged(nameof(YAxes));
+            }
+        }
+
         public RevenueViewModel()
         {
             _orderDao = new OrderDAO();
@@ -66,6 +116,7 @@ namespace FoodApp.ViewModel
         {
             await LoadDataAsync();
             Console.WriteLine($"OrdersData Count: {OrdersData.Count}");
+            UpdateChart();
         }
 
         private async Task LoadDataAsync()
@@ -107,11 +158,12 @@ namespace FoodApp.ViewModel
         {
             if (FromDate >= ToDate)
             {
-                ShowMessageAction?.Invoke("From Date can not be greater or Equal than To Date");
+                ShowMessageAction?.Invoke("From Date cannot be greater or equal to To Date");
                 return;
             }
 
             FilterRevenueData(FromDate, ToDate);
+            UpdateChart();
         }
 
         public void FilterRevenueData(DateTimeOffset fromDate, DateTimeOffset toDate)
@@ -136,6 +188,55 @@ namespace FoodApp.ViewModel
         }
 
         public float TotalRevenue => OrdersData?.Sum(o => o.Total_Amount) ?? 0;
+
+        // Method to Update the Chart Data
+        private void UpdateChart()
+        {
+            if (_allOrders == null) return;
+
+            // Aggregate the total amount per day
+            var aggregatedData = OrdersData
+                .GroupBy(o => o.Order_Date.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    TotalAmount = g.Sum(o => o.Total_Amount)
+                })
+                .OrderBy(a => a.Date)
+                .ToList();
+
+            Labels = aggregatedData.Select(a => a.Date.ToString("yyyy-MM-dd")).ToArray();
+            var values = aggregatedData.Select(a => (double)a.TotalAmount).ToArray();
+
+            RevenueSeries = new ISeries[]
+            {
+                new ColumnSeries<double>
+                {
+                    Name = "Revenue",
+                    Values = values,
+                    Fill = new SolidColorPaint(new SkiaSharp.SKColor(76, 175, 80)) // Corrected Fill
+                }
+            };
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Labels = Labels,
+                    LabelsRotation = 15,
+                    Name = "Date"
+                }
+            };
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Total Revenue (VND)",
+                    Labeler = value => value.ToString("N0")
+                }
+            };
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

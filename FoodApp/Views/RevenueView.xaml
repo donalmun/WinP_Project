@@ -6,6 +6,7 @@
     xmlns:local="using:FoodApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="using:FoodApp.ViewModel"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI" 
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -86,56 +87,16 @@
                     CornerRadius="3"/>
             </StackPanel>
 
-            <!-- Table Header -->
-            <Grid Grid.Row="1" Margin="0,0,0,30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="0"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Text="Order Date" 
-                    Foreground="Black"/>
-                <TextBlock
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Text="Total Amount (VND)" 
-                    Foreground="Black"/>
-            </Grid>
-
-            <!-- Revenue Data -->
-            <ListView
+            <!-- LiveCharts2 Chart -->
+            <lvc:CartesianChart
                 Grid.Row="1"
-                Margin="0,40,0,0"
-                ItemsSource="{Binding OrdersData}"
-                Background="White" 
-                Foreground="Black">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Order">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                FontSize="18"
-                                Text="{x:Bind Order_Date}" 
-                                Foreground="Black"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                FontSize="18"
-                                Text="{x:Bind Total_Amount}" 
-                                Foreground="Black"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                Series="{Binding RevenueSeries}"
+                XAxes="{Binding XAxes}"
+                YAxes="{Binding YAxes}"
+                LegendPosition="Top"
+                ZoomMode="X">
+                <!-- Phần Tooltips đã bị loại bỏ để tránh lỗi -->
+            </lvc:CartesianChart>
         </Grid>
 
         <!-- Total Revenue Row -->
