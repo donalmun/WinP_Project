@@ -22,7 +22,7 @@
                         HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
                         Style="{StaticResource NavigationBackButtonNormalStyle}" 
                         Click="BackButton_Click" />
-                <TextBlock Text="Product Management" FontSize="30" FontWeight="Bold" 
+                <TextBlock Text="Quản Lý Sản Phẩm" FontSize="30" FontWeight="Bold" 
                            Foreground="DarkSlateGray" RelativePanel.RightOf="BackButton" 
                            Margin="550,10,0,0"/>
             </RelativePanel>
@@ -30,10 +30,10 @@
             <!-- Search Panel -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,5" Spacing="10">
                 <TextBox
-                    PlaceholderText="Search Products"
+                    PlaceholderText="Tìm Kiếm Sản Phẩm"
                     Text="{Binding SearchText, Mode=TwoWay}"
                     Width="300"/>
-                <Button Content="Search" Command="{Binding SearchCommand}" Width="100"/>
+                <Button Content="Tìm Kiếm" Command="{Binding SearchCommand}" Width="100"/>
             </StackPanel>
 
             <GridView x:Name="ProductGridView" ItemsSource="{Binding FilteredProducts}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" Margin="0,10,0,20"
@@ -78,13 +78,13 @@
 
             <!-- Action Buttons -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-                <Button Content="Delete" Command="{Binding DeleteCommand}" 
+                <Button Content="Xóa" Command="{Binding DeleteCommand}" 
                         CommandParameter="{Binding SelectedItem, ElementName=ProductGridView}"
                         Background="LightCoral" Foreground="White" CornerRadius="4"/>
-                <Button Content="Edit" Command="{Binding EditCommand}" 
+                <Button Content="Chỉnh Sửa" Command="{Binding EditCommand}" 
                         CommandParameter="{Binding SelectedItem, ElementName=ProductGridView}"
                         Background="LightBlue" Foreground="White" CornerRadius="4"/>
-                <Button Content="Add" Command="{Binding AddCommand}" 
+                <Button Content="Thêm" Command="{Binding AddCommand}" 
                         Background="LightGreen" Foreground="White" CornerRadius="4"/>
             </StackPanel>
         </StackPanel>

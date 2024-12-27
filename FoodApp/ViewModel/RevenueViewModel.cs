@@ -212,7 +212,7 @@ namespace FoodApp.ViewModel
             {
                 new ColumnSeries<double>
                 {
-                    Name = "Revenue",
+                    Name = "Doanh Thu",
                     Values = values,
                     Fill = new SolidColorPaint(new SkiaSharp.SKColor(76, 175, 80)) // Corrected Fill
                 }
@@ -224,7 +224,7 @@ namespace FoodApp.ViewModel
                 {
                     Labels = Labels,
                     LabelsRotation = 15,
-                    Name = "Date"
+                    Name = "Ngày"
                 }
             };
 
@@ -232,7 +232,7 @@ namespace FoodApp.ViewModel
             {
                 new Axis
                 {
-                    Name = "Total Revenue (VND)",
+                    Name = "Tổng Doanh Thu (VND)",
                     Labeler = value => value.ToString("N0")
                 }
             };

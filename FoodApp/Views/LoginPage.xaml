@@ -15,16 +15,16 @@
 
         <!-- Login Form -->
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Background="White" Padding="20" CornerRadius="10" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-            <TextBlock Text="Login" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
+            <TextBlock Text="Đăng Nhập" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
 
-            <TextBox x:Name="UsernameTextBox" PlaceholderText="Username" Margin="0,0,0,20" BorderThickness="1"/>
+            <TextBox x:Name="UsernameTextBox" PlaceholderText="Tên Đăng Nhập" Margin="0,0,0,20" BorderThickness="1"/>
             <Grid Margin="0,0,0,20">
-                <PasswordBox x:Name="PasswordBox" PlaceholderText="Password"  BorderThickness="1"/>
+                <PasswordBox x:Name="PasswordBox" PlaceholderText="Mật Khẩu"  BorderThickness="1"/>
                 <TextBox x:Name="PasswordTextBox" Visibility="Collapsed" BorderBrush="DarkSlateGray" BorderThickness="1"/>
                 <Button Content="👁" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" Click="TogglePasswordVisibility_Click"/>
             </Grid>
-            <CheckBox x:Name="RememberMeCheckBox" Content="Remember Me" Margin="0,0,0,20" FontFamily="Segoe UI"/>
-            <Button Content="Login" Click="LoginButton_Click" Background="#FF00796B" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <CheckBox x:Name="RememberMeCheckBox" Content="Nhớ Mật Khẩu" Margin="0,0,0,20" FontFamily="Segoe UI"/>
+            <Button Content="Đăng Nhập" Click="LoginButton_Click" Background="#FF00796B" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
         </StackPanel>
     </Grid>
 </Page>

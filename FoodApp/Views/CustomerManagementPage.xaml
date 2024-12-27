@@ -33,15 +33,15 @@
                         HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
                         Style="{StaticResource NavigationBackButtonNormalStyle}"
                         Click="BackButton_Click" />
-				<TextBlock Text="Customer Management" FontSize="30" FontWeight="Bold" 
+				<TextBlock Text="Quản Lý Khách Hàng" FontSize="30" FontWeight="Bold" 
                            Foreground="DarkSlateGray" RelativePanel.RightOf="BackButton"
-                           Margin="200,20,0,0"/>
+                           Margin="230,20,0,0"/>
 			</RelativePanel>
 
 			<StackPanel Orientation="Horizontal" Margin="240,20,0,20">
-				<TextBox Width="400" PlaceholderText="Search by Phone"
+				<TextBox Width="400" PlaceholderText="Tìm Kiếm Theo Số Điện Thoại"
                          Text="{Binding SearchPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-				<Button Content="Search" Command="{Binding SearchCommand}"
+				<Button Content="Tìm Kiếm" Command="{Binding SearchCommand}"
                         Margin="10,0,0,0" Background="#FF0288D1" Foreground="White" />
 			</StackPanel>
 
@@ -66,7 +66,7 @@
 					</Grid.ColumnDefinitions>
 
 					<!-- Full Name -->
-					<TextBlock Text="Full Name:"
+					<TextBlock Text="Họ Tên:"
                                FontWeight="Bold"
                                Grid.Row="0" Grid.Column="0"
                                VerticalAlignment="Center"
@@ -78,7 +78,7 @@
                                TextAlignment="Center"/>
 
 					<!-- Phone -->
-					<TextBlock Text="Phone:"
+					<TextBlock Text="SDT:"
                                FontWeight="Bold"
                                Grid.Row="1" Grid.Column="0"
                                VerticalAlignment="Center"
@@ -102,7 +102,7 @@
                                TextAlignment="Center"/>
 
 					<!-- Address -->
-					<TextBlock Text="Address:"
+					<TextBlock Text="Địa Chỉ:"
                                FontWeight="Bold"
                                Grid.Row="3" Grid.Column="0"
                                VerticalAlignment="Center"
@@ -114,7 +114,7 @@
                                TextAlignment="Center"/>
 
 					<!-- Loyalty Points -->
-					<TextBlock Text="Loyalty Points:"
+					<TextBlock Text="Điểm Tích Lũy:"
                                FontWeight="Bold"
                                Grid.Row="4" Grid.Column="0"
                                VerticalAlignment="Center"
@@ -128,10 +128,10 @@
 			</Border>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-				<Button Content="Edit" Command="{Binding EditCustomerCommand}"
+				<Button Content="Chỉnh Sửa" Command="{Binding EditCustomerCommand}"
                         CommandParameter="{Binding SelectedCustomer}"
                         Background="#17A2B8" Foreground="White" CornerRadius="4"/>
-				<Button Content="Delete" Command="{Binding DeleteCustomerCommand}"
+				<Button Content="Xóa" Command="{Binding DeleteCustomerCommand}"
                         CommandParameter="{Binding SelectedCustomer}"
                         Background="LightCoral" Foreground="White" CornerRadius="4"/>
 			</StackPanel>
@@ -141,14 +141,14 @@
 		<StackPanel Grid.Column="1" Orientation="Vertical" Margin="20" Background="White"
                     Padding="20" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch">
-			<TextBlock Text="Register Membership" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" />
+			<TextBlock Text="Đăng Ký Thành Viên" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" />
 
-			<TextBox Header="Full Name" Text="{Binding FullName, Mode=TwoWay}" Margin="0,0,0,10" />
-			<TextBox Header="Phone" Text="{Binding Phone, Mode=TwoWay}" Margin="0,0,0,10" InputScope="Number" />
+			<TextBox Header="Họ Tên" Text="{Binding FullName, Mode=TwoWay}" Margin="0,0,0,10" />
+			<TextBox Header="SDT" Text="{Binding Phone, Mode=TwoWay}" Margin="0,0,0,10" InputScope="Number" />
 			<TextBox Header="Email" Text="{Binding Email, Mode=TwoWay}" Margin="0,0,0,10" />
-			<TextBox Header="Address" Text="{Binding Address, Mode=TwoWay}" Margin="0,0,0,10" />
+			<TextBox Header="Địa Chỉ" Text="{Binding Address, Mode=TwoWay}" Margin="0,0,0,10" />
 
-			<Button Content="Register" Command="{Binding RegisterCommand}"
+			<Button Content="Đăng Ký" Command="{Binding RegisterCommand}"
                     Background="#28A745" Foreground="White" CornerRadius="4" Width="100" />
 		</StackPanel>
 	</Grid>

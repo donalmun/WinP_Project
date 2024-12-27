@@ -41,7 +41,7 @@
                 VerticalAlignment="Center"
                 FontSize="30"
                 FontWeight="Bold"
-                Text="Revenue Analysis"
+                Text="Phân Tích Doanh Thu"
                 Foreground="White"/>
         </Grid>
 
@@ -61,7 +61,7 @@
                 <TextBlock
                     Margin="0,0,10,0"
                     VerticalAlignment="Center"
-                    Text="From:" 
+                    Text="Từ:" 
                     Foreground="Black"/>
                 <DatePicker
                     x:Name="FromDatePicker"
@@ -71,7 +71,7 @@
                 <TextBlock
                     Margin="0,0,10,0"
                     VerticalAlignment="Center"
-                    Text="To:" 
+                    Text="Đến:" 
                     Foreground="Black"/>
                 <DatePicker
                     x:Name="ToDatePicker"
@@ -80,7 +80,7 @@
                 <Button
                     Margin="20,0,0,0"
                     Command="{Binding FilterCommand}"
-                    Content="Filter" 
+                    Content="Lọc" 
                     Background="#4CAF50" 
                     Foreground="White" 
                     Padding="5,10" 
@@ -110,7 +110,7 @@
                 VerticalAlignment="Center"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="Total Revenue (VND):" 
+                Text="Tổng Doanh Thu (VND):" 
                 Foreground="White"/>
             <TextBlock
                 Grid.Column="1"

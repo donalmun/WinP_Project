@@ -1,4 +1,4 @@
-<!-- TableManagementPage.xaml -->
+﻿<!-- TableManagementPage.xaml -->
 <Page
     x:Class="FoodApp.Views.TableManagementPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,6 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:FoodApp.Service.Controls"
     mc:Ignorable="d"
+    FontFamily="Segoe UI"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     x:Name="Page">
 
@@ -41,15 +42,18 @@
                         HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"
                         Style="{StaticResource NavigationBackButtonNormalStyle}"
                         Click="BackButton_Click" />
-                <TextBlock Text="Table Management" FontSize="30" FontWeight="Bold" 
+                <TextBlock Text="Quản Lý Bàn" FontSize="30" FontWeight="Bold" 
                            Foreground="DarkSlateGray" RelativePanel.RightOf="BackButton"
-                           Margin="200,20,0,0"/>
+                           Language="vi-VN"
+                           Margin="300,20,0,0"/>
             </RelativePanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="240,20,0,20">
-                <TextBox Width="400" PlaceholderText="Search by Table Name"
+                <TextBox Width="400" PlaceholderText="Tìm Kiếm Theo Tên Bàn"
+                         Language="vi-VN"
                          Text="{Binding SearchTableName, Mode=TwoWay}" />
-                <Button Content="Search" Command="{Binding SearchCommand}"
+                <Button Content="Tìm Kiếm" Command="{Binding SearchCommand}"
+                        Language="vi-VN"
                         Margin="10,0,0,0" Background="#FF0288D1" Foreground="White" />
             </StackPanel>
 
@@ -67,11 +71,14 @@
                                     <Run Text="{Binding Status, Mode=TwoWay, Converter={StaticResource StatusConverter}}" />
                                 </TextBlock>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                                    <Button Content="Edit" Command="{Binding DataContext.EditTableCommand, ElementName=Page}"
+                                    <Button Content="Chỉnh Sửa" Command="{Binding DataContext.EditTableCommand, ElementName=Page}"
+                                            Language="vi-VN"
                                             CommandParameter="{Binding}" Background="#17A2B8" Foreground="White" CornerRadius="4"/>
-                                    <Button Content="Delete" Command="{Binding DataContext.DeleteTableCommand, ElementName=Page}"
+                                    <Button Content="Xóa" Command="{Binding DataContext.DeleteTableCommand, ElementName=Page}"
+                                            Language="vi-VN"
                                             CommandParameter="{Binding}" Background="LightCoral" Foreground="White" CornerRadius="4"/>
-                                    <Button Content="View Details" Command="{Binding DataContext.ViewDetailsCommand, ElementName=Page}"
+                                    <Button Content="Xem Chi Tiết" Command="{Binding DataContext.ViewDetailsCommand, ElementName=Page}"
+                                            Language="vi-VN"
                                             CommandParameter="{Binding}" Background="#0078D7" Foreground="White" CornerRadius="4"/>
                                 </StackPanel>
                             </StackPanel>
@@ -85,20 +92,18 @@
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="20" Background="White"
                     Padding="20" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" HorizontalAlignment="Stretch">
-            <TextBlock Text="Add New Table" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" />
+            <TextBlock Text="Thêm Bàn Mới" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333" Language="vi-VN" />
 
-            <TextBox Header="Table Name" Text="{Binding TableName, Mode=TwoWay}" Margin="0,0,0,10" />
-            <ComboBox Header="Status" SelectedValue="{Binding Status, Mode=TwoWay}" Margin="0,0,0,10">
+            <TextBox Header="Tên Bàn" Text="{Binding TableName, Mode=TwoWay}" Margin="0,0,0,10"  Language="vi-VN"/>
+            <ComboBox Header="Trạng Thái" SelectedValue="{Binding Status, Mode=TwoWay}" Margin="0,0,0,10" Language="vi-VN">
                 <ComboBoxItem Content="Empty" Tag="0" />
                 <ComboBoxItem Content="Occupied" Tag="1" />
             </ComboBox>
 
-            <Button Content="Add Table" Command="{Binding AddTableCommand}"
+            <Button Content="Thêm Bàn" Command="{Binding AddTableCommand}"
+                    Language="vi-VN"
                     Background="#28A745" Foreground="White" CornerRadius="4" Width="100" />
         </StackPanel>
 
-        
-
     </Grid>
 </Page>
-
