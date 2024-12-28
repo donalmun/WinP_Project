@@ -16,6 +16,14 @@ using System.Collections.Generic;
 
 namespace FoodApp.ViewModel
 {
+    public enum AggregationPeriod
+    {
+        Day,
+        Week,
+        Month,
+        Year
+    }
+
     public class RevenueViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Order> OrdersData { get; set; }
@@ -55,6 +63,12 @@ namespace FoodApp.ViewModel
 
         // RelayCommand for Filtering
         public RelayCommand FilterCommand { get; }
+
+        // Commands for Aggregation
+        public RelayCommand SelectDayCommand { get; }
+        public RelayCommand SelectWeekCommand { get; }
+        public RelayCommand SelectMonthCommand { get; }
+        public RelayCommand SelectYearCommand { get; }
 
         // Action Delegate for Showing Messages
         public Action<string>? ShowMessageAction { get; set; }
@@ -104,11 +118,34 @@ namespace FoodApp.ViewModel
             }
         }
 
+        // Aggregation Period
+        private AggregationPeriod _selectedAggregation = AggregationPeriod.Day;
+        public AggregationPeriod SelectedAggregation
+        {
+            get => _selectedAggregation;
+            set
+            {
+                if (_selectedAggregation != value)
+                {
+                    _selectedAggregation = value;
+                    OnPropertyChanged(nameof(SelectedAggregation));
+                    UpdateChart();
+                }
+            }
+        }
+
         public RevenueViewModel()
         {
             _orderDao = new OrderDAO();
             OrdersData = new ObservableCollection<Order>();
             FilterCommand = new RelayCommand(ExecuteFilter, CanExecuteFilter);
+
+            // Initialize aggregation commands
+            SelectDayCommand = new RelayCommand(() => SelectedAggregation = AggregationPeriod.Day);
+            SelectWeekCommand = new RelayCommand(() => SelectedAggregation = AggregationPeriod.Week);
+            SelectMonthCommand = new RelayCommand(() => SelectedAggregation = AggregationPeriod.Month);
+            SelectYearCommand = new RelayCommand(() => SelectedAggregation = AggregationPeriod.Year);
+
             InitializeAsync();
         }
 
@@ -194,19 +231,45 @@ namespace FoodApp.ViewModel
         {
             if (_allOrders == null) return;
 
-            // Aggregate the total amount per day
-            var aggregatedData = OrdersData
-                .GroupBy(o => o.Order_Date.Date)
+            // Aggregate the total amount based on SelectedAggregation
+            IEnumerable<IGrouping<string, Order>> aggregatedData;
+
+            switch (SelectedAggregation)
+            {
+                case AggregationPeriod.Day:
+                    aggregatedData = OrdersData
+                        .GroupBy(o => o.Order_Date.ToString("yyyy-MM-dd"));
+                    break;
+                case AggregationPeriod.Week:
+                    aggregatedData = OrdersData
+                        .GroupBy(o => GetWeekOfYear(o.Order_Date));
+                    break;
+                case AggregationPeriod.Month:
+                    aggregatedData = OrdersData
+                        .GroupBy(o => o.Order_Date.ToString("yyyy-MM"));
+                    break;
+                case AggregationPeriod.Year:
+                    aggregatedData = OrdersData
+                        .GroupBy(o => o.Order_Date.ToString("yyyy"));
+                    break;
+                default:
+                    aggregatedData = OrdersData
+                        .GroupBy(o => o.Order_Date.ToString("yyyy-MM-dd"));
+                    break;
+            }
+
+            // Prepare data for the chart
+            var chartData = aggregatedData
                 .Select(g => new
                 {
-                    Date = g.Key,
+                    Period = g.Key,
                     TotalAmount = g.Sum(o => o.Total_Amount)
                 })
-                .OrderBy(a => a.Date)
+                .OrderBy(a => a.Period)
                 .ToList();
 
-            Labels = aggregatedData.Select(a => a.Date.ToString("yyyy-MM-dd")).ToArray();
-            var values = aggregatedData.Select(a => (double)a.TotalAmount).ToArray();
+            Labels = chartData.Select(a => a.Period).ToArray();
+            var values = chartData.Select(a => (double)a.TotalAmount).ToArray();
 
             RevenueSeries = new ISeries[]
             {
@@ -224,7 +287,8 @@ namespace FoodApp.ViewModel
                 {
                     Labels = Labels,
                     LabelsRotation = 15,
-                    Name = "Ngày"
+                    Name = GetAggregationName(),
+                    UnitWidth = 1,
                 }
             };
 
@@ -236,6 +300,27 @@ namespace FoodApp.ViewModel
                     Labeler = value => value.ToString("N0")
                 }
             };
+        }
+
+        private string GetAggregationName()
+        {
+            return SelectedAggregation switch
+            {
+                AggregationPeriod.Day => "Ngày",
+                AggregationPeriod.Week => "Tuần",
+                AggregationPeriod.Month => "Tháng",
+                AggregationPeriod.Year => "Năm",
+                _ => "Ngày",
+            };
+        }
+
+        // Helper method to get week number
+        private string GetWeekOfYear(DateTimeOffset date)
+        {
+            var cal = System.Globalization.CultureInfo.CurrentCulture.Calendar;
+            var week = cal.GetWeekOfYear(date.Date, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            var year = date.Year;
+            return $"{year}-W{week:D2}";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Data;
 using System;
 using System.Globalization;
-using Windows.UI.Xaml.Data;
 
 namespace FoodApp.Helper
 {
@@ -13,7 +12,15 @@ namespace FoodApp.Helper
             {
                 return $"{amount:N0} VNĐ"; // Định dạng số với dấu phẩy và thêm " VNĐ"
             }
-            return value;
+            if (value is int intAmount)
+            {
+                return $"{intAmount:N0} VNĐ";
+            }
+            if (value is decimal decimalAmount)
+            {
+                return $"{decimalAmount:N0} VNĐ";
+            }
+            return value?.ToString() ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

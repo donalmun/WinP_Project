@@ -52,12 +52,13 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- Filters -->
+            <!-- Filters and Aggregation Buttons -->
             <StackPanel
                 Grid.Row="0"
                 Margin="0,0,0,20"
                 HorizontalAlignment="Left"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                VerticalAlignment="Top">
                 <TextBlock
                     Margin="0,0,10,0"
                     VerticalAlignment="Center"
@@ -81,10 +82,48 @@
                     Margin="20,0,0,0"
                     Command="{Binding FilterCommand}"
                     Content="Lọc" 
-                    Background="#4CAF50" 
+                    Background="Orange"
                     Foreground="White" 
-                    Padding="5,10" 
-                    CornerRadius="3"/>
+                    Padding="10,10" 
+                    CornerRadius="10"/>
+
+                <!-- Aggregation Buttons -->
+                <StackPanel
+                    Margin="20,0,0,0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
+                    <Button
+                        Content="Ngày"
+                        Command="{Binding SelectDayCommand}"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        Padding="10,10"
+                        Margin="0,0,5,0"
+                        CornerRadius="5"/>
+                    <Button
+                        Content="Tuần"
+                        Command="{Binding SelectWeekCommand}"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        Padding="10,10"
+                        Margin="0,0,5,0"
+                        CornerRadius="5"/>
+                    <Button
+                        Content="Tháng"
+                        Command="{Binding SelectMonthCommand}"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        Padding="10,10"
+                        Margin="0,0,5,0"
+                        CornerRadius="5"/>
+                    <Button
+                        Content="Năm"
+                        Command="{Binding SelectYearCommand}"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        Padding="10,10"
+                        CornerRadius="5"/>
+                </StackPanel>
             </StackPanel>
 
             <!-- LiveCharts2 Chart -->
