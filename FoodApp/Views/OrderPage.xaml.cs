@@ -106,7 +106,7 @@ namespace FoodApp
         }
         private void PaymentOptionsControl_PaymentCanceled(object sender, RoutedEventArgs e)
         {
-            PaymentOptionsPopup.IsOpen = false; // Close the popup
+            PaymentOptionsPopup.IsOpen = false; 
             PopupContainer.Visibility = Visibility.Collapsed;
         }
 
@@ -244,6 +244,51 @@ namespace FoodApp
             }
         }
 
+        // Phương thức mở OrderDiscountTaxPopup
+        private void OpenOrderDiscountTaxPopup_Click(object sender, RoutedEventArgs e)
+        {
+            OrderDiscountTaxPopup.IsOpen = true;
+        }
+
+        // Sự kiện khi OrderDiscountTaxPopup mở
+        private void OrderDiscountTaxPopup_Opened(object sender, object e)
+        {
+            PopupContainer.Visibility = Visibility.Visible;
+        }
+
+        // Sự kiện khi OrderDiscountTaxPopup đóng
+        private void OrderDiscountTaxPopup_Closed(object sender, object e)
+        {
+            PopupContainer.Visibility = Visibility.Collapsed;
+        }
+
+        private void SaveOrderDiscountTax_Click(object sender, RoutedEventArgs e)
+        {
+            if (double.TryParse(OrderTaxTextBox.Text, out double tax) &&
+                double.TryParse(OrderDiscountTextBox.Text, out double discount))
+            {
+                ViewModel.UpdateOrderDiscountTax(tax, discount);
+                OrderDiscountTaxPopup.IsOpen = false;
+            }
+            else
+            {
+                // Hiển thị thông báo lỗi nếu nhập không hợp lệ
+                var dialog = new ContentDialog
+                {
+                    Title = "Lỗi",
+                    Content = "Vui lòng nhập số hợp lệ cho Thuế và Giảm Giá.",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                _ = dialog.ShowAsync();
+            }
+        }
+
+        // Sự kiện nhấn nút "Hủy" trong OrderDiscountTaxPopup
+        private void CancelOrderDiscountTax_Click(object sender, RoutedEventArgs e)
+        {
+            OrderDiscountTaxPopup.IsOpen = false;
+        }
 
 
         private void DiscountCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

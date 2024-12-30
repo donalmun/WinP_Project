@@ -5,14 +5,14 @@
     xmlns:local="using:FoodApp"
     xmlns:viewModels="using:FoodApp.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helper="using:FoodApp.Helper"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <ResourceDictionary>
-            <SolidColorBrush x:Key="HoverBackgroundColor" Color="#F5F5F5"/>
-        </ResourceDictionary>
+        <helper:CurrencyConverter x:Key="CurrencyConverter" />
+        <SolidColorBrush x:Key="HoverBackgroundColor" Color="#F5F5F5"/>
     </Page.Resources>
 
     <Grid>
@@ -66,7 +66,7 @@
                                         <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold"
                                        Foreground="Black" TextWrapping="Wrap"
                                        HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{x:Bind Cost}" FontSize="14"
+                                        <TextBlock Text="{x:Bind Cost, Converter={StaticResource CurrencyConverter}}" FontSize="14"
                                        Foreground="Green" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Grid>
