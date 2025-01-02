@@ -67,12 +67,41 @@ namespace FoodApp.ViewModels
             }
         }
 
+        private double _orderTaxPercentage;
+        public double OrderTaxPercentage
+        {
+            get => _orderTaxPercentage;
+            set
+            {
+                if (SetProperty(ref _orderTaxPercentage, value))
+                {
+                    OnPropertyChanged(nameof(TotalAmount));
+                    OnPropertyChanged(nameof(currentTotal));
+                }
+            }
+        }
+
+        private double _orderDiscountPercentage;
+        public double OrderDiscountPercentage
+        {
+            get => _orderDiscountPercentage;
+            set
+            {
+                if (SetProperty(ref _orderDiscountPercentage, value))
+                {
+                    OnPropertyChanged(nameof(TotalAmount));
+                    OnPropertyChanged(nameof(currentTotal));
+                }
+            }
+        }
+
         public void ClearOrder()
         {
             Details.Clear();
             SelectedCustomer = null;
             SelectedTable = null;
             OnPropertyChanged(nameof(TotalAmount));
+            OnPropertyChanged(nameof(currentTotal));
         }
 
         private async void SetSelectedTableAsync(Table selectedTable)
@@ -107,6 +136,7 @@ namespace FoodApp.ViewModels
             }
 
             OnPropertyChanged(nameof(TotalAmount));
+            OnPropertyChanged(nameof(currentTotal));
         }
 
         public Customer SelectedCustomer
@@ -141,12 +171,29 @@ namespace FoodApp.ViewModels
                 if (SetProperty(ref _details, value))
                 {
                     OnPropertyChanged(nameof(TotalAmount));
+                    OnPropertyChanged(nameof(currentTotal));
                     SubscribeToDetailItemChanges();
                 }
             }
         }
 
-        public double TotalAmount => Details.Sum(item => item.Sub_Total);
+        public double currentTotal => Details.Sum(item => item.Sub_Total);
+
+        public double TotalAmount => CalculateTotalAmount();
+
+        public double CalculateTotalAmount()
+        {
+            double subtotal = Details.Sum(item => item.Sub_Total);
+            double taxAmount = subtotal * (Math.Max(0, Math.Min(OrderTaxPercentage, 100)) / 100);
+            double discountAmount = subtotal * (Math.Max(0, Math.Min(OrderDiscountPercentage, 100)) / 100);
+            return subtotal + taxAmount - discountAmount;
+        }
+
+        public void UpdateOrderDiscountTax(double tax, double discount)
+        {
+            OrderTaxPercentage = tax;
+            OrderDiscountPercentage = discount;
+        }
 
         public string SearchKeyword
         {
@@ -196,6 +243,9 @@ namespace FoodApp.ViewModels
             LoadProducts();
             LoadTables();
 
+            OrderTaxPercentage = 0;
+            OrderDiscountPercentage = 0;
+
             SelectedDetailItem = new Detail
             {
                 SurchargeType = "%",
@@ -225,7 +275,7 @@ namespace FoodApp.ViewModels
                 var emptyTables = tables.Where(t => t.Status == 0);
                 Tables = new ObservableCollection<Table>(emptyTables);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Handle exceptions
             }
@@ -271,6 +321,7 @@ namespace FoodApp.ViewModels
                 Details.Add(newItem);
             }
             OnPropertyChanged(nameof(TotalAmount));
+            OnPropertyChanged(nameof(currentTotal));
         }
 
         public void RemoveFromDetail(Detail detail)
@@ -280,12 +331,14 @@ namespace FoodApp.ViewModels
                 detail.PropertyChanged -= DetailItem_PropertyChanged;
                 Details.Remove(detail);
                 OnPropertyChanged(nameof(TotalAmount));
+                OnPropertyChanged(nameof(currentTotal));
             }
         }
 
         private void DetailItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(TotalAmount));
+            OnPropertyChanged(nameof(currentTotal));
             SubscribeToDetailItemChanges();
         }
 
@@ -303,6 +356,7 @@ namespace FoodApp.ViewModels
             if (e.PropertyName == nameof(Detail.Sub_Total))
             {
                 OnPropertyChanged(nameof(TotalAmount));
+                OnPropertyChanged(nameof(currentTotal));
             }
         }
 
