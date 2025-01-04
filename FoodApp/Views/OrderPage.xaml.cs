@@ -99,8 +99,6 @@ namespace FoodApp
             ViewModel.SelectedDetailItem = button?.Tag as Detail;
         }
 
-        // Removed the SaveOrder_Click event handler to prevent duplicate calls
-
         private async void PaymentOptionsControl_PaymentConfirmed(object sender, RoutedEventArgs e)
         {
             var paymentControl = sender as Views.Controls.PaymentOptionsControl;

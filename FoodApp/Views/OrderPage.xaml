@@ -206,14 +206,14 @@
                     <!-- Menu Lựa chọn Bàn -->
                     <!-- ComboBox chọn bàn -->
                     <ComboBox Width="200" Height="35"
-                              SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
-                              ItemsSource="{Binding Tables}"
-                              DisplayMemberPath="Table_Name"
-                              PlaceholderText="Chọn bàn"
-                              FontSize="16"
-                              Background="White"
-                              Foreground="#333"
-                              Margin="0,0,10,0"/>
+                      SelectedItem="{Binding SelectedTable, Mode=TwoWay}"
+                      ItemsSource="{Binding Tables}"
+                      DisplayMemberPath="Table_Name"
+                      PlaceholderText="Chọn bàn"
+                      FontSize="16"
+                      Background="White"
+                      Foreground="#333"
+                      Margin="0,0,10,0"/>
 
                     <!-- Right Side Elements -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10, 0, 20, 0" Grid.Column="1">

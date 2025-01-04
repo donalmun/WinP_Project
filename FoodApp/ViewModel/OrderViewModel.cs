@@ -7,7 +7,7 @@ using System.Windows.Input;
 using FoodApp.Helper;
 using FoodApp.Service.DataAccess;
 using System.Linq;
-using Windows.ApplicationModel.Payments;
+using System.Diagnostics;
 
 namespace FoodApp.ViewModels
 {
@@ -33,8 +33,15 @@ namespace FoodApp.ViewModels
 
         private ObservableCollection<Customer> _suggestedCustomers;
 
-        private const int LoyaltyPointsThreshold =1500;
+        private const int LoyaltyPointsThreshold = 1500;
         private const double DiscountPercentage = 10.0;
+
+        private bool _areTablesAvailable;
+        public bool AreTablesAvailable
+        {
+            get => _areTablesAvailable;
+            set => SetProperty(ref _areTablesAvailable, value);
+        }
 
         public Product SelectedProduct
         {
@@ -57,8 +64,9 @@ namespace FoodApp.ViewModels
                 {
                     if (_selectedTable != null)
                     {
-                        // Call the async method to handle table selection
-                        SetSelectedTableAsync(_selectedTable);
+                        // Remove the call to set table status here
+                        // SetSelectedTableAsync(_selectedTable); // Remove or comment out this line
+                        LoadOrderForSelectedTableAsync(_selectedTable).ConfigureAwait(false);
                     }
                     else
                     {
@@ -101,7 +109,7 @@ namespace FoodApp.ViewModels
         {
             Details.Clear();
             SelectedCustomer = null;
-            SelectedTable = null;
+            // Do not reset SelectedTable here to keep the current table selected
 
             // Reset discount and tax percentages
             OrderDiscountPercentage = 0;
@@ -114,36 +122,39 @@ namespace FoodApp.ViewModels
             _isDiscountApplied = false; // Reset the discount flag
         }
 
-        private async void SetSelectedTableAsync(Table selectedTable)
+        // Changed from async void to async Task for better exception handling
+        private async Task SetSelectedTableAsync(Table selectedTable)
         {
-            // Update table status
-            await UpdateTableStatus(selectedTable, 1); // Assuming 1 represents 'in use'
+            // Update table status to 'in use' (1)
+            await UpdateTableStatusAsync(selectedTable, 1);
 
-            // Load the order for the selected table
+            // Load the order for the selected table (currently clears the order)
             await LoadOrderForSelectedTableAsync(selectedTable);
+
+            // Reload the tables list to exclude the selected table
+            await LoadTablesAsync();
         }
 
         // Implement the method to load order details and customer info
         private async Task LoadOrderForSelectedTableAsync(Table selectedTable)
         {
-            var orders = await _orderDao.GetOrdersByTableIdAsync(selectedTable.Id);
+            // Always clear the current order details when a new table is selected
+            ClearOrder();
 
-            if (orders != null && orders.Any())
-            {
-                var latestOrder = orders.OrderByDescending(o => o.Order_Date).FirstOrDefault();
+            // Optionally, you can still load existing orders if needed in the future
+            // var orders = await _orderDao.GetOrdersByTableIdAsync(selectedTable.Id);
+            // if (orders != null && orders.Any())
+            // {
+            //     var latestOrder = orders.OrderByDescending(o => o.Order_Date).FirstOrDefault();
+            //     if (latestOrder != null)
+            //     {
+            //         await _orderDao.LoadOrderDetailsAsync(latestOrder);
+            //         Details = new ObservableCollection<Detail>(latestOrder.Details);
+            //         SelectedCustomer = latestOrder.Customer;
+            //     }
+            // }
 
-                if (latestOrder != null)
-                {
-                    await _orderDao.LoadOrderDetailsAsync(latestOrder);
-                    Details = new ObservableCollection<Detail>(latestOrder.Details);
-                    SelectedCustomer = latestOrder.Customer;
-                }
-            }
-            else
-            {
-                ClearOrder();
-            }
-
+            // Notify that TotalAmount and currentTotal have changed after clearing
             OnPropertyChanged(nameof(TotalAmount));
             OnPropertyChanged(nameof(currentTotal));
         }
@@ -260,7 +271,7 @@ namespace FoodApp.ViewModels
             TestDatabaseConnection();
 
             LoadProducts();
-            LoadTables();
+            LoadTablesAsync().ConfigureAwait(false); // Changed to async Task and called without await
 
             OrderTaxPercentage = 0;
             OrderDiscountPercentage = 0;
@@ -315,26 +326,39 @@ namespace FoodApp.ViewModels
             }
         }
 
-        private async void LoadTables()
+        private async Task LoadTablesAsync()
         {
             try
             {
                 var tables = await _tableDao.GetAllAsync();
                 var emptyTables = tables.Where(t => t.Status == 0);
                 Tables = new ObservableCollection<Table>(emptyTables);
+
+                // Update the availability flag
+                AreTablesAvailable = Tables.Any();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Handle exceptions
+                Debug.WriteLine($"Error loading tables: {ex.Message}");
                 await ShowMessage("Không thể tải danh sách bàn.");
+                AreTablesAvailable = false;
             }
         }
 
         private async void LoadProducts()
         {
-            var products = await _productDao.GetAllAsync();
-            _allProducts = new ObservableCollection<Product>(products);
-            Products = new ObservableCollection<Product>(_allProducts);
+            try
+            {
+                var products = await _productDao.GetAllAsync();
+                _allProducts = new ObservableCollection<Product>(products);
+                Products = new ObservableCollection<Product>(_allProducts);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading products: {ex.Message}");
+                await ShowMessage("Không thể tải danh sách sản phẩm.");
+            }
         }
 
         private async void TestDatabaseConnection()
@@ -464,7 +488,7 @@ namespace FoodApp.ViewModels
         {
             if (SelectedTable == null || Details == null || Details.Count == 0)
             {
-                await ShowMessage("Please select a table and add items to the order.");
+                await ShowMessage("Vui lòng chọn bàn và thêm món vào đơn hàng.");
                 return;
             }
 
@@ -501,10 +525,16 @@ namespace FoodApp.ViewModels
 
                 if (isPayment)
                 {
+                    // Set table status to 'occupied'
+                    await UpdateTableStatusAsync(SelectedTable, 1);
+
                     // Reset the order if it's a payment
                     ClearOrder();
                     _isDiscountApplied = false; // Reset the discount flag for the next order
                 }
+
+                // Reload the tables list after saving the order
+                await LoadTablesAsync();
             }
             catch (Exception ex)
             {
@@ -512,12 +542,20 @@ namespace FoodApp.ViewModels
             }
         }
 
-        private async Task UpdateTableStatus(Table table, int status)
+        private async Task UpdateTableStatusAsync(Table table, int status)
         {
-            Console.WriteLine("table status before: " + table.Status);
-            table.Status = status; // 1 for 'in use', 0 for 'empty'
-            Console.WriteLine("table status after: " + table.Status);
-            await _tableDao.UpdateAsync(table);
+            try
+            {
+                Debug.WriteLine("table status before: " + table.Status);
+                table.Status = status; // 1 for 'in use', 0 for 'empty'
+                Debug.WriteLine("table status after: " + table.Status);
+                await _tableDao.UpdateAsync(table);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error updating table status: {ex.Message}");
+                await ShowMessage("Không thể cập nhật trạng thái bàn.");
+            }
         }
 
         public async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
@@ -531,9 +569,9 @@ namespace FoodApp.ViewModels
 
             if (pointsToAdd > 0)
             {
-                Console.WriteLine($"Adding {pointsToAdd} loyalty points to customer ID: {customer.Id}");
+                Debug.WriteLine($"Adding {pointsToAdd} loyalty points to customer ID: {customer.Id}");
                 customer.Loyalty_Points += pointsToAdd;
-                Console.WriteLine($"Customer loyalty points after addition: {customer.Loyalty_Points}");
+                Debug.WriteLine($"Customer loyalty points after addition: {customer.Loyalty_Points}");
                 await _customerDao.UpdateAsync(customer);
             }
         }
