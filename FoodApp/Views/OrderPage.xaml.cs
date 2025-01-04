@@ -1,4 +1,5 @@
 ﻿// FoodApp\Views\OrderPage.xaml.cs
+#nullable disable
 using FoodApp.Views.Controls;
 using FoodApp.ViewModels;
 using Microsoft.UI.Xaml;
@@ -13,18 +14,41 @@ using iText.Layout.Properties;
 using System.Collections.Generic;
 using System.Globalization;
 using FoodApp.Views;
+using FoodApp.Services; // Ensure this namespace exists and contains IDialogService and DialogService
 
 namespace FoodApp
 {
     public partial class OrderPage : Page
     {
         public OrderViewModel ViewModel { get; }
+        private readonly IDialogService _dialogService; // Use the interface
 
         public OrderPage()
         {
             this.InitializeComponent();
             ViewModel = new OrderViewModel();
             this.DataContext = ViewModel;
+
+            // Initialize DialogService
+            _dialogService = new DialogService(this);
+
+            // Assign the DialogService to the ViewModel's ShowMessageAction
+            ViewModel.ShowMessageAction = async (message) =>
+            {
+                await _dialogService.ShowMessageAsync("Thông báo", message);
+            };
+
+            // Assign the PaymentRequested action to open the PaymentOptionsPopup
+            ViewModel.PaymentRequested = () =>
+            {
+                PopupContainer.Visibility = Visibility.Visible;
+                PaymentOptionsPopup.IsOpen = true;
+            };
+        }
+
+        private void PaymentOptionsPopup_Closed(object sender, object e)
+        {
+            PopupContainer.Visibility = Visibility.Collapsed;
         }
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
@@ -75,11 +99,7 @@ namespace FoodApp
             ViewModel.SelectedDetailItem = button?.Tag as Detail;
         }
 
-        private void SaveOrder_Click(object sender, RoutedEventArgs e)
-        {
-            PopupContainer.Visibility = Visibility.Visible;
-            PaymentOptionsPopup.IsOpen = true;
-        }
+        // Removed the SaveOrder_Click event handler to prevent duplicate calls
 
         private async void PaymentOptionsControl_PaymentConfirmed(object sender, RoutedEventArgs e)
         {
@@ -89,20 +109,12 @@ namespace FoodApp
             // Optionally, you can use the selected payment method
             string paymentMethod = paymentControl.SelectedPaymentMethod;
 
-            //await ViewModel.SaveOrderAsync(true);
+            // Call SaveOrderAsync via the ViewModel
+            await ViewModel.SaveOrderAsync(true);
 
-            ViewModel.ClearOrder();
-
-            // Optionally, show a success message
-            var dialog = new ContentDialog
-            {
-                Title = "Thành công",
-                Content = "Đơn hàng đã được lưu thành công.",
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot // Set the XamlRoot here
-            };
-            await dialog.ShowAsync(); ;
+            // No need to manually clear the order or show another dialog
         }
+
         private void PaymentOptionsControl_PaymentCanceled(object sender, RoutedEventArgs e)
         {
             PaymentOptionsPopup.IsOpen = false;
@@ -165,7 +177,7 @@ namespace FoodApp
                         .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
                     document.Add(dateParagraph);
 
-                    // Kết hợp thông tin bàn và mã hóa đơn
+                    // Combine table information and invoice ID
                     var tableInfo = $"Bàn: {viewModel.SelectedTable?.Table_Name ?? "N/A"} - Mã hóa đơn: {viewModel.SelectedTable?.Id ?? 0}";
                     var tableInfoParagraph = new iText.Layout.Element.Paragraph(tableInfo)
                         .SetFont(font)
@@ -173,7 +185,7 @@ namespace FoodApp
                         .SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT);
                     document.Add(tableInfoParagraph);
 
-                    // Kết hợp tên khách hàng và số điện thoại
+                    // Combine customer name and phone number
                     if (viewModel.SelectedCustomer != null)
                     {
                         var customerInfo = $"Khách hàng: {viewModel.SelectedCustomer.Full_Name} - SĐT: {viewModel.SelectedCustomer.Phone}";
@@ -261,7 +273,7 @@ namespace FoodApp
             PopupContainer.Visibility = Visibility.Collapsed;
         }
 
-        private void SaveOrderDiscountTax_Click(object sender, RoutedEventArgs e)
+        private async void SaveOrderDiscountTax_Click(object sender, RoutedEventArgs e)
         {
             if (double.TryParse(OrderTaxTextBox.Text, out double tax) &&
                 double.TryParse(OrderDiscountTextBox.Text, out double discount))
@@ -271,15 +283,8 @@ namespace FoodApp
             }
             else
             {
-                // Hiển thị thông báo lỗi nếu nhập không hợp lệ
-                var dialog = new ContentDialog
-                {
-                    Title = "Lỗi",
-                    Content = "Vui lòng nhập số hợp lệ cho Thuế và Giảm Giá.",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-                _ = dialog.ShowAsync();
+                // Display error message using DialogService
+                await _dialogService.ShowMessageAsync("Lỗi", "Vui lòng nhập số hợp lệ cho Thuế và Giảm Giá.");
             }
         }
 
@@ -288,7 +293,6 @@ namespace FoodApp
         {
             OrderDiscountTaxPopup.IsOpen = false;
         }
-
 
         private void DiscountCalculationTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

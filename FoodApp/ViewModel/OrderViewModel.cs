@@ -7,6 +7,7 @@ using System.Windows.Input;
 using FoodApp.Helper;
 using FoodApp.Service.DataAccess;
 using System.Linq;
+using Windows.ApplicationModel.Payments;
 
 namespace FoodApp.ViewModels
 {
@@ -32,6 +33,9 @@ namespace FoodApp.ViewModels
 
         private ObservableCollection<Customer> _suggestedCustomers;
 
+        private const int LoyaltyPointsThreshold =1500;
+        private const double DiscountPercentage = 10.0;
+
         public Product SelectedProduct
         {
             get => _selectedProduct;
@@ -44,7 +48,6 @@ namespace FoodApp.ViewModels
             set => SetProperty(ref _tables, value);
         }
 
-        // OrderViewModel.cs
         public Table SelectedTable
         {
             get => _selectedTable;
@@ -59,9 +62,8 @@ namespace FoodApp.ViewModels
                     }
                     else
                     {
-                        // Clear details and customer info if no table is selected
-                        Details.Clear();
-                        SelectedCustomer = null;
+                        // Clear the order if no table is selected
+                        ClearOrder();
                     }
                 }
             }
@@ -100,8 +102,16 @@ namespace FoodApp.ViewModels
             Details.Clear();
             SelectedCustomer = null;
             SelectedTable = null;
+
+            // Reset discount and tax percentages
+            OrderDiscountPercentage = 0;
+            OrderTaxPercentage = 0;
+
+            // Notify that TotalAmount and currentTotal have changed
             OnPropertyChanged(nameof(TotalAmount));
             OnPropertyChanged(nameof(currentTotal));
+
+            _isDiscountApplied = false; // Reset the discount flag
         }
 
         private async void SetSelectedTableAsync(Table selectedTable)
@@ -131,8 +141,7 @@ namespace FoodApp.ViewModels
             }
             else
             {
-                Details.Clear();
-                SelectedCustomer = null;
+                ClearOrder();
             }
 
             OnPropertyChanged(nameof(TotalAmount));
@@ -185,8 +194,9 @@ namespace FoodApp.ViewModels
         {
             double subtotal = Details.Sum(item => item.Sub_Total);
             double taxAmount = subtotal * (Math.Max(0, Math.Min(OrderTaxPercentage, 100)) / 100);
-            double discountAmount = subtotal * (Math.Max(0, Math.Min(OrderDiscountPercentage, 100)) / 100);
-            return subtotal + taxAmount - discountAmount;
+            double total = subtotal + taxAmount;
+            double discountAmount = total * (Math.Max(0, Math.Min(OrderDiscountPercentage, 100)) / 100);
+            return total - discountAmount;
         }
 
         public void UpdateOrderDiscountTax(double tax, double discount)
@@ -218,6 +228,15 @@ namespace FoodApp.ViewModels
         public ICommand PaymentCommand { get; }
         public ICommand SearchCommand { get; }
 
+        // Action to display messages via DialogService
+        public Func<string, Task>? ShowMessageAction { get; set; }
+
+        // Action to be invoked when payment is requested
+        public Action? PaymentRequested { get; set; }
+
+        // Flag to track discount application
+        private bool _isDiscountApplied = false;
+
         public OrderViewModel()
         {
             _orderDao = new OrderDAO();
@@ -233,8 +252,8 @@ namespace FoodApp.ViewModels
             SearchCommand = new RelayCommand(() => SearchProducts());
             SaveOrderCommand = new AsyncRelayCommand(() => SaveOrderAsync(false));
 
-            // Initialize the PaymentCommand
-            PaymentCommand = new RelayCommand(async () => await ExecutePaymentAsync());
+            // Initialize the PaymentCommand to include discount logic
+            PaymentCommand = new AsyncRelayCommand(HandlePaymentAsync);
             SuggestedCustomers = new ObservableCollection<Customer>();
 
             // Check database connection
@@ -253,19 +272,47 @@ namespace FoodApp.ViewModels
             };
         }
 
-        private async Task ExecutePaymentAsync()
+        private async Task HandlePaymentAsync()
         {
-            // Save the order details to the database
-            await SaveOrderAsync(true);
-
-            // Update the table status if needed
-            if (SelectedTable != null)
+            if (SelectedCustomer != null)
             {
-                await UpdateTableStatus(SelectedTable, 0); // Assuming 0 represents 'empty'
+                if (!_isDiscountApplied && SelectedCustomer.Loyalty_Points >= LoyaltyPointsThreshold)
+                {
+                    // Customer is eligible for discount
+                    ApplyDiscount();
+                }
+                else
+                {
+                    // Customer is not eligible for discount, award loyalty points
+                    await AwardLoyaltyPointsAsync();
+                }
             }
 
-            // Show a message or perform any other actions needed after payment
-            ShowMessage("Payment successful and order saved.");
+            // Open the Payment Options Popup
+            PaymentRequested?.Invoke();
+        }
+
+        private void ApplyDiscount()
+        {
+            // Apply a 10% discount
+            OrderDiscountPercentage = DiscountPercentage; // Triggers OnPropertyChanged for TotalAmount
+            _isDiscountApplied = true;
+
+            // Deduct 1500 loyalty points
+            SelectedCustomer.Loyalty_Points -= LoyaltyPointsThreshold;
+            // Note: Update the customer in the database after saving the order
+
+            // Notify the user about the applied discount
+            ShowMessage("Đơn hàng được giảm giá 10% do khách hàng có đủ điểm thưởng.").ConfigureAwait(false);
+        }
+
+        private async Task AwardLoyaltyPointsAsync()
+        {
+            if (SelectedCustomer != null && TotalAmount > 0)
+            {
+                await UpdateCustomerLoyaltyPointsAsync(SelectedCustomer, TotalAmount);
+                await ShowMessage("Bạn đã nhận được điểm thưởng cho đơn hàng này!").ConfigureAwait(false);
+            }
         }
 
         private async void LoadTables()
@@ -279,6 +326,7 @@ namespace FoodApp.ViewModels
             catch (Exception)
             {
                 // Handle exceptions
+                await ShowMessage("Không thể tải danh sách bàn.");
             }
         }
 
@@ -295,7 +343,7 @@ namespace FoodApp.ViewModels
             if (!isConnected)
             {
                 // Handle connection failure
-                ShowMessage("Database connection failed. Please check your settings.");
+                await ShowMessage("Database connection failed. Please check your settings.");
             }
         }
 
@@ -412,12 +460,11 @@ namespace FoodApp.ViewModels
             }
         }
 
-        // OrderViewModel.cs
         public async Task SaveOrderAsync(bool isPayment)
         {
             if (SelectedTable == null || Details == null || Details.Count == 0)
             {
-                ShowMessage("Please select a table and add items to the order.");
+                await ShowMessage("Please select a table and add items to the order.");
                 return;
             }
 
@@ -431,24 +478,37 @@ namespace FoodApp.ViewModels
                 Details = Details.ToList()
             };
 
-            Console.WriteLine("order status: " + order.Status);
-
             try
             {
                 await _orderDao.AddAsync(order);
 
-                if (SelectedCustomer != null)
+                if (_isDiscountApplied)
                 {
-                    // Increase customer's loyalty points based on the total amount
-                    await UpdateCustomerLoyaltyPointsAsync(SelectedCustomer, TotalAmount);
+                    await ShowMessage("Đơn hàng được giảm giá 10% do khách hàng có đủ điểm thưởng.");
+                    // Loyalty points deduction already handled in ApplyDiscount
+                    await _customerDao.UpdateAsync(SelectedCustomer);
+                }
+                else
+                {
+                    await ShowMessage("Đơn hàng đã được lưu thành công.");
                 }
 
-                // Optionally, clear the form or display a success message
-                ShowMessage("Order saved successfully.");
+                // Award loyalty points if no discount was applied
+                if (!_isDiscountApplied)
+                {
+                    await AwardLoyaltyPointsAsync();
+                }
+
+                if (isPayment)
+                {
+                    // Reset the order if it's a payment
+                    ClearOrder();
+                    _isDiscountApplied = false; // Reset the discount flag for the next order
+                }
             }
             catch (Exception ex)
             {
-                ShowMessage($"Đã xảy ra lỗi: {ex.Message}");
+                await ShowMessage($"Lỗi: {ex.Message}");
             }
         }
 
@@ -460,25 +520,31 @@ namespace FoodApp.ViewModels
             await _tableDao.UpdateAsync(table);
         }
 
-
-        private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
+        public async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
         {
-            // Example: 1 point for every 1000 units of currency spent
-
+            // 1 point for every 1000 units of currency spent, minimum 1 point if amount >= 1000
             int pointsToAdd = (int)(amount / 1000);
-            Console.WriteLine("customer loyalty_point before: " + customer.Loyalty_Points);
-            customer.Loyalty_Points += pointsToAdd;
-            Console.WriteLine("customer loyalty_point after: " + customer.Loyalty_Points);
-            await _customerDao.UpdateAsync(customer);
+            if (pointsToAdd < 1 && amount >= 1000)
+            {
+                pointsToAdd = 1;
+            }
+
+            if (pointsToAdd > 0)
+            {
+                Console.WriteLine($"Adding {pointsToAdd} loyalty points to customer ID: {customer.Id}");
+                customer.Loyalty_Points += pointsToAdd;
+                Console.WriteLine($"Customer loyalty points after addition: {customer.Loyalty_Points}");
+                await _customerDao.UpdateAsync(customer);
+            }
         }
 
-        private void ShowMessage(string message)
+        private async Task ShowMessage(string message)
         {
-            // Vì ViewModel không có quyền truy cập vào XamlRoot, bạn cần sử dụng một cách khác để hiển thị dialog.
-            // Một cách là sử dụng sự kiện hoặc hành động được gán từ code-behind.
-            ShowMessageAction?.Invoke(message);
+            // Use the action provided by the View to display messages
+            if (ShowMessageAction != null)
+            {
+                await ShowMessageAction(message);
+            }
         }
-
-        public Action<string>? ShowMessageAction { get; set; }
     }
 }

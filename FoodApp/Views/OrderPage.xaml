@@ -272,7 +272,7 @@
                                 <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Button Content="-" Width="30" Click="DecreaseQuantity_Click" Tag="{x:Bind}" />
                                     <TextBox Width="50" Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                             TextAlignment="Center" FontWeight="Bold" FontSize="15" Foreground="#333" />
+                         TextAlignment="Center" FontWeight="Bold" FontSize="15" Foreground="#333" />
                                     <Button Content="+" Width="30" Click="IncreaseQuantity_Click" Tag="{x:Bind}" />
                                 </StackPanel>
                                 <!-- Tổng -->
@@ -286,26 +286,26 @@
 
                                 <!-- Update Discount and Surcharge Display -->
                                 <TextBlock Grid.Column="0" Grid.Row="2" 
-                                           FontSize="11" 
-                                           TextWrapping="Wrap" 
-                                           VerticalAlignment="Center" 
-                                           Foreground="Blue" 
-                                           Visibility="{x:Bind Discount, Converter={StaticResource ZeroToCollapsedConverter}}">
+                                   FontSize="11" 
+                                   TextWrapping="Wrap" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="Blue" 
+                                   Visibility="{x:Bind Discount, Converter={StaticResource ZeroToCollapsedConverter}}">
                                     <Run Text="Sản phẩm được giảm " />
                                     <Run Text="{x:Bind Discount}" />
-                                    <Run Text="{Binding ElementName=DiscountCalculationTypeComboBox, Path=SelectedItem.Content}" />
+                                    <Run Text="{x:Bind DiscountType}" />
                                 </TextBlock>
 
                                 <!-- Phụ thu -->
                                 <TextBlock Grid.Column="0" Grid.Row="3" 
-                                           FontSize="11" 
-                                           TextWrapping="Wrap" 
-                                           VerticalAlignment="Center" 
-                                           Foreground="Red" 
-                                           Visibility="{x:Bind Surcharge, Converter={StaticResource ZeroToCollapsedConverter}}">
+                                   FontSize="11" 
+                                   TextWrapping="Wrap" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="Red" 
+                                   Visibility="{x:Bind Surcharge, Converter={StaticResource ZeroToCollapsedConverter}}">
                                     <Run Text="Sản phẩm bị phụ thu " />
                                     <Run Text="{x:Bind Surcharge}" />
-                                    <Run Text="{Binding ElementName=SurchargeCalculationTypeComboBox, Path=SelectedItem.Content}" />
+                                    <Run Text="{x:Bind SurchargeType}" />
                                 </TextBlock>
                             </Grid>
                         </DataTemplate>
@@ -325,7 +325,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Tạm tính:" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#333" />
-                    <!-- Sử dụng CurrencyConverter cho TotalAmount -->
+                    <!-- Sử dụng CurrencyConverter cho currentTotal -->
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding currentTotal, Converter={StaticResource CurrencyConverter}}" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#333" />
 
                     <TextBlock Grid.Row="1" Text="Thuế hóa đơn:" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#333" />
@@ -390,8 +390,9 @@
                         </Button>
                     </StackPanel>
 
+                    <!-- Payment Button -->
                     <Button Grid.Column="1" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" 
-                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" Width="300px"/>
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Width="300px"/>
                 </Grid>
             </Grid>
         </Grid>
@@ -426,8 +427,9 @@
 
         <!-- Popup Container -->
         <Grid x:Name="PopupContainer" Background="#80000000" Visibility="Collapsed" HorizontalAlignment="Center">
+            <!-- DiscountPopup -->
             <Popup x:Name="DiscountPopup" IsLightDismissEnabled="True" 
-               Opened="DiscountPopup_Opened" Closed="DiscountPopup_Closed">
+                   Opened="DiscountPopup_Opened" Closed="DiscountPopup_Closed">
 
                 <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="2" CornerRadius="12" Width="500" Height="650">
                     <StackPanel Padding="20" Spacing="20">
@@ -540,7 +542,7 @@
             </Popup>
 
             <!-- New OrderDiscountTaxPopup -->
-            <Popup x:Name="OrderDiscountTaxPopup" IsLightDismissEnabled="True" Opened="OrderDiscountTaxPopup_Opened" Closed="OrderDiscountTaxPopup_Closed" Margin="-200,210,0,-200">
+            <Popup x:Name="OrderDiscountTaxPopup" IsLightDismissEnabled="True" Opened="OrderDiscountTaxPopup_Opened" Closed="OrderDiscountTaxPopup_Closed" Margin="0,0,0,0">
                 <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="2" CornerRadius="12" Width="400" Height="300">
                     <StackPanel Padding="20" Spacing="20">
                         <!-- Tiêu đề Popup -->
@@ -572,23 +574,22 @@
             </Popup>
 
             <Grid Margin="-150,0,0,-200" VerticalAlignment="Center">
-                <!-- Payment Options Popup -->
-                <Popup x:Name="PaymentOptionsPopup" IsLightDismissEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Border 
-                            Background="White" 
-                            BorderThickness="2" 
-                            CornerRadius="12" 
-                            Width="450" 
-                            Height="550"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                            <controls:PaymentOptionsControl 
-                                OrderSubTotal="{Binding TotalAmount, Mode=OneWay}"
-                                PaymentConfirmed="PaymentOptionsControl_PaymentConfirmed"
-                                PaymentCanceled="PaymentOptionsControl_PaymentCanceled"/>
-                        </Border>
-                    </Grid>
+                <Popup x:Name="PaymentOptionsPopup" IsLightDismissEnabled="True" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Closed="PaymentOptionsPopup_Closed">
+                    <Border 
+                        Background="White" 
+                        BorderThickness="2" 
+                        CornerRadius="12" 
+                        Width="450" 
+                        Height="550"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <controls:PaymentOptionsControl 
+                            OrderSubTotal="{Binding TotalAmount, Mode=OneWay}"
+                            PaymentConfirmed="PaymentOptionsControl_PaymentConfirmed"
+                            PaymentCanceled="PaymentOptionsControl_PaymentCanceled"/>
+                    </Border>
                 </Popup>
             </Grid>
         </Grid>
