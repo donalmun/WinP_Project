@@ -102,7 +102,7 @@ namespace FoodApp.ViewModels
             Tables.Add(newTable);
 
             ClearFields();
-            await ShowMessageAsync("Success", "Table added successfully.");
+            await ShowMessageAsync("Thành Công", "Thêm Bàn Thành Công");
         }
 
         private async Task EditTableAsync(Table table)
@@ -114,9 +114,9 @@ namespace FoodApp.ViewModels
 
             var dialog = new ContentDialog
             {
-                Title = "Edit Table",
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                Title = "Chỉnh Sửa Bàn",
+                PrimaryButtonText = "Lưu",
+                CloseButtonText = "Hủy",
                 XamlRoot = XamlRoot
             };
 
@@ -129,7 +129,7 @@ namespace FoodApp.ViewModels
 
                 await _tableDao.UpdateAsync(editControl.UpdatedTable);
                 await LoadTablesAsync();
-                await ShowMessageAsync("Success", "Table updated successfully.");
+                await ShowMessageAsync("Thành Công", "Cập Nhật Bàn Thành Công");
             }
         }
 
@@ -139,10 +139,10 @@ namespace FoodApp.ViewModels
 
             var dialog = new ContentDialog
             {
-                Title = "Confirm Deletion",
-                Content = "Are you sure you want to delete this table?",
-                PrimaryButtonText = "Delete",
-                CloseButtonText = "Cancel",
+                Title = "Xác Nhận Xóa",
+                Content = "Bạn Có Chắc là xóa bàn không ?",
+                PrimaryButtonText = "Xóa",
+                CloseButtonText = "Hủy",
                 XamlRoot = XamlRoot
             };
 
@@ -150,7 +150,7 @@ namespace FoodApp.ViewModels
             {
                 await _tableDao.DeleteAsync(table.Id);
                 Tables.Remove(table);
-                await ShowMessageAsync("Success", "Table deleted successfully.");
+                await ShowMessageAsync("Thành Công", "Bàn Đã Xóa Thành Công");
             }
         }
 
@@ -181,9 +181,9 @@ namespace FoodApp.ViewModels
             {
                 var dialog = new ContentDialog
                 {
-                    Title = "Order Details",
+                    Title = "Chi Tiết Đơn Hàng",
                     Content = new OrderDetailsControl { DataContext = SelectedOrder },
-                    CloseButtonText = "Close",
+                    CloseButtonText = "Đóng",
                     XamlRoot = XamlRoot
                 };
 
@@ -191,7 +191,7 @@ namespace FoodApp.ViewModels
             }
             else
             {
-                await ShowMessageAsync("No Order", "No active order found for this table.");
+                await ShowMessageAsync("Không Có Đơn Hàng Nào", "Không Có Order Nào Ở Bàn Này Cả");
             }
         }
 
