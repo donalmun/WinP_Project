@@ -82,8 +82,24 @@
 
                 <StackPanel Orientation="Horizontal" Spacing="40" Background="#F9F9F9" Padding="15" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                     <!-- Nút lọc theo danh mục -->
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
-                        <Button Content="Thực phẩm" FontSize="16" Width="120" Height="40" Margin="100,0,5,0"
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="30,0,0,0" HorizontalAlignment="Left">
+                        <!-- Tất Cả Button -->
+                        <Button Content="Tất Cả" FontSize="16" Width="120" Height="40" 
+                                Style="{StaticResource AccentButtonStyle}" Tag="0" Click="FilterByCategory_Click">
+                            <!-- Viền mờ cho Button -->
+                            <Button.BorderBrush>
+                                <SolidColorBrush Color="#E0E0E0" Opacity="0.5"/>
+                            </Button.BorderBrush>
+                            <Button.BorderThickness>
+                                <Thickness>1</Thickness>
+                            </Button.BorderThickness>
+                            <Button.CornerRadius>
+                                <CornerRadius>10</CornerRadius>
+                            </Button.CornerRadius>
+                        </Button>
+
+                        <!-- Thực phẩm Button -->
+                        <Button Content="Thực phẩm" FontSize="16" Width="120" Height="40" Margin="0,0,5,0"
                                 Style="{StaticResource AccentButtonStyle}" Tag="3" Click="FilterByCategory_Click">
                             <!-- Viền mờ cho Button -->
                             <Button.BorderBrush>
@@ -96,6 +112,8 @@
                                 <CornerRadius>10</CornerRadius>
                             </Button.CornerRadius>
                         </Button>
+
+                        <!-- Thức uống Button -->
                         <Button Content="Thức uống" FontSize="16" Width="120" Height="40" Margin="0,0,5,0"
                                 Style="{StaticResource AccentButtonStyle}" Tag="2" Click="FilterByCategory_Click">
                             <Button.BorderBrush>
@@ -108,6 +126,8 @@
                                 <CornerRadius>10</CornerRadius>
                             </Button.CornerRadius>
                         </Button>
+
+                        <!-- Món Ăn Button -->
                         <Button Content="Món Ăn" FontSize="16" Width="120" Height="40"
                                 Style="{StaticResource AccentButtonStyle}" Tag="1" Click="FilterByCategory_Click">
                             <Button.BorderBrush>
@@ -332,12 +352,12 @@
                         </Button>
                     </StackPanel>
 
-                                        <!-- Cột 0 -->
+                    <!-- Cột 1 -->
                     <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
                         <Button Click="OpenOrderDiscountTaxPopup_Click" Background="Transparent" BorderBrush="Transparent">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                 <FontIcon Glyph="&#xe8a7;" FontSize="24" FontWeight="Bold" Foreground="#333" />
-                                <TextBlock Text="In tạm tính" FontSize="20" HorizontalAlignment="Center" Foreground="#333" />
+                                <TextBlock Text="Thuế/Giảm Giá" FontSize="20" HorizontalAlignment="Center" Foreground="#333" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -361,7 +381,7 @@
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem Text="Lưu hóa đơn" Click="SaveNormall_Click"/>
-                                    <MenuFlyoutItem Text="Hủy hóa đơn" Click="CancelOrder_Click"/> 
+                                    <MenuFlyoutItem Text="Hủy hóa đơn" Click="CancelOrder_Click"/>
                                 </MenuFlyout>
                             </Button.Flyout>
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -370,7 +390,7 @@
                         </Button>
                     </StackPanel>
 
-                    <Button Grid.Column="2" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" 
+                    <Button Grid.Column="1" Content="Thanh toán" Command="{Binding PaymentCommand}" FontSize="18" FontWeight="Bold" Background="#4CAF50" Foreground="White" CornerRadius="5" 
                             HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10,5" Click="SaveOrder_Click" Width="300px"/>
                 </Grid>
             </Grid>

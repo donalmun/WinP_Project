@@ -1,4 +1,4 @@
-﻿// OrderViewModel.cs
+﻿// FoodApp\ViewModels\OrderViewModel.cs
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -261,12 +261,13 @@ namespace FoodApp.ViewModels
             // Update the table status if needed
             if (SelectedTable != null)
             {
-                await UpdateTableStatus(SelectedTable, 1);
+                await UpdateTableStatus(SelectedTable, 0); // Assuming 0 represents 'empty'
             }
 
             // Show a message or perform any other actions needed after payment
             ShowMessage("Payment successful and order saved.");
         }
+
         private async void LoadTables()
         {
             try
@@ -294,6 +295,7 @@ namespace FoodApp.ViewModels
             if (!isConnected)
             {
                 // Handle connection failure
+                ShowMessage("Database connection failed. Please check your settings.");
             }
         }
 
@@ -362,13 +364,19 @@ namespace FoodApp.ViewModels
 
         public async Task FilterProductsByCategoryAsync(int categoryId)
         {
-            Products.Clear();
-            var allProducts = await _productDao.GetAllAsync();
-            var filteredProducts = allProducts.Where(p => p.Category_Id == categoryId);
-            foreach (var product in filteredProducts)
+            if (categoryId == 0)
             {
-                Products.Add(product);
+                // Display all products
+                Products = new ObservableCollection<Product>(_allProducts);
             }
+            else
+            {
+                // Filter products by the selected category
+                Products = new ObservableCollection<Product>(_allProducts.Where(p => p.Category_Id == categoryId));
+            }
+
+            // Notify that the Products collection has changed
+            OnPropertyChanged(nameof(Products));
         }
 
         private void SearchProducts()
@@ -436,14 +444,14 @@ namespace FoodApp.ViewModels
                 }
 
                 // Optionally, clear the form or display a success message
+                ShowMessage("Order saved successfully.");
             }
             catch (Exception ex)
             {
                 ShowMessage($"Đã xảy ra lỗi: {ex.Message}");
-
             }
         }
-        
+
         private async Task UpdateTableStatus(Table table, int status)
         {
             Console.WriteLine("table status before: " + table.Status);
@@ -452,11 +460,11 @@ namespace FoodApp.ViewModels
             await _tableDao.UpdateAsync(table);
         }
 
-        
+
         private async Task UpdateCustomerLoyaltyPointsAsync(Customer customer, double amount)
         {
             // Example: 1 point for every 1000 units of currency spent
-            
+
             int pointsToAdd = (int)(amount / 1000);
             Console.WriteLine("customer loyalty_point before: " + customer.Loyalty_Points);
             customer.Loyalty_Points += pointsToAdd;

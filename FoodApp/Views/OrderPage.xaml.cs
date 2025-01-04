@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using FoodApp.Views;
 
-
 namespace FoodApp
 {
     public partial class OrderPage : Page
@@ -106,7 +105,7 @@ namespace FoodApp
         }
         private void PaymentOptionsControl_PaymentCanceled(object sender, RoutedEventArgs e)
         {
-            PaymentOptionsPopup.IsOpen = false; 
+            PaymentOptionsPopup.IsOpen = false;
             PopupContainer.Visibility = Visibility.Collapsed;
         }
 
@@ -385,7 +384,6 @@ namespace FoodApp
         private void GoToTablePage_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(TableManagementPage));
-
         }
 
         private async void SaveNormall_Click(object sender, RoutedEventArgs e)
