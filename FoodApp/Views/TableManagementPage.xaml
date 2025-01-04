@@ -67,7 +67,7 @@
                                         CornerRadius="4" BorderBrush="Gray" BorderThickness="1">
                                 <TextBlock Text="{Binding Table_Name}" FontSize="18" FontWeight="Bold" />
                                 <TextBlock>
-                                    <Run Text="Status: " />
+                                    <Run Text="Trạng Thái: " />
                                     <Run Text="{Binding Status, Mode=TwoWay, Converter={StaticResource StatusConverter}}" />
                                 </TextBlock>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
