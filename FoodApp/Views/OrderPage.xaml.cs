@@ -321,6 +321,8 @@ namespace FoodApp
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var viewModel = DataContext as OrderViewModel;
+                // Không gán SelectedCustomer = null ở đây nếu bạn muốn giữ nguyên khách đã chọn cho đến khi 
+                // người dùng thực sự chọn khách hàng mới từ danh sách gợi ý.
                 await viewModel.SearchCustomersAsync(sender.Text);
             }
         }
@@ -329,12 +331,14 @@ namespace FoodApp
         {
             var selectedCustomer = args.SelectedItem as Customer;
             var viewModel = DataContext as OrderViewModel;
+
             if (selectedCustomer != null)
             {
+                // Cập nhật số điện thoại và SelectedCustomer
                 viewModel.PhoneNumber = selectedCustomer.Phone;
                 viewModel.SelectedCustomer = selectedCustomer;
             }
-        }
+        }   
 
         private async void FilterByCategory_Click(object sender, RoutedEventArgs e)
         {

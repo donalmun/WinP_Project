@@ -33,7 +33,7 @@ namespace FoodApp.ViewModels
 
         private ObservableCollection<Customer> _suggestedCustomers;
 
-        private const int LoyaltyPointsThreshold = 1500;
+        private const int LoyaltyPointsThreshold = 1000;
         private const double DiscountPercentage = 10.0;
 
         private bool _areTablesAvailable;
@@ -285,21 +285,38 @@ namespace FoodApp.ViewModels
 
         private async Task HandlePaymentAsync()
         {
+            // Kiểm tra có chọn khách hàng hay chưa
             if (SelectedCustomer != null)
             {
-                if (!_isDiscountApplied && SelectedCustomer.Loyalty_Points >= LoyaltyPointsThreshold)
+                // Kiểm tra số điểm khách hàng
+                if (SelectedCustomer.Loyalty_Points >= 1000)
                 {
-                    // Customer is eligible for discount
-                    ApplyDiscount();
+                    // Giảm 10% tổng hóa đơn
+                    double discountAmount = TotalAmount * 0.1;
+                    OrderDiscountPercentage = 10;   // Cập nhật UI nếu cần
+                    _isDiscountApplied = true;
+
+                    // Trừ 10%
+                    // Lưu ý: sau khi set OrderDiscountPercentage = 10 thì TotalAmount đã tự tính lại 
+                    // nên ở đây *có thể* bạn không cần trừ thủ công. 
+                    // Nếu vẫn muốn làm thủ công thì:
+                    // TotalAmount -= discountAmount;
+
+                    // Trừ 1000 điểm
+                    SelectedCustomer.Loyalty_Points -= 1000;
+
+                    // Thông báo
+                    await ShowMessage("Bạn đã dùng 1000 điểm để được giảm giá 10% cho đơn hàng này.");
                 }
                 else
                 {
-                    // Customer is not eligible for discount, award loyalty points
+                    // Nếu không đủ 1000 điểm thì chỉ cộng điểm
                     await AwardLoyaltyPointsAsync();
+                    await ShowMessage("Chưa đủ 1000 điểm để giảm giá. Điểm của bạn đã được cộng thêm.");
                 }
             }
 
-            // Open the Payment Options Popup
+            // Mở popup payment
             PaymentRequested?.Invoke();
         }
 
