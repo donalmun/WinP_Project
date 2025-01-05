@@ -314,7 +314,7 @@ namespace FoodApp.ViewModels
             // Note: Update the customer in the database after saving the order
 
             // Notify the user about the applied discount
-            ShowMessage("Đơn hàng được giảm giá 10% do khách hàng có đủ điểm thưởng.").ConfigureAwait(false);
+            //ShowMessage("Đơn hàng được giảm giá 10% do khách hàng có đủ điểm thưởng.").ConfigureAwait(false);
         }
 
         private async Task AwardLoyaltyPointsAsync()
@@ -518,10 +518,10 @@ namespace FoodApp.ViewModels
                 }
 
                 // Award loyalty points if no discount was applied
-                if (!_isDiscountApplied)
-                {
-                    await AwardLoyaltyPointsAsync();
-                }
+                // if (!_isDiscountApplied)
+                // {
+                //     await AwardLoyaltyPointsAsync();
+                // }
 
                 if (isPayment)
                 {
